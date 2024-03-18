@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Machine-learning Driven Optimization of Microwave Retrievals</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div style="padding: 30px; font-size: large">
+<h2 > Model 1: Linear-regression model </h2>
+
+<h3> <a href="#sec1" data-toggle="collapse"> 1. Experiment Design </a> </h3> 
+
+<div id="sec1" class="collapse"> <!-- start of section -->
+
+<p>
+We are experimenting with a machine-learning (ML) based approach to develop the optimal procedure to merge the N19 retrievals with the propogated retrievals from imagers. 
+
+<p>
+We will test various ML models and assess their performances. Each model will be trained with a "training" dataset, and then the trained model is fed with new predictors, and the model's output will be evaluated against GMI retrievals. The performance metrics are also compared with Yalei's original quick-fix of simple mean (0.5*n19+0.5*imagers), denoted here as "half_half" (H2H) results. The ML-based results will be denoted as "M2M" results. 
+
+<br><br> 
+For Model 1, we use the linear regression model since it is the simplest. 
+
+<br><br> 
+The following input variables as avaliable as potential predictors: <br><br> 
+
+n19, imager_moved, time_diff_pixel, imager_name, cf_imager_n19
+
+<br><br> 
+We conducted several experiments to use various subsets of these variables, and in every experiment the model
+is trained against GMI for the training period. <br><br> 
+
+Then the trained model is used to predict merged rain rate with data from a validation period ("validation data"). None of the validation data was used for the training. 
+
+</div> <!-- end of section -->
+
+<h3> <a href="#sec2" data-toggle="collapse"> 2. Data Preparation </a> </h3> 
+
+<div id="sec2" class="collapse"> <!-- start of section -->
+<p>
+There are 1463 total cases in the existing collocated "deltatb/deltatb_ocean_2020/noaa19_result_final_step1_bk" retrievals.  <br> 
+
+The plot below shows the time difference values of various sensors: <br> 
+<img src="time_diff_vs_satname.png" width=700>
+<br>
+
+<p>
+We separated the cases into two parts, for model training and for model-prediction validation: <br> <br> 
+
+Training: cases from the period of 2014-2017 (864 cases) <br> 
+ Validation: cases for 2018-2020 (599 cases)
+
+ <br><br> The following plots show comparisons between the N19, Imager (moved), H2H and GMI respectively, for the training dataset: <br><br> 
+
+<img src="training_gmi_n19_histo.png" width=360>
+<img src="training_gmi_imager_histo.png" width=360>
+<img src="training_gmi_h2h_histo.png" width=360>
+
+<br><br> Same as above, but for the validation dataset. It can be seen that the statistical properties are largely stationary between the training data and validation data.<br><br> 
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+
+
+<br><br>
+<p> 
+
+</div>
+
+<h3> 3. Results </h3> 
+<br>
+
+<h4> 
+	<span class="glyphicon glyphicon-chevron-down"></span>
+	<a href="#exp1" data-toggle="collapse"> Experiment 1. Predictors: [ n19, imager_moved, time_diff_pixel, cf_imager_n19 ] </a>
+</h4> 
+
+<div id="exp1" class="collapse"> <!-- start of section -->
+The trained model obtained is: <br> <br> 
+
+<pre> 
+
+Linear regression model:
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel + cf_imager_n19
+
+Estimated Coefficients:
+                        Estimate         SE         tStat       pValue
+                       __________    __________    _______    ___________
+
+    (Intercept)          -0.21208      0.015922     -13.32      1.822e-40
+    n19                   0.61908     0.0021718     285.06              0
+    imager_moved          0.42258     0.0019099     221.26              0
+    time_diff_pixel    7.6606e-05    9.0399e-05    0.84743        0.39676
+    cf_imager_n19         0.70675      0.028166     25.092    8.3318e-139
+
+</pre> 
+
+Compared with the "half_half" (H2H) model, the M2M model has considerably reduced the bias, made slight improvement in RMSE, but slight degradation in CORR(below). But both M2M and H2H have markable improvement than the single-sensor retrievals (N19 or propagated imagers): <br><br> 
+
+
+<pre> 
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.6031      0.63245    -4.4952
+
+</pre>
+
+<p> The two plots below compare the density plots of H2H vs. M2M. The latter has many more pixels in the ~0.2-2 mm/h range. There is no dramatic improvement.  <br><br> 
+<img src='model1/density_h2h_exp1.png' width=360>  
+<img src='model1/density_m2m_exp1.png' width=360>  
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp1.png" width=360>
+
+</div>
+<br>
+
+<h4>
+	<span class="glyphicon glyphicon-chevron-down"></span>
+<a href="#exp2" data-toggle="collapse"> Experiment 2. Predictors: [ n19, imager_moved, time_diff_pixel ] </a> </h4> 
+
+<div id="exp2" class="collapse"> <!-- start of section -->
+
+<p> Trained model structure: </p> 
+
+<pre>
+Linear regression model:
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                        Estimate         SE        tStat       pValue
+                       __________    __________    ______    __________
+
+    (Intercept)           0.14397     0.0072306    19.911    3.6844e-88
+    n19                   0.62357     0.0021666     287.8             0
+    imager_moved          0.42665     0.0019049    223.97             0
+    time_diff_pixel    0.00011247    9.0481e-05     1.243       0.21386
+
+</pre> 
+
+<p> Model evaluation: it made no dramatic difference relative to Experiment 1 model. Bias sligtly increased from -4.5% to -5.0%. </p>
+
+<pre>
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.6033      0.64114    -4.9994
+
+</pre>
+<p> The two plots below compare the density plots of H2H vs. M2M. <br><br>
+<img src='model1/density_h2h_exp2.png' width=360>  
+<img src='model1/density_m2m_exp2.png' width=360>  
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp2.png" width=360>
+
+
+</div> 
+<br>
+<h4>    <span class="glyphicon glyphicon-chevron-down"></span>
+ <a href="#exp2_1" data-toggle="collapse"> Experiment 2.1. Same as Exp. 2, but without intercept.  </a> </h4>
+
+<div id="exp2_1" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                       Estimate         SE        tStat       pValue
+                       _________    __________    ______    __________
+
+    n19                  0.63269      0.002119    298.57             0
+    imager_moved          0.4342     0.0018681    232.43             0
+    time_diff_pixel    0.0013138    6.7471e-05    19.473    2.0989e-84
+
+
+Number of observations: 304248, Error degrees of freedom: 304245
+Root Mean Squared Error: 2.33
+
+perf_table =
+
+  4x3 table
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.6062      0.63581    -7.0234
+
+</pre>
+<p> The two plots below compare the density plots of H2H vs. M2M. <br><br>
+<img src='model1/density_h2h_exp2.1.png' width=360>
+<img src='model1/density_m2m_exp2.1.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp2.1.png" width=360>
+
+</div>
+<h4>    <span class="glyphicon glyphicon-chevron-down"></span>
+ <a href="#exp2_2" data-toggle="collapse"> Experiment 2.2. Same as Exp. 2, but without intercept, and with n19^2 and imager_moved^2.  </a> </h4>
+
+<div id="exp2_2" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel + n19^2 + imager_moved^2
+
+Estimated Coefficients:
+                        Estimate         SE         tStat       pValue
+                       __________    __________    _______    ___________
+
+    n19                   0.64706     0.0032357     199.97              0
+    imager_moved          0.49834     0.0028849     172.74              0
+    time_diff_pixel    0.00038127    7.1561e-05     5.3279     9.9421e-08
+    n19^2              -0.0013948    0.00015292    -9.1209      7.494e-20
+    imager_moved^2     -0.0041191    0.00012686    -32.469    7.2609e-231
+
+
+Number of observations: 304248, Error degrees of freedom: 304243
+Root Mean Squared Error: 2.32
+
+perf_table =
+
+  4x3 table
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.5939      0.64315    -5.1135
+</pre>
+<p> The two plots below compare the density plots of H2H vs. M2M. <br><br>
+<img src='model1/density_h2h_exp2.2.png' width=360>
+<img src='model1/density_m2m_exp2.2.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp2.2.png" width=360>
+
+</div>
+
+
+<br>
+<h4>	<span class="glyphicon glyphicon-chevron-down"></span>
+ <a href="#exp3" data-toggle="collapse"> Experiment 3. Predictors: [ n19, imager_moved, time_diff_pixel, imager_name ] </a> </h4> 
+
+<div id="exp3" class="collapse"> <!-- start of section -->
+
+<p> Trained model structure: </p> 
+
+<pre>
+
+Linear regression model:
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel + imager_name
+
+Estimated Coefficients:
+                                     Estimate          SE         tStat        pValue
+                                    ___________    __________    ________    ___________
+
+    (Intercept)                         0.31049      0.011287       27.51    2.1443e-166
+    n19                                 0.62158     0.0021678      286.73              0
+    imager_moved                        0.42859     0.0019058      224.89              0
+    time_diff_pixel                 -4.9464e-05    0.00012295    -0.40231        0.68745
+    imager_name_event_F17.mat          -0.12421       0.03981     -3.1201      0.0018082
+    imager_name_event_F18.mat          -0.15875      0.050895     -3.1192      0.0018134
+    imager_name_event_GCOMW1.mat       -0.21015      0.009993      -21.03     4.0981e-98
+
+</pre>
+
+<p> Model evaluation: </p>
+
+This model substantially reduced the bias: it's only 2% versus H2H's 16%.  <br> <br>
+
+<pre> 
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.5995      0.63888    -2.0912
+
+</pre>
+
+
+<p> The two plots below compare the density plots of H2H vs. M2M. The latter has many more pixels in the ~0.2-2 mm/h range. There is no dramatic improvement.  <br><br> 
+<img src='model1/density_h2h_exp3.png' width=360>  
+<img src='model1/density_m2m_exp3.png' width=360>  
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp3.png" width=360>
+
+
+</div> 
+<br>
+<h4>	<span class="glyphicon glyphicon-chevron-down"></span>
+ <a href="#exp4" data-toggle="collapse"> Experiment 4. Predictors: [ log(n19), log(imager_moved), time_diff_pixel, imager_name ] </a> </h4> 
+
+<div id="exp4" class="collapse"> <!-- start of section -->
+
+<p> Trained model structure: </p> 
+
+<pre>
+   Log(gmi) ~ 1 + Log(n19) + Log(imager_moved) + time_diff_pixel + imager_name
+
+Estimated Coefficients:
+                                     Estimate          SE         tStat       pValue
+                                    ___________    __________    _______    __________
+
+    (Intercept)                        0.024094     0.0035595     6.7689    1.2996e-11
+    n19                                 0.40483     0.0018326     220.91             0
+    imager_moved                        0.47643     0.0015819     301.18             0
+    time_diff_pixel                 -0.00012613    4.0362e-05    -3.1249     0.0017786
+    imager_name_event_F17.mat         -0.061052      0.013068    -4.6719    2.9852e-06
+    imager_name_event_F18.mat         -0.018412      0.016706    -1.1021       0.27041
+    imager_name_event_GCOMW1.mat      -0.022353     0.0032775    -6.8199    9.1251e-12
+
+ </pre>
+
+<p> Model evaluation: </p>
+
+This model substantially increased the bias: it's -31% versus H2H's 16%.  <br> <br>
+
+<pre> 
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.9002       0.6519    -31.223
+
+</pre>
+
+<br>
+<p> Density plot comparison: </p>
+<img src='model1/density_h2h_exp4.png' width=360>  
+<img src='model1/density_m2m_exp4.png' width=360>  
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp4.png" width=360>
+
+<br><br>
+</div>
+
+<br>
+<h4>	<span class="glyphicon glyphicon-chevron-down"></span>
+ <a href="#exp5" data-toggle="collapse"> Experiment 5. Predictors: [ n19, imager_moved, time_diff_pixel ] </a> </h4> 
+
+<div id="exp5" class="collapse"> <!-- start of section -->
+
+<p> Trained model structure: </p> 
+
+<pre>
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                        Estimate         SE        tStat       pValue
+                       __________    __________    ______    __________
+
+    (Intercept)           0.14397     0.0072306    19.911    3.6844e-88
+    n19                   0.62357     0.0021666     287.8             0
+    imager_moved          0.42665     0.0019049    223.97             0
+    time_diff_pixel    0.00011247    9.0481e-05     1.243       0.21386
+
+
+</pre> 
+<p> Model evaluation: </p>
+
+<pre>
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.6033      0.64114    -4.9994
+
+</pre> 
+<br>
+<p> Density plot comparison: </p>
+<img src='model1/density_h2h_exp5.png' width=360>  
+<img src='model1/density_m2m_exp5.png' width=360>  
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model1/validation_gmi_m2m_histo_exp5.png" width=360>
+
+
+</div>
+
+	<br><br>
+<h3> 4. Conclusions </h3> 
+
+<p> We tested a linear regression model as a way to objectively merge N19 and propagated imagers's data, 
+to produce optimal estimates. We conducted five experiments, each with a different subset of the predictors available. The experiments produced various performances, all have reduced the biases except Exp. 4. But most model results suffer from a higher rain rate cut off (~0.3 mm/h) instead of the 0.2mm/h in the input data. 
+
+<br><br> 
+For next steps, we will test more sophisticated ML models. 
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
+</div>
+
+</body>
+</html>
+
+ 
+
+

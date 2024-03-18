@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Machine-learning Driven Optimization of Microwave Retrievals</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div style="padding: 30px; font-size: large">
+<h2 > Experiments: Linear regression with pdf-corrected sounders, for all sounders (noaa18, noaa19, metopa, metopb, & npp)</h2>
+
+<h3> <a href="#sec1" data-toggle="collapse"> 1. Experiment Design </a> </h3> 
+
+<div id="sec1" class="collapse"> <!-- start of section -->
+
+<p>
+Same as Model 7, i.e., with pdf-matching approach to correct all sounders (n18, n19, metopa, metopb, and npp) and the propagated imagers to GMI before modeling. The difference now is that another GMI PDF-matching is performed on the predicted values. 
+
+<br><br> 
+<br> 
+
+
+
+</div>
+
+<h3> <a href="#sec2" data-toggle="collapse"> 2. Data Preparation </a> </h3> 
+
+<div id="sec2" class="collapse"> <!-- start of section -->
+<p>
+
+All the data rows are randomly shuffled to evenlly distribute the time_diffs for the samples. Then 60% of the data are used for training, and 40% for validation. 
+
+
+<br><br>
+<p> 
+
+</div>
+
+<h3> 3. Results </h3> 
+<br>
+
+<h4>  Experiments. Sounder pdf-matched to GMI, linear model, no intercept</h4> 
+
+ <ul class="list-group">
+	 <li class="list-group-item"><a href="model7a/exp1.html" target="_blank">
+	  1) All sounders combined, all system sizes</a></li>
+	 <li class="list-group-item"><a href="model7a/exp2.html" target="_blank">
+	  2) All sounders combined,  system sizes &lt; 500</a></li>
+	 <li class="list-group-item"><a href="model7a/exp3.html" target="_blank">
+	  3) All sounders combined,  system sizes &gt;= 500</a></li>
+	 <li class="list-group-item"><a href="model7a/exp4.html" target="_blank">
+	  4) All sounders but NPP,  system sizes &lt; 500</a></li>
+	 <li class="list-group-item"><a href="model7a/exp5.html" target="_blank">
+	  5) All sounders but NPP,  system sizes &gt;= 500</a></li>
+	 <li class="list-group-item"><a href="model7a/exp6.html" target="_blank">
+	  6) NPP only,  system sizes &lt; 500</a></li>
+	 <li class="list-group-item"><a href="model7a/exp7.html" target="_blank">
+	  7) NPP only,  system sizes &gt;= 500</a></li>
+</ul>
+
+<br><br>
+<h3> 4. Summary </h3> 
+
+<!-- all_perf_table.html --> 
+<br><br>
+<h3> Table of M2M rmse </h3><hr><br> 
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th colspan=2> time_diff &lt; 1hr</th>
+        <th colspan=2> time_diff &gt;= 1hr</th>
+      </tr>
+      <tr><td></td><td>AMSR2</td><td>SSMIS</td><td>AMSR2</td><td>SSMIS</td></tr>
+    </thead>
+    <tbody>
+<tr><td>1) All sounders, all  sizes</td><td>2.18</td><td>2.64</td><td>2.55</td><td>3.11</td></tr>
+<tr><td>2) All sounders,  sizes &lt; 500</td><td>2.38</td><td>2.57</td><td>2.63</td><td>2.99</td></tr>
+<tr><td>3) All sounders,  sizes &gt;= 500</td><td>2.02</td><td>2.71</td><td>2.38</td><td>3.30</td></tr>
+<tr><td>4) All sounders but NPP,  sizes &lt; 500</td><td>2.50</td><td>2.57</td><td>2.64</td><td>2.98</td></tr>
+<tr><td>5) All sounders but NPP,  sizes &gt;= 500</td><td>2.22</td><td>2.71</td><td>2.40</td><td>3.30</td></tr>
+<tr><td>6) NPP,  sizes &lt; 500</td><td>2.35</td><td></td><td></td><td>2.99</td></tr>
+<tr><td>7) NPP,  sizes &gt;= 500</td><td>1.95</td><td></td><td></td><td></td></tr>
+</tbody></table>
+<br><br>
+<h3> Table of M2M corr </h3><hr><br> 
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th colspan=2> time_diff &lt; 1hr</th>
+        <th colspan=2> time_diff &gt;= 1hr</th>
+      </tr>
+      <tr><td></td><td>AMSR2</td><td>SSMIS</td><td>AMSR2</td><td>SSMIS</td></tr>
+    </thead>
+    <tbody>
+<tr><td>1) All sounders, all  sizes</td><td>0.72</td><td>0.68</td><td>0.56</td><td>0.58</td></tr>
+<tr><td>2) All sounders,  sizes &lt; 500</td><td>0.67</td><td>0.65</td><td>0.54</td><td>0.57</td></tr>
+<tr><td>3) All sounders,  sizes &gt;= 500</td><td>0.75</td><td>0.71</td><td>0.59</td><td>0.60</td></tr>
+<tr><td>4) All sounders but NPP,  sizes &lt; 500</td><td>0.63</td><td>0.65</td><td>0.54</td><td>0.57</td></tr>
+<tr><td>5) All sounders but NPP,  sizes &gt;= 500</td><td>0.69</td><td>0.71</td><td>0.59</td><td>0.60</td></tr>
+<tr><td>6) NPP,  sizes &lt; 500</td><td>0.68</td><td></td><td></td><td>0.60</td></tr>
+<tr><td>7) NPP,  sizes &gt;= 500</td><td>0.77</td><td></td><td></td><td></td></tr>
+</tbody></table>
+<br><br>
+<h3> Table of M2M bias </h3><hr><br> 
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th colspan=2> time_diff &lt; 1hr</th>
+        <th colspan=2> time_diff &gt;= 1hr</th>
+      </tr>
+      <tr><td></td><td>AMSR2</td><td>SSMIS</td><td>AMSR2</td><td>SSMIS</td></tr>
+    </thead>
+    <tbody>
+<tr><td>1) All sounders, all  sizes</td><td>0.03</td><td>0.05</td><td>0.05</td><td>0.04</td></tr>
+<tr><td>2) All sounders,  sizes &lt; 500</td><td>0.05</td><td>0.05</td><td>0.05</td><td>0.04</td></tr>
+<tr><td>3) All sounders,  sizes &gt;= 500</td><td>0.03</td><td>0.05</td><td>0.06</td><td>0.05</td></tr>
+<tr><td>4) All sounders but NPP,  sizes &lt; 500</td><td>0.06</td><td>0.05</td><td>0.05</td><td>0.04</td></tr>
+<tr><td>5) All sounders but NPP,  sizes &gt;= 500</td><td>0.06</td><td>0.04</td><td>0.06</td><td>0.05</td></tr>
+<tr><td>6) NPP,  sizes &lt; 500</td><td>0.04</td><td></td><td></td><td>0.09</td></tr>
+<tr><td>7) NPP,  sizes &gt;= 500</td><td>0.03</td><td></td><td></td><td></td></tr>
+</tbody></table>
+<br><br> 
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
+</div>
+
+</body>
+</html>
+
+ 
+
+

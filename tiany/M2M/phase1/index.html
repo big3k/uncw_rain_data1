@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Machine-learning Driven Optimization of Microwave Retrievals</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h2> Machine-learning Driven Optimization of Microwave Precipitation Retrievals</h2>
+ <p> Earth and Ocean Sciences</p>
+ <p> University of North Carolina Wilmington</p>
+</div>
+
+ <div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="btn-group-vertical btn-group-lg" id="top_btns">
+       <button type="button" class="btn btn-primary text-left active" value="model1">1. Linear regression</button>
+       <button type="button" class="btn btn-primary text-left" value="model2">2. Neural network </button>
+       <button type="button" class="btn btn-primary text-left" value="model3">3. Ensemble </button>
+       <button type="button" class="btn btn-primary text-left" value="model4">4. Linear regression <br>with pdf-matching </button>
+       <button type="button" class="btn btn-primary text-left" value="model5">5. All sounders</button>
+       <button type="button" class="btn btn-primary text-left" value="model6">6. All sounders<br>sep. NPP<br>sounder pdf-match</button>
+       <button type="button" class="btn btn-primary text-left" value="model6a">6a. All sounders<br>sep. NPP<br>sounder pdf-match<br> and M2M pdf-match</button>
+       <button type="button" class="btn btn-primary text-left" value="model7">7. All sounders<br>sep. NPP<br>both pdf-match</button>
+       <button type="button" class="btn btn-primary text-left" value="model7a">7a. All sounders<br>sep. NPP<br>both pdf-match <br>and M2M pdf-match</button>
+       <button type="button" class="btn btn-primary text-left" value="model7b">7b. Double-check 7a<br>reshuffle data</button>
+       <button type="button" class="btn btn-primary text-left" value="model7c">7c. Case-based <br>validation of 7b</button>
+      <!-- 
+       <button type="button" class="btn btn-primary text-left" value="teaching">Teaching and homework</button>
+       <button type="button" class="btn btn-primary text-left" value="projects">Projects and other work</button>
+      -->
+      </div>
+    </div> <!-- col-sm-3 -->
+    <div class="col-sm-9" id="main_text">
+    </div> <!-- col-sm-9 -->
+  </div> <!-- row -->
+ </div> <!-- container -->
+
+ <script> 
+   var update="2023-07-21";  //Update time, used both to show at bottom and defeat client caching. 
+
+   $.ajaxSetup ({
+    // Disable caching of AJAX responses
+     cache: false
+   });
+
+   $("#top_btns > button").click(
+      function() { 
+        var year=$(this).val();  
+        $("#main_text").load(year + ".html"); 
+        //deactivate other buttons
+        $("#top_btns > button").removeClass("active"); 
+        // activate this button
+        $(this).addClass("active"); 
+      }
+  ); 
+ </script>  
+
+<script>
+$( document ).ready(function() {
+    //load content for home button when page first loaded 
+    $("#main_text").load("model1.html");
+    document.getElementById("update").innerHTML = update;
+});
+</script>  
+
+<footer class="container-fluid text-center">
+  <p>Updated: <span id="update"></p>
+</footer>
+
+
+</body>
+</html>
+
+ 
+
+

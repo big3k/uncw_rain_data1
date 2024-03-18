@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Machine-learning Driven Optimization of Microwave Retrievals</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div style="padding: 30px; font-size: large">
+<h2 > Model 4: Linear regression with pdf-corrected sounders and/or imagers </h2>
+
+<h3> <a href="#sec1" data-toggle="collapse"> 1. Experiment Design </a> </h3> 
+
+<div id="sec1" class="collapse"> <!-- start of section -->
+
+<p>
+Same as Model 1, but with experiments with pdf-matching approach to correct N19 sensors before modeling. Experiments were also performed with the imager data corrected to gmi. 
+
+<br><br> 
+<br> 
+
+
+
+</div>
+
+<h3> <a href="#sec2" data-toggle="collapse"> 2. Data Preparation </a> </h3> 
+
+<div id="sec2" class="collapse"> <!-- start of section -->
+<p>
+Same as Model 1. 
+
+
+<br><br>
+<p> 
+
+</div>
+
+<h3> 3. Results </h3> 
+<br>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp5" data-toggle="collapse"> Experiment 5. N19 pdf-matched to imager, linear model. </a>
+</h4>
+<div id="exp5" class="collapse"> <!-- start of section -->
+
+<pre> 
+Linear regression model:
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                        Estimate        SE        tStat       pValue
+                       __________    _________    ______    ___________
+
+    (Intercept)            0.1979    0.0072134    27.435    1.6623e-165
+    n19                   0.54228    0.0019063    284.47              0
+    imager_moved          0.43112    0.0019066    226.13              0
+    time_diff_pixel    0.00017282     9.07e-05    1.9054       0.056732
+
+
+Number of observations: 304248, Error degrees of freedom: 304244
+Root Mean Squared Error: 2.34
+R-squared: 0.515,  Adjusted R-Squared: 0.515
+F-statistic vs. constant model: 1.08e+05, p-value = 0
+
+perf_table =
+
+  4x3 table
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_imager       2.824      0.52154    -9.1419
+    Imager_moved       2.9417      0.60486    -16.511
+    H2H                2.6472      0.64834    -16.123
+    M2M                 2.611      0.63768    -5.2943
+</pre>
+<br> 
+<img src='model4/density_h2h_exp5.png' width=360>
+<img src='model4/density_m2m_exp5.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp5.png" width=360>
+
+<br> 
+<br> 
+</div> 
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp5_1" data-toggle="collapse"> Experiment 5.1. N19 pdf-matched to imager, linear model, no intercept. </a>
+</h4>
+<div id="exp5_1" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                       Estimate         SE        tStat       pValue
+                       _________    __________    ______    __________
+
+    n19                  0.55212     0.0018746    294.53             0
+    imager_moved         0.44238     0.0018642    237.31             0
+    time_diff_pixel    0.0018428    6.7323e-05    27.373    9.112e-165
+
+
+Number of observations: 304248, Error degrees of freedom: 304245
+Root Mean Squared Error: 2.34
+
+perf_table =
+
+  4x3 table
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_imager       2.824      0.52154    -9.1419
+    Imager_moved       2.9417      0.60486    -16.511
+    H2H                2.6472      0.64834    -16.123
+    M2M                2.6164      0.62842    -8.1164
+</pre> 
+<br>
+<img src='model4/density_h2h_exp5.1.png' width=360>
+<img src='model4/density_m2m_exp5.1.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp5.1.png" width=360>
+
+<br><br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp5_2" data-toggle="collapse"> Experiment 5.2. Same as Exp. 5.1, but with addtional N19^2 and imager^2 terms. </a>
+</h4>
+<div id="exp5_2" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel + n19^2 + imager_moved^2
+
+Estimated Coefficients:
+                        Estimate         SE         tStat       pValue
+                       __________    __________    _______    ___________
+
+    n19                   0.54297     0.0029029     187.04              0
+    imager_moved          0.51854      0.002877     180.24              0
+    time_diff_pixel     0.0010397    7.1268e-05     14.588     3.4712e-48
+    n19^2              0.00012077    0.00012692    0.95157        0.34132
+    imager_moved^2     -0.0046759    0.00012686    -36.857    1.0148e-296
+
+
+Number of observations: 304248, Error degrees of freedom: 304243
+Root Mean Squared Error: 2.33
+
+perf_table =
+
+  4x3 table
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_imager       2.824      0.52154    -9.1419
+    Imager_moved       2.9417      0.60486    -16.511
+    H2H                2.6472      0.64834    -16.123
+    M2M                2.6021      0.63887    -6.3923
+
+</pre>
+
+<br>
+<img src='model4/density_h2h_exp5.2.png' width=360>
+<img src='model4/density_m2m_exp5.2.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp5.2.png" width=360>
+
+<br><br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp5_3" data-toggle="collapse"> Experiment 5.3. Same as Exp. 5.2, but with addtional N19^3 and imager^3 terms. </a>
+</h4>
+<div id="exp5_3" class="collapse"> <!-- start of section -->
+<pre>
+
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel + n19^2 + imager_moved^2 + n19^3 + imager_moved^3
+
+Estimated Coefficients:
+                        Estimate          SE         tStat       pValue
+                       ___________    __________    _______    ___________
+
+    n19                    0.40645     0.0039418     103.11              0
+    imager_moved           0.58149     0.0039171     148.45              0
+    time_diff_pixel      0.0016564    7.4329e-05     22.285    6.2971e-110
+    n19^2                 0.016053    0.00033635     47.728              0
+    imager_moved^2       -0.010556    0.00033604    -31.413    3.0253e-216
+    n19^3              -0.00031142    6.0949e-06    -51.095              0
+    imager_moved^3      9.9373e-05    6.1244e-06     16.226     3.5063e-59
+
+
+Number of observations: 304248, Error degrees of freedom: 304241
+Root Mean Squared Error: 2.32
+
+perf_table =
+
+  4x3 table
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_imager       2.824      0.52154    -9.1419
+    Imager_moved       2.9417      0.60486    -16.511
+    H2H                2.6472      0.64834    -16.123
+    M2M                2.5813      0.64037    -7.1577
+
+</pre>
+
+<br>
+<img src='model4/density_h2h_exp5.3.png' width=360>
+<img src='model4/density_m2m_exp5.3.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp5.3.png" width=360>
+
+<br><br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp5_4" data-toggle="collapse"> Experiment 5.4. Same as Exp. 5.3, but with addtional N19^4 and imager^4 terms. </a>
+</h4>
+<div id="exp5_4" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel + n19^2 + imager_moved^2 + n19^3 + imager_moved^3 + n19^4 + imager_moved^4
+
+Estimated Coefficients:
+                        Estimate          SE         tStat       pValue
+                       ___________    __________    _______    ___________
+
+    n19                    0.31874     0.0052715     60.464              0
+    imager_moved           0.63058     0.0052439     120.25              0
+    time_diff_pixel      0.0019017    7.7194e-05     24.635    7.1945e-134
+    n19^2                 0.031783    0.00071648     44.361              0
+    imager_moved^2       -0.017957    0.00071058     -25.27    9.5351e-141
+    n19^3              -0.00096964    2.7395e-05    -35.395    7.4122e-274
+    imager_moved^3      0.00036926    2.7157e-05     13.597     4.2629e-42
+    n19^4               6.9931e-06    2.8572e-07     24.476    3.6155e-132
+    imager_moved^4     -2.6209e-06    2.8414e-07    -9.2238     2.8852e-20
+
+
+Number of observations: 304248, Error degrees of freedom: 304239
+Root Mean Squared Error: 2.32
+
+perf_table =
+
+  4x3 table
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_imager       2.824      0.52154    -9.1419
+    Imager_moved       2.9417      0.60486    -16.511
+    H2H                2.6472      0.64834    -16.123
+    M2M                2.5783      0.64054    -7.3313
+
+</pre> 
+
+<br>
+<img src='model4/density_h2h_exp5.4.png' width=360>
+<img src='model4/density_m2m_exp5.4.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp5.4.png" width=360>
+
+<br><br>
+</div>
+
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp6" data-toggle="collapse"> Experiment 6. N19 pdf-matched to GMI, linear model. </a>
+</h4>
+<div id="exp6" class="collapse"> <!-- start of section -->
+
+<pre>
+Linear regression model:
+    gmi ~ 1 + n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                       Estimate        SE        tStat     pValue
+                       _________    _________    ______    _______
+
+    (Intercept)          0.30619    0.0071321    42.931          0
+    n19                  0.45037    0.0015642    287.91          0
+    imager_moved          0.4296    0.0018985    226.29          0
+    time_diff_pixel    0.0001475    9.047e-05    1.6304    0.10302
+
+
+Number of observations: 304248, Error degrees of freedom: 304244
+Root Mean Squared Error: 2.33
+R-squared: 0.518,  Adjusted R-Squared: 0.518
+F-statistic vs. constant model: 1.09e+05, p-value = 0
+
+perf_table =
+
+  4x3 table
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    ________
+
+    N19_to_GMI        3.0029      0.52154    -0.88598
+    Imager_moved      2.9417      0.60486     -16.511
+    H2H               2.6472      0.64834     -16.123
+    M2M                2.601      0.64125     -5.1993
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp6.png' width=360>
+<img src='model4/density_m2m_exp6.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp6.png" width=360>
+<br>
+
+</div> 
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp6_1" data-toggle="collapse"> Experiment 6.1. N19 pdf-matched to GMI, linear model, no intercept. </a>
+</h4>
+<div id="exp6_1" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                       Estimate         SE        tStat     pValue
+                       _________    __________    ______    ______
+
+    n19                  0.45945     0.0015546    295.55      0
+    imager_moved         0.45001     0.0018435     244.1      0
+    time_diff_pixel    0.0027817    6.6685e-05    41.714      0
+
+
+Number of observations: 304248, Error degrees of freedom: 304245
+Root Mean Squared Error: 2.34
+
+perf_table =
+
+  4x3 table
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    ________
+
+    N19_to_GMI        3.0029      0.52154    -0.88598
+    Imager_moved      2.9417      0.60486     -16.511
+    H2H               2.6472      0.64834     -16.123
+    M2M                2.613      0.62193     -9.6679
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp6.1.png' width=360>
+<img src='model4/density_m2m_exp6.1.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp6.1.png" width=360>
+<br>
+</div>
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp7_1" data-toggle="collapse"> Experiment 7.1. N19 pdf-matched to GMI, linear model, no intercept, no "time_diff_pixel". </a>
+</h4>
+<div id="exp7_1" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved
+
+Estimated Coefficients:
+                    Estimate       SE        tStat     pValue
+                    ________    _________    ______    ______
+
+    n19             0.46977     0.0015391    305.22      0
+    imager_moved     0.4664     0.0018063    258.21      0
+
+
+Number of observations: 304248, Error degrees of freedom: 304246
+Root Mean Squared Error: 2.34
+
+perf_table =
+
+  4x3 table
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    ________
+
+    N19_to_GMI        3.0029      0.52154    -0.88598
+    Imager_moved      2.9417      0.60486     -16.511
+    H2H               2.6472      0.64834     -16.123
+    M2M               2.6064      0.64225       -14.5
+
+</pre> 
+<br>
+<img src='model4/density_h2h_exp7.1.png' width=360>
+<img src='model4/density_m2m_exp7.1.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp7.1.png" width=360>
+<br>
+</div> 
+
+<!-- 
+	% a) time_diff<1hr and AMSR2
+% b) time_diff<1hr and SSMISs
+% c) time_diff>1hr and AMSR2
+% d) time_diff>1hr and SSMISs
+-->
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp7_1a" data-toggle="collapse"> Experiment 7.1a. Same as Exp 7.1, but for time_diff &lt; 1hr and AMSR2 only </a>
+</h4>
+<div id="exp7_1a" class="collapse"> <!-- start of section -->
+<pre>
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19_to_GMI        2.6801       0.5074    0.65806
+    Imager_moved      2.4826      0.65365    -2.4941
+    H2H               2.1686      0.67518     -8.001
+    M2M               2.1815      0.67593    -10.809
+</pre> 
+<br>
+<img src='model4/density_h2h_exp7_1a.png' width=360>
+<img src='model4/density_m2m_exp7_1a.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp7_1a.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp7_1a.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp7_1a.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp7_1a.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp7_1b" data-toggle="collapse"> Experiment 7.1b. Same as Exp 7.1, but for time_diff &lt; 1hr and SSMIS only </a>
+</h4>
+<div id="exp7_1b" class="collapse"> <!-- start of section -->
+<pre>
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19_to_GMI        2.9433      0.51793    0.46044
+    Imager_moved      2.6667      0.66376    -17.409
+    H2H               2.4988      0.67802    -16.907
+    M2M               2.4083      0.68451    0.67785
+</pre>
+<br>
+<img src='model4/density_h2h_exp7_1b.png' width=360>
+<img src='model4/density_m2m_exp7_1b.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp7_1b.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp7_1b.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp7_1b.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp7_1b.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp7_1c" data-toggle="collapse"> Experiment 7.1c. Same as Exp 7.1, but for time_diff &gt; 1hr and AMSR2 only </a>
+</h4>
+<div id="exp7_1c" class="collapse"> <!-- start of section -->
+<pre>
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19_to_GMI        2.7071      0.50342    0.24426
+    Imager_moved        3.19      0.45778     -2.765
+    H2H               2.5341       0.5719    -7.2602
+    M2M               2.4364      0.57063    -14.445
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp7_1c.png' width=360>
+<img src='model4/density_m2m_exp7_1c.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp7_1c.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp7_1c.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp7_1c.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp7_1c.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp7_1d" data-toggle="collapse"> Experiment 7.1d. Same as Exp 7.1, but for time_diff &gt; 1hr and SSMIS only </a>
+</h4>
+<div id="exp7_1d" class="collapse"> <!-- start of section -->
+<pre>
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19_to_GMI        3.2338      0.53352     1.3386
+    Imager_moved       3.364      0.48262    -22.306
+    H2H               2.9157      0.59344    -18.953
+    M2M                2.775      0.59639    -1.1804
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp7_1d.png' width=360>
+<img src='model4/density_m2m_exp7_1d.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp7_1d.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp7_1d.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp7_1d.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp7_1d.png" width=360>
+<br>
+</div>
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9" data-toggle="collapse"> Experiment 9. N19 and Imager pdf-matched to GMI, linear model, no intercept, no "time_diff_pixel". </a>
+</h4>
+<div id="exp9" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved
+
+Estimated Coefficients:
+                    Estimate       SE        tStat     pValue
+                    ________    _________    ______    ______
+
+    n19             0.48459     0.0015279    317.16      0
+    imager_moved    0.38228     0.0015293    249.97      0
+
+
+Number of observations: 304247, Error degrees of freedom: 304245
+Root Mean Squared Error: 2.36
+
+perf_table =
+
+  4x3 table
+
+                           rmse(mm/h)     corr      bias(%)
+                           __________    _______    ________
+
+    N19_to_GMI               3.0029      0.52154    -0.88598
+    Imager_moved_to_GMI      2.9685      0.60486      -10.97
+    H2H                      2.6472      0.64834     -16.123
+    M2M                      2.6211      0.63716     -17.936
+</pre>
+<br>
+<img src='model4/density_h2h_exp9.png' width=360>
+<img src='model4/density_m2m_exp9.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9.png" width=360>
+<br>
+</div>
+<!-- 
+	% a) time_diff<1hr and AMSR2
+% b) time_diff<1hr and SSMISs
+% c) time_diff>1hr and AMSR2
+% d) time_diff>1hr and SSMISs
+-->
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9_0a" data-toggle="collapse"> Experiment 9.0a. Same as Exp 9, but for time_diff &lt; 1hr and AMSR2 only </a>
+</h4>
+<div id="exp9_0a" class="collapse"> <!-- start of section -->
+<pre>
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_GMI         2.7045      0.49928     1.0508
+    Imager_to_GMI       2.592      0.64696    0.70651
+    H2H                2.1863      0.66799    -7.4526
+    M2M                2.2102      0.66571    -11.315
+
+</pre> 
+<br>
+<img src='model4/density_h2h_exp9_0a.png' width=360>
+<img src='model4/density_m2m_exp9_0a.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp9_0a.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp9_0a.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp9_0a.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9_0a.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9_0b" data-toggle="collapse"> Experiment 9.0b. Same as Exp 9, but for time_diff &lt; 1hr and SSMIS only </a>
+</h4>
+<div id="exp9_0b" class="collapse"> <!-- start of section -->
+<pre>
+
+
+                     rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_GMI         2.9488      0.51724    0.21909
+    Imager_to_GMI       2.982      0.66306     1.3285
+    H2H                2.5339      0.67736    -16.878
+    M2M                2.5035      0.67098    -12.616
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp9_0b.png' width=360>
+<img src='model4/density_m2m_exp9_0b.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp9_0b.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp9_0b.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp9_0b.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9_0b.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9_0c" data-toggle="collapse"> Experiment 9.0c. Same as Exp 9, but for time_diff &gt; 1hr and AMSR2 only </a>
+</h4>
+<div id="exp9_0c" class="collapse"> <!-- start of section -->
+<pre>
+
+                    rmse(mm/h)     corr      bias(%)
+                     __________    _______    _______
+
+    N19_to_GMI         2.7035      0.50056    0.45993
+    Imager_to_GMI      3.3013      0.45673    0.41559
+    H2H                2.5034      0.56896    -6.6958
+    M2M                2.4211       0.5653    -14.401
+
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp9_0c.png' width=360>
+<img src='model4/density_m2m_exp9_0c.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp9_0c.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp9_0c.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp9_0c.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9_0c.png" width=360>
+<br>
+</div>
+
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9_0d" data-toggle="collapse"> Experiment 9.0d. Same as Exp 9, but for time_diff &gt; 1hr and SSMIS only </a>
+</h4>
+<div id="exp9_0d" class="collapse"> <!-- start of section -->
+<pre>
+
+                     rmse(mm/h)     corr       bias(%)
+                     __________    _______    _________
+
+    N19_to_GMI         3.1843       0.5299     -0.26107
+    Imager_to_GMI      3.7196      0.47566    -0.075247
+    H2H                2.9446       0.5879      -19.814
+    M2M                 2.794      0.58913      -12.952
+
+
+</pre>
+<br>
+<img src='model4/density_h2h_exp9_0d.png' width=360>
+<img src='model4/density_m2m_exp9_0d.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="model4/validation_gmi_n19_histo_exp9_0d.png" width=360>
+<img src="model4/validation_gmi_imager_histo_exp9_0d.png" width=360>
+<img src="model4/validation_gmi_h2h_histo_exp9_0d.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9_0d.png" width=360>
+<br>
+</div>
+<h4> <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp9_1" data-toggle="collapse"> Experiment 9.1. N19 and Imager pdf-matched to GMI, linear model, no intercept, with "time_diff_pixel". </a>
+</h4>
+<div id="exp9_1" class="collapse"> <!-- start of section -->
+<pre>
+Linear regression model:
+    gmi ~ n19 + imager_moved + time_diff_pixel
+
+Estimated Coefficients:
+                       Estimate         SE        tStat     pValue
+                       _________    __________    ______    ______
+
+    n19                  0.46801     0.0015505    301.85      0
+    imager_moved          0.3683     0.0015433    238.64      0
+    time_diff_pixel    0.0036204    6.6308e-05    54.599      0
+
+
+Number of observations: 304247, Error degrees of freedom: 304244
+Root Mean Squared Error: 2.34
+
+perf_table =
+
+  4x3 table
+
+                           rmse(mm/h)     corr      bias(%)
+                           __________    _______    ________
+
+    N19_to_GMI               3.0029      0.52154    -0.88598
+    Imager_moved_to_GMI      2.9685      0.60486      -10.97
+    H2H                      2.6472      0.64834     -16.123
+    M2M                      2.6283      0.60332     -11.423
+</pre>
+
+<br>
+<img src='model4/density_h2h_exp9.1.png' width=360>
+<img src='model4/density_m2m_exp9.1.png' width=360>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model4/validation_gmi_m2m_histo_exp9.1.png" width=360>
+<br>
+</div>
+
+
+<br><br>
+<h3> 4. Conclusions </h3> 
+
+TBD. 
+<br><br> 
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
+</div>
+
+</body>
+</html>
+
+ 
+
+

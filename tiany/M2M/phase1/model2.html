@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Machine-learning Driven Optimization of Microwave Retrievals</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div style="padding: 30px; font-size: large">
+<h2 > Model 2: Neural network models </h2>
+
+<h3> <a href="#sec1" data-toggle="collapse"> 1. Experiment Design </a> </h3> 
+
+<div id="sec1" class="collapse"> <!-- start of section -->
+
+<p>
+Same as Model 1, but with experiments with various Neural network configurations. We used Matlab's "fitauto" framework to automatically select the best nuerual network regression model from various candidates. 
+
+<br><br> 
+We tried the approach with both linear rain-rate values and log(rain-rate) values. It took 5-6 hours to select the best model from a pool of 30. 
+<br> 
+
+
+
+</div>
+
+<h3> <a href="#sec2" data-toggle="collapse"> 2. Data Preparation </a> </h3> 
+
+<div id="sec2" class="collapse"> <!-- start of section -->
+<p>
+Same as Model 1. 
+
+
+<br><br>
+<p> 
+
+</div>
+
+<h3> 3. Results </h3> 
+<br>
+
+<h4>
+        <span class="glyphicon glyphicon-chevron-down"></span>
+	<a href="#exp3" data-toggle="collapse"> Experiment 3. Model: fitrnet(training, "gmi", "LayerSizes", 170, "Activations", "tanh"), obtained from rain rate training (no log). </a> 
+
+</h4>
+
+<div id="exp3" class="collapse"> <!-- start of section -->
+<br>
+
+Model performance: <br> 
+<pre> 
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.5432      0.65543    -4.7317
+
+</pre> 
+<br> 
+<img src='model2/density_h2h_exp3.png'>
+<img src='model2/density_m2m_exp3.png'>
+<br><br>
+
+<b> The problem with this model: predicted rain rates have negative values. </b> 
+<br> 
+<br> 
+</div> 
+
+<br> 
+
+
+<h4>
+        <span class="glyphicon glyphicon-chevron-down"></span>
+        <a href="#exp4" data-toggle="collapse"> Experiment 4. Model:   fitrauto (training, "gmi", "Learners", "net"), with log(rain_rate) </a>
+</h4>
+
+<div id="exp4" class="collapse"> <!-- start of section -->
+<br>
+<p>
+The best model found, after 5 hours of running, is: 
+<br> 
+<pre> 
+Best observed learner is a net model with:
+        Activations:              tanh
+        Standardize:              true
+        Lambda:             3.1307e-08
+        LayerSizes:         [180    5]
+</pre> 
+<br><br> 
+
+Model performance: <br> 
+<pre>
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.6942      0.66829    -27.258
+</pre> 
+<br> 
+<img src='model2/density_h2h_exp4.png'>
+<img src='model2/density_m2m_exp4.png'>
+<br><br>
+<p> Histogram comparisons for the validation period: </p>
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model2/validation_gmi_m2m_histo_exp4.png" width=360>
+
+<br> 
+</div> 
+<br>
+
+
+
+<h4> 
+	<span class="glyphicon glyphicon-chevron-down"></span>
+	<a href="#exp5" data-toggle="collapse"> Experiment 5. Model:  fitrnet(training, "gmi", "LayerSizes", 170, "Activations", "tanh"), with log(rain_rate)  </a>
+</h4> 
+
+<div id="exp5" class="collapse"> <!-- start of section -->
+<br><br>
+<p>
+The model parameters were obtained from Exp2: fitrauto (training, "gmi", "Learners", "net"), with rain rates. Trying to use this model for log(rain) anyway and see how it goes. <br> 
+
+<br> 
+The model is: 
+<pre> 
+fitrnet(training, "gmi", "LayerSizes", 170, "Activations", "tanh");
+</pre> 
+
+<br> The model fixed the netgative rain issue, but bias was much degraded. <br> <br> 
+
+<pre> 
+
+                    rmse(mm/h)     corr      bias(%)
+                    __________    _______    _______
+
+    N19               2.7786      0.52154    -15.734
+    Imager_moved      2.9417      0.60486    -16.511
+    H2H               2.6472      0.64834    -16.123
+    M2M               2.7202      0.66576    -27.857
+
+
+</pre>
+
+<p> The two plots below compare the density plots of H2H vs. M2M. The latter has many more pixels in the ~0.2-2 mm/h range. There is no dramatic improvement.  <br><br> 
+<img src='model2/density_h2h_exp5.png'>  
+<img src='model2/density_m2m_exp5.png'>  
+<br><br> 
+<p> Histogram comparisons for the validation period: </p> 
+<img src="validation_gmi_n19_histo.png" width=360>
+<img src="validation_gmi_imager_histo.png" width=360>
+<img src="validation_gmi_h2h_histo.png" width=360>
+<img src="model2/validation_gmi_m2m_histo_exp5.png" width=360>
+
+<br><br> 
+
+</div>
+<br>
+
+</div>
+
+	<br><br>
+<h3> 4. Conclusions </h3> 
+
+The various experiments show that neural-network models have a hard-time producing improved predictions. 
+<br><br> 
+
+<br><br>
+<br><br>
+<br><br>
+<br><br>
+
+
+</div>
+
+</body>
+</html>
+
+ 
+
+
