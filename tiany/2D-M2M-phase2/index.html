@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Optimization of Microwave Retrievals on 2D</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script> 
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h2> Optimization of Microwave Precipitation Retrievals with M2M on 2D Space</h2>
+ <p> Earth and Ocean Sciences</p>
+ <p> University of North Carolina Wilmington</p>
+</div>
+
+ <div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="btn-group-vertical btn-group-lg" id="top_btns">
+       <button type="button" class="btn btn-primary text-left active" value="n19">Case study with N19</button>
+      <!-- 
+       <button type="button" class="btn btn-primary text-left" value="n19_psf">Testing PSF on M2M</button>
+       <button type="button" class="btn btn-primary text-left" value="teaching">Teaching and homework</button>
+       <button type="button" class="btn btn-primary text-left" value="projects">Projects and other work</button>
+      -->
+      </div>
+    </div> <!-- col-sm-3 -->
+    <div class="col-sm-9" id="main_text">
+     Background: 
+    </div> <!-- col-sm-9 -->
+  </div> <!-- row -->
+ </div> <!-- container -->
+
+ <script> 
+   var update="2023-11-11";  //Update time, used both to show at bottom and defeat client caching. 
+
+   $.ajaxSetup ({
+    // Disable caching of AJAX responses
+     cache: false
+   });
+
+   $("#top_btns > button").click(
+      function() { 
+        var year=$(this).val();  
+        $("#main_text").load(year + ".html"); 
+        location.hash = this.id + year;
+        //deactivate other buttons
+        $("#top_btns > button").removeClass("active"); 
+        // activate this button
+        $(this).addClass("active"); 
+      }
+  ); 
+ </script>  
+
+<script>
+$( document ).ready(function() {
+   if(window.location.hash) {
+      var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+      $("#main_text").load(hash + ".html");
+      $("#top_btns > button").removeClass("active"); 
+      $("#top_btns > button").filter(function(){return this.value==hash}).addClass("active"); 
+      //alert(hash);
+  } else {
+    //load content for home button when page first loaded 
+    $("#main_text").load("n19.html");
+  }
+    //document.getElementById("update").innerHTML = update;
+});
+</script>  
+
+<!--
+<footer class="container-fluid text-center">
+  <p>Updated: <span id="update"></p>
+</footer>
+-->
+
+
+</body>
+</html>
+
+ 
+
+
