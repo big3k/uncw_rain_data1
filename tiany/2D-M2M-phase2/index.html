@@ -8,15 +8,17 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script type="text/javascript" id="MathJax-script" async
-   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-  </script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.2.0/css/dataTables.dateTime.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.4.0/css/searchBuilder.bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/datetime/1.2.0/js/dataTables.dateTime.min.js"></script>
+  <script src="https://cdn.datatables.net/searchbuilder/1.4.0/js/dataTables.searchBuilder.min.js"></script>
 
   <style>
     /* Remove the navbar's default rounded borders and increase the bottom margin */ 
@@ -72,9 +74,9 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="btn-group-vertical btn-group-lg" id="top_btns">
-       <button type="button" class="btn btn-primary text-left active" value="n19">Case study with N19</button>
-      <!-- 
-       <button type="button" class="btn btn-primary text-left" value="n19_psf">Testing PSF on M2M</button>
+       <button type="button" class="btn btn-primary text-left active" value="npp">NPP Ocean</button>
+  <!-- 
+       <button type="button" class="btn btn-primary text-left" value="n19">N19</button>
        <button type="button" class="btn btn-primary text-left" value="teaching">Teaching and homework</button>
        <button type="button" class="btn btn-primary text-left" value="projects">Projects and other work</button>
       -->
@@ -117,7 +119,7 @@ $( document ).ready(function() {
       //alert(hash);
   } else {
     //load content for home button when page first loaded 
-    $("#main_text").load("n19.html");
+    $("#main_text").load("npp.html");
   }
     //document.getElementById("update").innerHTML = update;
 });
