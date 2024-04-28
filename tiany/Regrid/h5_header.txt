@@ -1,0 +1,1724 @@
+HDF5 "2A-CLIM.NPP.ATMS.GPROF2021v1.20230731-S061957-E080126.060919.V07B.HDF5" {
+GROUP "/" {
+   ATTRIBUTE "FileHeader" {
+      DATATYPE  H5T_STRING {
+         STRSIZE 621;
+         STRPAD H5T_STR_NULLTERM;
+         CSET H5T_CSET_ASCII;
+         CTYPE H5T_C_S1;
+      }
+      DATASPACE  SCALAR
+   }
+   ATTRIBUTE "FileInfo" {
+      DATATYPE  H5T_STRING {
+         STRSIZE 231;
+         STRPAD H5T_STR_NULLTERM;
+         CSET H5T_CSET_ASCII;
+         CTYPE H5T_C_S1;
+      }
+      DATASPACE  SCALAR
+   }
+   ATTRIBUTE "GprofInfo" {
+      DATATYPE  H5T_STRING {
+         STRSIZE 273;
+         STRPAD H5T_STR_NULLTERM;
+         CSET H5T_CSET_ASCII;
+         CTYPE H5T_C_S1;
+      }
+      DATASPACE  SCALAR
+   }
+   ATTRIBUTE "InputRecord" {
+      DATATYPE  H5T_STRING {
+         STRSIZE 219;
+         STRPAD H5T_STR_NULLTERM;
+         CSET H5T_CSET_ASCII;
+         CTYPE H5T_C_S1;
+      }
+      DATASPACE  SCALAR
+   }
+   ATTRIBUTE "NavigationRecord" {
+      DATATYPE  H5T_STRING {
+         STRSIZE 439;
+         STRPAD H5T_STR_NULLTERM;
+         CSET H5T_CSET_ASCII;
+         CTYPE H5T_C_S1;
+      }
+      DATASPACE  SCALAR
+   }
+   GROUP "GprofDHeadr" {
+      DATASET "clusterProfiles" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 80, 28, 12, 5 ) / ( 80, 28, 12, 5 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 27;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "hgtTopLayer" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 28 ) / ( 28 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 3;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 3;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "speciesDescription" {
+         DATATYPE  H5T_STD_U8LE
+         DATASPACE  SIMPLE { ( 5, 21 ) / ( 5, 21 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 15;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_U8LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "temperatureDescriptions" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 12 ) / ( 12 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 2;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 2;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+   }
+   GROUP "S1" {
+      ATTRIBUTE "SwathHeader" {
+         DATATYPE  H5T_STRING {
+            STRSIZE 169;
+            STRPAD H5T_STR_NULLTERM;
+            CSET H5T_CSET_ASCII;
+            CTYPE H5T_C_S1;
+         }
+         DATASPACE  SCALAR
+      }
+      DATASET "L1CqualityFlag" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "Latitude" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "Longitude" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      GROUP "SCstatus" {
+         DATASET "FractionalGranuleNumber" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_IEEE_F64LE
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "SCaltitude" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 3;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_IEEE_F32LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 3;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "SClatitude" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_IEEE_F32LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "SClongitude" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_IEEE_F32LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "SCorientation" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I16LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+      }
+      GROUP "ScanTime" {
+         DATASET "DayOfMonth" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 4;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 5;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I8LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 5;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "DayOfYear" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 5;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I16LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 5;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "Hour" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 4;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I8LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "MilliSecond" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 3;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I16LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 3;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "Minute" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 4;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I8LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "Month" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 4;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 7;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I8LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 7;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "Second" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 4;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 2;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I8LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 2;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "SecondOfDay" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 8;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 2;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_IEEE_F64LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 2;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+         DATASET "Year" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SIMPLE { ( 2284 ) / ( H5S_UNLIMITED ) }
+            ATTRIBUTE "CodeMissingValue" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "DimensionNames" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "Units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "_FillValue" {
+               DATATYPE  H5T_STD_I16LE
+               DATASPACE  SCALAR
+            }
+            ATTRIBUTE "units" {
+               DATATYPE  H5T_STRING {
+                  STRSIZE 6;
+                  STRPAD H5T_STR_NULLTERM;
+                  CSET H5T_CSET_ASCII;
+                  CTYPE H5T_C_S1;
+               }
+               DATASPACE  SCALAR
+            }
+         }
+      }
+      DATASET "airmassLiftIndex" {
+         DATATYPE  H5T_STD_I16LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "cloudWaterPath" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "convectivePrecipitation" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "frozenPrecipitation" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "iceWaterPath" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "mostLikelyPrecipitation" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "pixelStatus" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "precip1stTertial" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "precip2ndTertial" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "precipitationYesNoFlag" {
+         DATATYPE  H5T_STD_I16LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "probabilityOfPrecip" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "profileNumber" {
+         DATATYPE  H5T_STD_I16LE
+         DATASPACE  SIMPLE { ( 2284, 96, 5 ) / ( H5S_UNLIMITED, 96, 5 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 22;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "profileScale" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96, 5 ) / ( H5S_UNLIMITED, 96, 5 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 22;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "profileTemp2mIndex" {
+         DATATYPE  H5T_STD_I16LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "qualityFlag" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "rainWaterPath" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 7;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "sunGlintAngle" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "sunLocalTime" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "surfacePrecipitation" {
+         DATATYPE  H5T_IEEE_F32LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 8;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_IEEE_F32LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "surfaceTypeIndex" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "temp2mIndex" {
+         DATATYPE  H5T_STD_I16LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 6;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 2;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I16LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 2;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+      DATASET "totalColumnWaterVaporIndex" {
+         DATATYPE  H5T_STD_I8LE
+         DATASPACE  SIMPLE { ( 2284, 96 ) / ( H5S_UNLIMITED, 96 ) }
+         ATTRIBUTE "CodeMissingValue" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 4;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "DimensionNames" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 13;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "Units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 3;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "_FillValue" {
+            DATATYPE  H5T_STD_I8LE
+            DATASPACE  SCALAR
+         }
+         ATTRIBUTE "units" {
+            DATATYPE  H5T_STRING {
+               STRSIZE 3;
+               STRPAD H5T_STR_NULLTERM;
+               CSET H5T_CSET_ASCII;
+               CTYPE H5T_C_S1;
+            }
+            DATASPACE  SCALAR
+         }
+      }
+   }
+}
+}
