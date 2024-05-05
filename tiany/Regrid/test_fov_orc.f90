@@ -146,7 +146,8 @@ program reproj
        
       ! sophisticated reprojection: split FOV 
       ! naive reprojection
-      do j=1, ny
+      !do j=1, ny
+      do j=1000, 1000  ! select a scan (i.e., ~lat)
          flon(1:NFOV)=lon(:, j)
          flat(1:NFOV)=lat(:, j)
           call FOV_ORC  ( flon, flat, ILATEXT, NCEDFRAC, NFOV, &
@@ -155,10 +156,10 @@ program reproj
               write(*, *) "FOV_ORC failed"
               stop
            end if 
-          !write(*, *) "xor=", xor, " yor=", yor, " fw=", fw, " fs=", fs, &
-          !     " fp=", fp
-       do i=1, nx
-         if (rain(i, j) .ge. 0) then 
+
+       write(*, *) "scan, w, s, lat, lon, xor, yor" 
+       !do i=1, nx
+       do i=5, 92 ! skip edges 
           fp=rain(i, j)
           fw=w(i)
           fs=s(i)
@@ -166,31 +167,11 @@ program reproj
           xyor=yor(i)
           xflon=flon(i)
           xflat=flat(i)
+          write(*, '(I3,6F10.2)') i, fw, fs, xflat, xflon, xxor, xyor
 
-          call FOV2GC  (LN, LTS, ILATEXT, xflon, xflat, fp,  &
-                             fa, xxor, xyor, fw, fs, influc, gprtemp4c, &
-                             iret )
-          if (iret .ne. 0) then
-             write(*, *) "FOV2GC failed"
-             stop
-          end if 
 
-         end if 
        end do 
      end do 
-
-     ! flip first two dimensions of gprtemp4c
-      do j=1, nr
-       do i=1, nc
-        tmp1(i, j)=gprtemp4c(j, i, 1)
-        tmp2(i, j)=gprtemp4c(j, i, 2)
-       end do 
-      end do 
-
-      open(24, file="new_"//trim(ofile), form="unformatted", access="direct", recl=nc*nr*4) 
-          write(24, rec=1) tmp1
-          write(24, rec=2) tmp2
-      close(24) 
 
     
 end program reproj 

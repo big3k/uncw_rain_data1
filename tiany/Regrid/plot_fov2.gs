@@ -1,0 +1,13 @@
+'open test.ctl '
+'set grads off'
+'set lat 55 65' 
+'set lon 50 80'
+'set gxout grfill'
+'set clevs 0 0.25 0.5 1 2 4 8 16 32'
+'d sfcrain'
+'cbarn'
+'draw title sfcrain'
+'do_draw_fov3'
+'printim naive_fov3.gif gif white x1400 y1000'
+'close 1'
+

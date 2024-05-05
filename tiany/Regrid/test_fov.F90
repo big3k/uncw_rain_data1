@@ -26,8 +26,15 @@ program testfov
         stop
       end if 
 
-      Do i=0, NFOV+1
-       write(*, *) "i=", i, " w(i)=", w(i), "(km) s(i)=", s(i), "(km)" 
+      write(*, *)"<table><thead><tr><th>Scan id</th>"
+      write(*, *)"<th>Cross-scan direction w (km)</th>"
+      write(*, *)"<th>Along-scan direction s (km)</th></tr></thead>" 
+      write(*, *)"<tbody>" 
+      !Do i=0, NFOV+1
+      Do i=1, NFOV
+       write(*, *) "<tr><td>", i, "</td><td>", w(i), "</td><td>", s(i), "</td></tr>" 
       End do
+      write(*, *)"</tbody></table>" 
+
        
 end program testfov 

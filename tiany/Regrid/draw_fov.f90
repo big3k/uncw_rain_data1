@@ -12,6 +12,9 @@ program reproj
       
       character (len=256) :: instrument
       real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
+      real, parameter :: Re=6378.0 ! Earth radius in km. 
+      real, parameter :: Pi=3.14159265
+      real :: deg_per_km  ! lat/lon degree per km
       integer, parameter :: nc=3600, nr=1800  ! lat/lon grid
       integer, parameter :: NFOV=96 ! ATMS 
       integer, parameter :: NOUTER=0 ! see getgprofg.f90
@@ -22,6 +25,9 @@ program reproj
       REAL*4    :: gprtemp4c(LTS,LN,4), w(0:NFOV+1), s(0:NFOV+1)
       REAL*4    :: flat(0:NFOV+1), flon(0:NFOV+1), xor(0:NFOV+1), yor(0:NFOV+1)
       Real*4    :: xflat, xflon, xxor, xyor, fp, fa, fw, fs
+      Real*4    :: theta  ! tilt of the FOV, in deg
+      Real*4    :: beta  ! angle of ellipse 
+      Real*4    :: dx, dy ! distance from center of ellipse, in deg
       INTEGER*1   :: influc (LN, LTS)
 
 
@@ -42,15 +48,16 @@ program reproj
       integer(hid_t)                :: lon_id, lat_id 
       integer(hid_t)                :: dataspace
 
+      deg_per_km = 360.0/(2.0*Pi*Re) 
+
       i =  iargc()
-      If (i.ne.2) Then   ! wrong cmd line args, print usage
+      If (i.ne.1) Then   ! wrong cmd line args, print usage
          write(*, *)"Usage:"
-         write(*, *)"reproj input_h5_file output_bin_file"
+         write(*, *)"draw_fov input_h5_file" 
          stop
       End If
 
      call getarg(1, filename)
-     call getarg(2, ofile)
       
      w=0.0
      s=0.0
@@ -62,7 +69,7 @@ program reproj
         stop
      end if 
      ! == verify numbers in "parm_res.h" 
-     write(*, *) "LN=", LN, " LTS=", LTS, " LT10=", LT10, " NNSX=", NNSX, " NNSY=", NNSY
+     !write(*, *) "LN=", LN, " LTS=", LTS, " LT10=", LT10, " NNSX=", NNSX, " NNSY=", NNSY
       !======= open the interface 
       call h5open_f(status) 
       if (status .ne. 0) write(*, *) "Failed to open HDF interface" 
@@ -90,7 +97,7 @@ program reproj
       nx = dims(1)   ! NPOV, 96 for ATMS
       ny = dims(2) 
 
-      write(*, *)"nx = ", nx, " ny=", ny
+      !write(*, *)"nx = ", nx, " ny=", ny
       allocate(rain(nx, ny)) 
       allocate(sti(nx, ny)) 
       allocate(lat(nx, ny)) 
@@ -138,15 +145,18 @@ program reproj
         end do 
       end do 
      
-      write(*, *) "Saving binary format ...", nc, nr
-      open(22, file=ofile, form="unformatted", access="direct", recl=nc*nr*4) 
-          write(22, rec=1) orain 
-          write(22, rec=2) osti 
-      close(22) 
+      !write(*, *) "Saving binary format ...", nc, nr
+      !open(22, file=ofile, form="unformatted", access="direct", recl=nc*nr*4) 
+      !    write(22, rec=1) orain 
+      !    write(22, rec=2) osti 
+      !close(22) 
        
       ! sophisticated reprojection: split FOV 
       ! naive reprojection
-      do j=1, ny
+      !do j=1, ny
+      !do j=1500, 1500  ! select a scan (i.e., ~lat)  > do_draw_fov.gs
+      !do j=500, 500  ! select a scan (i.e., ~lat)  > do_draw_fov2.gs
+      do j=1000, 1000  ! select a scan (i.e., ~lat)  > do_draw_fov3.gs
          flon(1:NFOV)=lon(:, j)
          flat(1:NFOV)=lat(:, j)
           call FOV_ORC  ( flon, flat, ILATEXT, NCEDFRAC, NFOV, &
@@ -155,42 +165,36 @@ program reproj
               write(*, *) "FOV_ORC failed"
               stop
            end if 
-          !write(*, *) "xor=", xor, " yor=", yor, " fw=", fw, " fs=", fs, &
-          !     " fp=", fp
-       do i=1, nx
-         if (rain(i, j) .ge. 0) then 
+
+       !write(*, *) "scan, w, s, lat, lon, xor, yor" 
+       !do i=1, nx
+       do i=5, 92 ! compute each fov,  skip edges 
           fp=rain(i, j)
-          fw=w(i)
-          fs=s(i)
+          fw=w(i) ! FOV width (cross-scan) in km, short axis 
+          fs=s(i) ! FOV length (along-scan) in km, long-axis 
           xxor=xor(i)
           xyor=yor(i)
           xflon=flon(i)
           xflat=flat(i)
 
-          call FOV2GC  (LN, LTS, ILATEXT, xflon, xflat, fp,  &
-                             fa, xxor, xyor, fw, fs, influc, gprtemp4c, &
-                             iret )
-          if (iret .ne. 0) then
-             write(*, *) "FOV2GC failed"
-             stop
-          end if 
+          theta=atand(xxor/xyor)  ! see fov_orc.f90
+                                  !        yscan   = fy0 (i+1) - fy0 (i-1)
+                                  !        xor (i) =  yscan
+                                  !        yor (i) = -xscan
 
-         end if 
-       end do 
-     end do 
-
-     ! flip first two dimensions of gprtemp4c
-      do j=1, nr
-       do i=1, nc
-        tmp1(i, j)=gprtemp4c(j, i, 1)
-        tmp2(i, j)=gprtemp4c(j, i, 2)
-       end do 
-      end do 
-
-      open(24, file="new_"//trim(ofile), form="unformatted", access="direct", recl=nc*nr*4) 
-          write(24, rec=1) tmp1
-          write(24, rec=2) tmp2
-      close(24) 
+          !write(*, '(I3,7F10.2)') i, fw, fs, xflat, xflon, xxor, xyor, theta
+          ! create points on the edge of the fov
+          !
+          write(*, '(A)', advance="no") "'plot_poly " 
+          do beta=0, 360, 10
+            dx=0.5*fs*cosd(real(beta)-theta)*deg_per_km/cosd(xflat)
+            dy=0.5*fw*sind(real(beta)-theta)*deg_per_km
+            write(*, '(2F10.4)', advance="no") xflon+dx, xflat+dy
+         end do 
+         write(*, *) "'" 
+          
+       end do  ! along scan 
+     end do  ! across scan
 
     
 end program reproj 
