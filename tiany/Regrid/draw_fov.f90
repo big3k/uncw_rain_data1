@@ -1,4 +1,14 @@
-program reproj
+program draw_fov
+
+! Generate rainrate map over 0.1-deg lat/lon grid with naive interpolation, and 
+! a .gs file for GrADS to plot FOV on top of the grid. 
+
+! usage: 
+!  draw_fov sensor_name scan_file.HDF5 
+!
+!  It will generate five output files, 
+!   <sensor_name>.2gd4r
+!   <sensor_name>_<1-4>.gs  -- fov plot file at each of 4 predefined latitudes 
 
 !5/4/2024  fix the usage of fov_orc: input flon etc. shall be arrays
 ! Read GPROF retrievals and reproject to 0.1-deg lat/lon grid 
@@ -10,26 +20,33 @@ program reproj
       INCLUDE "parm_res.h"
       ! for reprojection
       
-      character (len=256) :: instrument
+      character (len=256) :: instrument, plot_file
       real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
       real, parameter :: Re=6378.0 ! Earth radius in km. 
       real, parameter :: Pi=3.14159265
       real :: deg_per_km  ! lat/lon degree per km
       integer, parameter :: nc=3600, nr=1800  ! lat/lon grid
-      integer, parameter :: NFOV=96 ! ATMS 
+      integer :: NFOV ! get from get_NFOV() 
+      real :: clat1, clat2  ! lat of center FOV 
       integer, parameter :: NOUTER=0 ! see getgprofg.f90
       integer :: ic, ir, iargc, iret
       real (kind=4), allocatable :: rain(:, :), sti(:, :), lon(:, :), lat(:, :) 
       real (kind=4) :: orain(nc, nr), osti(nc, nr) 
       real (kind=4) :: tmp1(nc, nr), tmp2(nc, nr) 
-      REAL*4    :: gprtemp4c(LTS,LN,4), w(0:NFOV+1), s(0:NFOV+1)
-      REAL*4    :: flat(0:NFOV+1), flon(0:NFOV+1), xor(0:NFOV+1), yor(0:NFOV+1)
+      ! LN=nc, LTS=nr
+      REAL*4    :: gprtemp4c(LTS,LN,4)
+      real*4, allocatable ::  w(:), s(:)   ! 0:NFOV+1
+      REAL*4, allocatable :: flat(:), flon(:), xor(:), yor(:) ! 0:NFOV+1
+      INTEGER*4      ::  scans_per_orbit
+      real*4      :: rate_thresh
+
       Real*4    :: xflat, xflon, xxor, xyor, fp, fa, fw, fs
       Real*4    :: theta  ! tilt of the FOV, in deg
       Real*4    :: beta  ! angle of ellipse 
       Real*4    :: dx, dy ! distance from center of ellipse, in deg
       INTEGER*1   :: influc (LN, LTS)
-
+      ! generate fov plots at three latitudes
+      real*4 :: plot_lat(4) = (/0.0, 25.0, 50.0, 75.0/)
 
       ! declarations
       integer (kind=4) :: fid,status,astat
@@ -51,17 +68,28 @@ program reproj
       deg_per_km = 360.0/(2.0*Pi*Re) 
 
       i =  iargc()
-      If (i.ne.1) Then   ! wrong cmd line args, print usage
+      If (i.ne.2) Then   ! wrong cmd line args, print usage
          write(*, *)"Usage:"
-         write(*, *)"draw_fov input_h5_file" 
+         write(*, *)"draw_fov instrument input_h5_file" 
          stop
       End If
 
-     call getarg(1, filename)
+     call getarg(1, instrument)
+     call getarg(2, filename)
+
+     call get_NFOV(instrument, NFOV, scans_per_orbit, &
+                            rate_thresh)
       
+     allocate(w(0:NFOV+1))
+     allocate(s(0:NFOV+1))
+     allocate(flat(0:NFOV+1))
+     allocate(flon(0:NFOV+1))
+     allocate(xor(0:NFOV+1))
+     allocate(yor(0:NFOV+1))
+
      w=0.0
      s=0.0
-     instrument = "ATMS"
+
      CALL FOV_DIM  ( NFOV, instrument, w, s, iret )
 
      if (iret .ne. 0) then
@@ -145,57 +173,75 @@ program reproj
         end do 
       end do 
      
+      ofile=trim(instrument)//".2gd4r" 
       !write(*, *) "Saving binary format ...", nc, nr
-      !open(22, file=ofile, form="unformatted", access="direct", recl=nc*nr*4) 
-      !    write(22, rec=1) orain 
-      !    write(22, rec=2) osti 
-      !close(22) 
+      open(22, file=ofile, form="unformatted", access="direct", recl=nc*nr*4) 
+          write(22, rec=1) orain 
+          write(22, rec=2) osti 
+      close(22) 
        
-      ! sophisticated reprojection: split FOV 
+      ! same FOV patterns at three latitudes 
       ! naive reprojection
       !do j=1, ny
-      !do j=1500, 1500  ! select a scan (i.e., ~lat)  > do_draw_fov.gs
-      !do j=500, 500  ! select a scan (i.e., ~lat)  > do_draw_fov2.gs
-      do j=1000, 1000  ! select a scan (i.e., ~lat)  > do_draw_fov3.gs
+      do j=2, ny-1
          flon(1:NFOV)=lon(:, j)
          flat(1:NFOV)=lat(:, j)
-          call FOV_ORC  ( flon, flat, ILATEXT, NCEDFRAC, NFOV, &
+          clat1=lat(nint(0.5*NFOV), j-1)  ! center lat of last scan
+          clat2=flat(nint(0.5*NFOV))  ! center lat of the scan
+          !................................
+          do ic=1, 4  ! ............
+           !---- plot only at e latitudes ----------------------
+           if ( clat1 .gt. -90.0 .and. clat1 .lt. 90.0 .and. &
+                clat2 .gt. -90.0 .and. clat2 .lt. 90.0 .and. &
+                (plot_lat(ic) - clat1)*( plot_lat(ic)- clat2) .lt. 0.0 ) then
+             plot_file=trim(instrument)//"_"//trim(char(ic+ichar("0")))//".gs"
+             write(*, *) "ic=", ic,  " clat1=", clat1, " clat2=", clat2
+             open(24, file=plot_file, form="formatted") 
+
+                call FOV_ORC  ( flon, flat, ILATEXT, NCEDFRAC, NFOV, &
                               NOUTER, xor, yor, iret ) 
-           if (iret .ne. 0) then
-              write(*, *) "FOV_ORC failed"
-              stop
-           end if 
+                 if (iret .ne. 0) then
+                   write(*, *) "FOV_ORC failed"
+                   stop
+                 end if 
 
-       !write(*, *) "scan, w, s, lat, lon, xor, yor" 
-       !do i=1, nx
-       do i=5, 92 ! compute each fov,  skip edges 
-          fp=rain(i, j)
-          fw=w(i) ! FOV width (cross-scan) in km, short axis 
-          fs=s(i) ! FOV length (along-scan) in km, long-axis 
-          xxor=xor(i)
-          xyor=yor(i)
-          xflon=flon(i)
-          xflat=flat(i)
+                !write(*, *) "scan, w, s, lat, lon, xor, yor" 
+                !do i=1, nx
+                do i=1, NFOV ! compute each fov,  skip edges 
+                   fp=rain(i, j)
+                   fw=w(i) ! FOV width (cross-scan) in km, short axis 
+                   fs=s(i) ! FOV length (along-scan) in km, long-axis 
+                   xxor=xor(i)
+                   xyor=yor(i)
+                   xflon=flon(i)
+                   xflat=flat(i)
 
-          theta=atand(xxor/xyor)  ! see fov_orc.f90
+                   theta=atand(xxor/xyor)  ! see fov_orc.f90
                                   !        yscan   = fy0 (i+1) - fy0 (i-1)
                                   !        xor (i) =  yscan
                                   !        yor (i) = -xscan
 
-          !write(*, '(I3,7F10.2)') i, fw, fs, xflat, xflon, xxor, xyor, theta
-          ! create points on the edge of the fov
-          !
-          write(*, '(A)', advance="no") "'plot_poly " 
-          do beta=0, 360, 10
-            dx=0.5*fs*cosd(real(beta)-theta)*deg_per_km/cosd(xflat)
-            dy=0.5*fw*sind(real(beta)-theta)*deg_per_km
-            write(*, '(2F10.4)', advance="no") xflon+dx, xflat+dy
-         end do 
-         write(*, *) "'" 
+                   !write(*, '(I3,7F10.2)') i, fw, fs, xflat, xflon, xxor, xyor, theta
+                   ! create points on the edge of the fov
+                   !
+                   if ( xflat .gt. -90.0 .and. xflat .lt. 90.0 ) then 
+                   write(24, '(A)', advance="no") "'plot_poly " 
+                     do beta=0, 360, 10
+                       dx=0.5*fs*cosd(real(beta)-theta)*deg_per_km/cosd(xflat)
+                       dy=0.5*fw*sind(real(beta)-theta)*deg_per_km
+                       write(24, '(2F10.4)', advance="no") xflon+dx, xflat+dy
+                     end do 
+                   write(24, *) "'" 
+                   end if 
           
-       end do  ! along scan 
+                end do  ! along scan 
+                close(24)
+           end if 
+           !---- end plot only at e latitudes ----------------------
+          end do 
+          !................................
      end do  ! across scan
 
     
-end program reproj 
+end program draw_fov 
 

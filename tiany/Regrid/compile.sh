@@ -2,7 +2,7 @@
 
 #h5fc -cpp -O2 -fdec-math -fdec-structure -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o reproj reproj.F90 fov_dim.f90 fov_orc.f90 fov2gc.f90
 
-h5fc -cpp -O2 -fdec-math -fdec-structure -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o draw_fov draw_fov.f90 fov_dim.f90 fov_orc.f90 
+h5fc -cpp -O2 -fdec-math -fdec-structure -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o draw_fov draw_fov.f90 get_NFOV.f90 fov_dim.f90 fov_orc.f90 
 
 #h5fc -cpp -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o reproj reproj.F90 fov_dim.f90 fov_orc.f90 fov2gc.f90
 

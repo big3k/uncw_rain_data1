@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Regridding GPROF Retrievals to 0.1-degree</title>
+  <title>Optimization of Microwave Retrievals on 2D</title>
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-store" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.2.0/css/dataTables.dateTime.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.4.0/css/searchBuilder.bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/datetime/1.2.0/js/dataTables.dateTime.min.js"></script>
+  <script src="https://cdn.datatables.net/searchbuilder/1.4.0/js/dataTables.searchBuilder.min.js"></script>
 
   <style>
     /* Remove the navbar's default rounded borders and increase the bottom margin */ 
@@ -57,142 +65,81 @@
 <body>
 
 <div class="jumbotron text-center">
-  <h2> Regridding GRPOF V7 to 0.1-degree</h2>
+  <h2> Regridding FOV to lat/lon grids</h2>
+ <p> Earth and Ocean Sciences</p>
+ <p> University of North Carolina Wilmington</p>
 </div>
 
  <div class="container">
   <div class="row">
-    <h3> 1: Overview of scan geometry -- ATMS as example</a> </h3><br> 
-   <img src="a-Advanced-Technology-Microwave-Sounder-Field-Of-View-ATMS-FOV-footprints-with-a-52.png" width="1200">
-   <p> Image source: Lin, Lin & Zou, X.. (2020). Diurnal Variation in Cloud Liquid Water Path Derived from Five Cross-Track Microwave Radiometers Onboard Polar-Orbiting Satellites. Remote Sensing. 12. 2177. 10.3390/rs12142177. </p>
-
-    <br><br> 
-
- <table><thead><tr><th>Scan id</th>
- <th>Cross-scan direction w (km)</th>
- <th>Along-scan direction s (km)</th></tr></thead>
- <tbody>
- <tr><td>           1 </td><td>   30.2961082     </td><td>   69.0845261     </td></tr>
- <tr><td>           2 </td><td>   29.1569748     </td><td>   62.6985741     </td></tr>
- <tr><td>           3 </td><td>   28.1348820     </td><td>   57.3764534     </td></tr>
- <tr><td>           4 </td><td>   27.2112331     </td><td>   52.8823128     </td></tr>
- <tr><td>           5 </td><td>   26.3715553     </td><td>   49.0320816     </td></tr>
- <tr><td>           6 </td><td>   25.6044292     </td><td>   45.7006073     </td></tr>
- <tr><td>           7 </td><td>   24.9005699     </td><td>   42.7954369     </td></tr>
- <tr><td>           8 </td><td>   24.2523594     </td><td>   40.2389336     </td></tr>
- <tr><td>           9 </td><td>   23.6535454     </td><td>   37.9734154     </td></tr>
- <tr><td>          10 </td><td>   23.0987949     </td><td>   35.9598579     </td></tr>
- <tr><td>          11 </td><td>   22.5836258     </td><td>   34.1532936     </td></tr>
- <tr><td>          12 </td><td>   22.1042385     </td><td>   32.5299759     </td></tr>
- <tr><td>          13 </td><td>   21.6573029     </td><td>   31.0648785     </td></tr>
- <tr><td>          14 </td><td>   21.2399578     </td><td>   29.7363605     </td></tr>
- <tr><td>          15 </td><td>   20.8497047     </td><td>   28.5295849     </td></tr>
- <tr><td>          16 </td><td>   20.4843674     </td><td>   27.4279995     </td></tr>
- <tr><td>          17 </td><td>   20.1420383     </td><td>   26.4210129     </td></tr>
- <tr><td>          18 </td><td>   19.8209724     </td><td>   25.5009747     </td></tr>
- <tr><td>          19 </td><td>   19.5196571     </td><td>   24.6538982     </td></tr>
- <tr><td>          20 </td><td>   19.2367554     </td><td>   23.8765984     </td></tr>
- <tr><td>          21 </td><td>   18.9710655     </td><td>   23.1588917     </td></tr>
- <tr><td>          22 </td><td>   18.7214832     </td><td>   22.5003605     </td></tr>
- <tr><td>          23 </td><td>   18.4870338     </td><td>   21.8893356     </td></tr>
- <tr><td>          24 </td><td>   18.2668591     </td><td>   21.3270950     </td></tr>
- <tr><td>          25 </td><td>   18.0601387     </td><td>   20.8064175     </td></tr>
- <tr><td>          26 </td><td>   17.8661613     </td><td>   20.3256149     </td></tr>
- <tr><td>          27 </td><td>   17.6842823     </td><td>   19.8804436     </td></tr>
- <tr><td>          28 </td><td>   17.5139065     </td><td>   19.4694195     </td></tr>
- <tr><td>          29 </td><td>   17.3544941     </td><td>   19.0891457     </td></tr>
- <tr><td>          30 </td><td>   17.2055550     </td><td>   18.7385654     </td></tr>
- <tr><td>          31 </td><td>   17.0666447     </td><td>   18.4144955     </td></tr>
- <tr><td>          32 </td><td>   16.9373608     </td><td>   18.1165123     </td></tr>
- <tr><td>          33 </td><td>   16.8173351     </td><td>   17.8420715     </td></tr>
- <tr><td>          34 </td><td>   16.7062550     </td><td>   17.5902176     </td></tr>
- <tr><td>          35 </td><td>   16.6037903     </td><td>   17.3605270     </td></tr>
- <tr><td>          36 </td><td>   16.5096874     </td><td>   17.1501350     </td></tr>
- <tr><td>          37 </td><td>   16.4237041     </td><td>   16.9600010     </td></tr>
- <tr><td>          38 </td><td>   16.3456020     </td><td>   16.7881031     </td></tr>
- <tr><td>          39 </td><td>   16.2751904     </td><td>   16.6342335     </td></tr>
- <tr><td>          40 </td><td>   16.2122936     </td><td>   16.4972248     </td></tr>
- <tr><td>          41 </td><td>   16.1567822     </td><td>   16.3767071     </td></tr>
- <tr><td>          42 </td><td>   16.1084938     </td><td>   16.2728367     </td></tr>
- <tr><td>          43 </td><td>   16.0673008     </td><td>   16.1842365     </td></tr>
- <tr><td>          44 </td><td>   16.0331135     </td><td>   16.1110134     </td></tr>
- <tr><td>          45 </td><td>   16.0058556     </td><td>   16.0527172     </td></tr>
- <tr><td>          46 </td><td>   15.9854841     </td><td>   16.0091057     </td></tr>
- <tr><td>          47 </td><td>   15.9719296     </td><td>   15.9803276     </td></tr>
- <tr><td>          48 </td><td>   15.9651585     </td><td>   15.9658527     </td></tr>
- <tr><td>          49 </td><td>   15.9651585     </td><td>   15.9658527     </td></tr>
- <tr><td>          50 </td><td>   15.9719296     </td><td>   15.9803276     </td></tr>
- <tr><td>          51 </td><td>   15.9854841     </td><td>   16.0091057     </td></tr>
- <tr><td>          52 </td><td>   16.0058556     </td><td>   16.0527172     </td></tr>
- <tr><td>          53 </td><td>   16.0331135     </td><td>   16.1110134     </td></tr>
- <tr><td>          54 </td><td>   16.0673008     </td><td>   16.1842365     </td></tr>
- <tr><td>          55 </td><td>   16.1084938     </td><td>   16.2728367     </td></tr>
- <tr><td>          56 </td><td>   16.1567822     </td><td>   16.3767071     </td></tr>
- <tr><td>          57 </td><td>   16.2122936     </td><td>   16.4972248     </td></tr>
- <tr><td>          58 </td><td>   16.2751904     </td><td>   16.6342335     </td></tr>
- <tr><td>          59 </td><td>   16.3456020     </td><td>   16.7881031     </td></tr>
- <tr><td>          60 </td><td>   16.4237041     </td><td>   16.9600010     </td></tr>
- <tr><td>          61 </td><td>   16.5096874     </td><td>   17.1501350     </td></tr>
- <tr><td>          62 </td><td>   16.6037903     </td><td>   17.3605270     </td></tr>
- <tr><td>          63 </td><td>   16.7062550     </td><td>   17.5902176     </td></tr>
- <tr><td>          64 </td><td>   16.8173351     </td><td>   17.8420715     </td></tr>
- <tr><td>          65 </td><td>   16.9373608     </td><td>   18.1165123     </td></tr>
- <tr><td>          66 </td><td>   17.0666447     </td><td>   18.4144955     </td></tr>
- <tr><td>          67 </td><td>   17.2055550     </td><td>   18.7385654     </td></tr>
- <tr><td>          68 </td><td>   17.3544941     </td><td>   19.0891457     </td></tr>
- <tr><td>          69 </td><td>   17.5139065     </td><td>   19.4694195     </td></tr>
- <tr><td>          70 </td><td>   17.6842823     </td><td>   19.8804436     </td></tr>
- <tr><td>          71 </td><td>   17.8661613     </td><td>   20.3256149     </td></tr>
- <tr><td>          72 </td><td>   18.0601387     </td><td>   20.8064175     </td></tr>
- <tr><td>          73 </td><td>   18.2668591     </td><td>   21.3270950     </td></tr>
- <tr><td>          74 </td><td>   18.4870338     </td><td>   21.8893356     </td></tr>
- <tr><td>          75 </td><td>   18.7214832     </td><td>   22.5003605     </td></tr>
- <tr><td>          76 </td><td>   18.9710655     </td><td>   23.1588917     </td></tr>
- <tr><td>          77 </td><td>   19.2367554     </td><td>   23.8765984     </td></tr>
- <tr><td>          78 </td><td>   19.5196571     </td><td>   24.6538982     </td></tr>
- <tr><td>          79 </td><td>   19.8209724     </td><td>   25.5009747     </td></tr>
- <tr><td>          80 </td><td>   20.1420383     </td><td>   26.4210129     </td></tr>
- <tr><td>          81 </td><td>   20.4843674     </td><td>   27.4279995     </td></tr>
- <tr><td>          82 </td><td>   20.8497047     </td><td>   28.5295849     </td></tr>
- <tr><td>          83 </td><td>   21.2399578     </td><td>   29.7363605     </td></tr>
- <tr><td>          84 </td><td>   21.6573029     </td><td>   31.0648785     </td></tr>
- <tr><td>          85 </td><td>   22.1042385     </td><td>   32.5299759     </td></tr>
- <tr><td>          86 </td><td>   22.5836258     </td><td>   34.1532936     </td></tr>
- <tr><td>          87 </td><td>   23.0987949     </td><td>   35.9598579     </td></tr>
- <tr><td>          88 </td><td>   23.6535454     </td><td>   37.9734154     </td></tr>
- <tr><td>          89 </td><td>   24.2523594     </td><td>   40.2389336     </td></tr>
- <tr><td>          90 </td><td>   24.9005699     </td><td>   42.7954369     </td></tr>
- <tr><td>          91 </td><td>   25.6044292     </td><td>   45.7006073     </td></tr>
- <tr><td>          92 </td><td>   26.3715553     </td><td>   49.0320816     </td></tr>
- <tr><td>          93 </td><td>   27.2112331     </td><td>   52.8823128     </td></tr>
- <tr><td>          94 </td><td>   28.1348820     </td><td>   57.3764534     </td></tr>
- <tr><td>          95 </td><td>   29.1569748     </td><td>   62.6985741     </td></tr>
- <tr><td>          96 </td><td>   30.2961082     </td><td>   69.0845261     </td></tr>
- </tbody></table>
-<br><br> 
-
-
-    <h3> 2: Naive method: center of FOV to lat/lon grid</a> </h3><br> 
-   <img src="naive.gif"> 
-
-    <br><br> 
-    <h3> 3: FOV projection method</a> </h3><br> 
-   <img src="fov_projected.gif"> <br> 
-   <img src="fov_count.gif">  <br> 
-
-
-   <h3> 4. FOV sizes at various lattitudes <br> </h3> <br> 
-   <img src="naive_fov.gif"> 
-   <img src="naive_fov2.gif"> 
-   <img src="naive_fov3.gif"> 
-
-
-   <br><br><br><br>
-   <br><br><br><br>
-   <br><br><br><br>
-
+    <div class="col-sm-3">
+      <div class="btn-group-vertical btn-group-lg" id="top_btns">
+       <button type="button" class="btn btn-primary text-left active" value="ATMS">ATMS</button>
+       <button type="button" class="btn btn-primary text-left" value="MHS">MHS</button>
+       <button type="button" class="btn btn-primary text-left" value="SSMIS">SSMIS</button>
+       <button type="button" class="btn btn-primary text-left" value="AMSR2">AMSR2</button>
+       <button type="button" class="btn btn-primary text-left" value="GMI">GMI</button>
+  <!-- 
+       <button type="button" class="btn btn-primary text-left" value="n18">N18 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n19">N19 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n20">N20 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="f16">F16 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="metopa">Metop-A Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="metopb">Metop-B Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n19">N19</button>
+       <button type="button" class="btn btn-primary text-left" value="teaching">Teaching and homework</button>
+       <button type="button" class="btn btn-primary text-left" value="projects">Projects and other work</button>
+      -->
+      </div>
+    </div> <!-- col-sm-3 -->
+    <div class="col-sm-9" id="main_text">
+     Background: 
+    </div> <!-- col-sm-9 -->
   </div> <!-- row -->
  </div> <!-- container -->
+
+ <script> 
+   var update="2023-11-11";  //Update time, used both to show at bottom and defeat client caching. 
+
+   $.ajaxSetup ({
+    // Disable caching of AJAX responses
+     cache: false
+   });
+
+   $("#top_btns > button").click(
+      function() { 
+        var year=$(this).val();  
+        $("#main_text").load(year + ".html"); 
+        location.hash = this.id + year;
+        //deactivate other buttons
+        $("#top_btns > button").removeClass("active"); 
+        // activate this button
+        $(this).addClass("active"); 
+      }
+  ); 
+ </script>  
+
+<script>
+$( document ).ready(function() {
+   if(window.location.hash) {
+      var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+      $("#main_text").load(hash + ".html");
+      $("#top_btns > button").removeClass("active"); 
+      $("#top_btns > button").filter(function(){return this.value==hash}).addClass("active"); 
+      //alert(hash);
+  } else {
+    //load content for home button when page first loaded 
+    $("#main_text").load("ATMS.html");
+  }
+    //document.getElementById("update").innerHTML = update;
+});
+</script>  
+
+<!--
+<footer class="container-fluid text-center">
+  <p>Updated: <span id="update"></p>
+</footer>
+-->
 
 
 </body>
