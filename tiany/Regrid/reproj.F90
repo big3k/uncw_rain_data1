@@ -17,7 +17,7 @@ program reproj
       integer, parameter :: NOUTER=0 ! see getgprofg.f90
       integer :: ic, ir, iargc, iret
       real (kind=4), allocatable :: rain(:, :), sti(:, :), lon(:, :), lat(:, :) 
-      real (kind=4) :: orain(nc, nr), osti(nc, nr) 
+      real (kind=4) :: orain(nc, nr), osti(nc, nr), grid_time(nc, nr)  
       real (kind=4) :: tmp1(nc, nr), tmp2(nc, nr) 
       REAL*4    :: gprtemp4c(LTS,LN,4), w(0:NFOV+1), s(0:NFOV+1)
       REAL*4    :: flat(0:NFOV+1), flon(0:NFOV+1), xor(0:NFOV+1), yor(0:NFOV+1)
@@ -43,18 +43,19 @@ program reproj
       integer(hid_t)                :: dataspace
 
       i =  iargc()
-      If (i.ne.2) Then   ! wrong cmd line args, print usage
+      If (i.ne.3) Then   ! wrong cmd line args, print usage
          write(*, *)"Usage:"
-         write(*, *)"reproj input_h5_file output_bin_file"
+         write(*, *)"reproj instrument(ATMS|MHS|AMSR2...) input_h5_file output_hdf5_file"
          stop
       End If
 
-     call getarg(1, filename)
-     call getarg(2, ofile)
+     call getarg(1, instrument)
+     call getarg(2, filename)
+     call getarg(3, ofile)
       
      w=0.0
      s=0.0
-     instrument = "ATMS"
+     !instrument = "ATMS"
      CALL FOV_DIM  ( NFOV, instrument, w, s, iret )
 
      if (iret .ne. 0) then
@@ -139,7 +140,7 @@ program reproj
       end do 
      
       write(*, *) "Saving binary format ...", nc, nr
-      open(22, file=ofile, form="unformatted", access="direct", recl=nc*nr*4) 
+      open(22, file="test.2gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
           write(22, rec=1) orain 
           write(22, rec=2) osti 
       close(22) 
@@ -187,11 +188,15 @@ program reproj
        end do 
       end do 
 
-      open(24, file="new_"//trim(ofile), form="unformatted", access="direct", recl=nc*nr*4) 
+      open(24, file="new_test.2gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
           write(24, rec=1) tmp1
           write(24, rec=2) tmp2
       close(24) 
-
+      ! save to HDF5 
+      orain=tmp1 
+      grid_time(:, :)=-9999.0
+      !osti needs to be reprojected with FOV2GC-like function
+      call save_data_to_hdf5(ofile, orain, osti, grid_time)
     
 end program reproj 
 
