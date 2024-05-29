@@ -2,6 +2,8 @@
 
      subroutine save_data_to_hdf5(filename, rain, sti, grid_time) 
 
+!5/29/2024: Added data compression 
+
 !5/26/2024  Save 0.1-degree data to HDF5. 
 ! Dimensions: nx, ny
 ! Variables
@@ -24,6 +26,8 @@
       ! declarations
       integer (kind=4) :: status, error, rank
       integer (hsize_t) :: dims(2)
+      integer (hsize_t) :: chunk_dims(2)  ! sizes of chunked data, in number of data elements
+      
 
       !======= choose the file and field to read
       character (len=256) :: filename
@@ -36,10 +40,12 @@
       integer(hid_t)                :: file_id, group_id, rain_id, sti_id, time_id
       integer(hid_t)                :: lon_id, lat_id 
       integer(hid_t)                :: dataspace_id
+      integer(hid_t)                :: plist_id  ! Property list 
 
       rank=2
       dims(1)=nx
       dims(2)=ny
+      chunk_dims(1:2)=1800
      
       ! fill lat/lon values 
        Do iy=1, ny
@@ -59,6 +65,13 @@
       ! create datasapce 
       call h5screate_simple_f(rank, dims, dataspace_id, status) 
       if (status .ne. 0) write(*, *) "Failed to create HDF dataspace" 
+      ! create property and set chunk  
+      call h5pcreate_f(H5P_DATASET_CREATE_F, plist_id, status) 
+      call h5pset_chunk_f(plist_id, 2, chunk_dims, status)
+      if (status .ne. 0) write(*, *) "Failed to set chunk sizes" 
+
+      !Set ZLIB / DEFLATE Compression using compression level 6.
+      call h5pset_deflate_f(plist_id, 6, error)
 
       ! create a group
       call  h5gcreate_f(file_id, group_name, group_id, status)
@@ -67,7 +80,7 @@
      ! === dataset save vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
       ! create dataset rain
       call  h5dcreate_f(file_id, rain_name, H5T_NATIVE_REAL, dataspace_id, &
-                       rain_id, error)
+                       rain_id, status, dcpl_id=plist_id)
 
          call h5dwrite_f(rain_id, H5T_NATIVE_REAL, rain, dims, status) 
          if (status .ne. 0) write(*, *) "Failed to write rain "
@@ -76,7 +89,7 @@
 
       ! create dataset sti 
       call  h5dcreate_f(file_id, sti_name, H5T_NATIVE_REAL, dataspace_id, &
-                       sti_id, error)
+                       sti_id, status, dcpl_id=plist_id)
 
          call h5dwrite_f(sti_id, H5T_NATIVE_REAL, sti, dims, status)
          if (status .ne. 0) write(*, *) "Failed to write rain "
@@ -85,7 +98,7 @@
 
      ! create dataset grid_time 
       call  h5dcreate_f(file_id, time_name, H5T_NATIVE_REAL, dataspace_id, &
-                       time_id, status)
+                       time_id, status, dcpl_id=plist_id)
 
          call h5dwrite_f(time_id, H5T_NATIVE_REAL, grid_time, dims, status)
          if (status .ne. 0) write(*, *) "Failed to write grid_time "
@@ -94,7 +107,7 @@
  
      ! lat/lon data save 
       call  h5dcreate_f(file_id, lon_name, H5T_NATIVE_REAL, dataspace_id, &
-                       lon_id, status)
+                       lon_id, status, dcpl_id=plist_id)
       if (status .ne. 0) write(*, *) "Failed to create ", lon_name
 
          call h5dwrite_f(lon_id, H5T_NATIVE_REAL, lon, dims, status)
@@ -103,7 +116,7 @@
       call h5dclose_f(lon_id, status)
 
       call  h5dcreate_f(file_id, lat_name, H5T_NATIVE_REAL, dataspace_id, &
-                       lat_id, status)
+                       lat_id, status, dcpl_id=plist_id)
       if (status .ne. 0) write(*, *) "Failed to create ", lat_name
 
          call h5dwrite_f(lat_id, H5T_NATIVE_REAL, lat, dims, status)
@@ -117,6 +130,8 @@
 
      ! close datasapce 
      call h5sclose_f(dataspace_id, status) 
+     ! close property
+     call h5pclose_f(plist_id, status)
      ! close file 
      call h5fclose_f(file_id, status) 
      ! close hdf5 handle 
