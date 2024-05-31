@@ -1,6 +1,8 @@
 
+   subroutine save_data_to_hdf5(filename, grid_rain, grid_sti, & 
+                             grid_year, grid_month, grid_day, &
+                             grid_hour, grid_minute, grid_second)
 
-     subroutine save_data_to_hdf5(filename, rain, sti, grid_time) 
 
 !5/29/2024: Added data compression 
 
@@ -20,7 +22,9 @@
       real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
       integer, parameter :: nx=3600, ny=1800  ! lat/lon grid
       integer :: ix, iy 
-      real (kind=4) :: rain(nx, ny), sti(nx, ny), grid_time(nx, ny)
+      real (kind=4) :: grid_rain(nx, ny), grid_sti(nx, ny)
+      real (kind=4) :: grid_year(nx, ny), grid_month(nx, ny), grid_day(nx, ny)
+      real (kind=4) :: grid_hour(nx, ny), grid_minute(nx, ny), grid_second(nx, ny)
       real (kind=4) :: lon(nx, ny), lat(nx, ny) 
 
       ! declarations
@@ -34,10 +38,11 @@
       character*100,   parameter    :: group_name = "/S1" 
       character*100,   parameter    :: rain_name = "/S1/grid_surfacePrecipitation"
       character*100,   parameter    :: sti_name = "/S1/grid_surfaceTypeIndex"
-      character*100,   parameter    :: time_name = "/S1/grid_time"
       character*100,   parameter    :: lon_name = "/S1/grid_Longitude"
       character*100,   parameter    :: lat_name = "/S1/grid_Latitude"
-      integer(hid_t)                :: file_id, group_id, rain_id, sti_id, time_id
+      integer(hid_t)                :: file_id, group_id, rain_id, sti_id
+      integer(hid_t)                :: year_id, month_id, day_id
+      integer(hid_t)                :: hour_id, minute_id, second_id
       integer(hid_t)                :: lon_id, lat_id 
       integer(hid_t)                :: dataspace_id
       integer(hid_t)                :: plist_id  ! Property list 
@@ -82,7 +87,7 @@
       call  h5dcreate_f(file_id, rain_name, H5T_NATIVE_REAL, dataspace_id, &
                        rain_id, status, dcpl_id=plist_id)
 
-         call h5dwrite_f(rain_id, H5T_NATIVE_REAL, rain, dims, status) 
+         call h5dwrite_f(rain_id, H5T_NATIVE_REAL, grid_rain, dims, status) 
          if (status .ne. 0) write(*, *) "Failed to write rain "
       
       call h5dclose_f(rain_id, status) 
@@ -91,19 +96,36 @@
       call  h5dcreate_f(file_id, sti_name, H5T_NATIVE_REAL, dataspace_id, &
                        sti_id, status, dcpl_id=plist_id)
 
-         call h5dwrite_f(sti_id, H5T_NATIVE_REAL, sti, dims, status)
+         call h5dwrite_f(sti_id, H5T_NATIVE_REAL, grid_sti, dims, status)
          if (status .ne. 0) write(*, *) "Failed to write rain "
 
       call h5dclose_f(sti_id, status)
 
      ! create dataset grid_time 
-      call  h5dcreate_f(file_id, time_name, H5T_NATIVE_REAL, dataspace_id, &
-                       time_id, status, dcpl_id=plist_id)
-
-         call h5dwrite_f(time_id, H5T_NATIVE_REAL, grid_time, dims, status)
-         if (status .ne. 0) write(*, *) "Failed to write grid_time "
-
-      call h5dclose_f(time_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Year", H5T_NATIVE_REAL, dataspace_id, &
+                       year_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(year_id, H5T_NATIVE_REAL, grid_year, dims, status)
+      call h5dclose_f(year_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Month", H5T_NATIVE_REAL, dataspace_id, &
+                       month_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(month_id, H5T_NATIVE_REAL, grid_month, dims, status)
+      call h5dclose_f(month_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Day", H5T_NATIVE_REAL, dataspace_id, &
+                       day_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(day_id, H5T_NATIVE_REAL, grid_day, dims, status)
+      call h5dclose_f(day_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Hour", H5T_NATIVE_REAL, dataspace_id, &
+                       hour_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(hour_id, H5T_NATIVE_REAL, grid_hour, dims, status)
+      call h5dclose_f(hour_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Minute", H5T_NATIVE_REAL, dataspace_id, &
+                       minute_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(minute_id, H5T_NATIVE_REAL, grid_minute, dims, status)
+      call h5dclose_f(minute_id, status)
+      call  h5dcreate_f(file_id, "/S1/grid_Second", H5T_NATIVE_REAL, dataspace_id, &
+                       second_id, status, dcpl_id=plist_id)
+         call h5dwrite_f(second_id, H5T_NATIVE_REAL, grid_second, dims, status)
+      call h5dclose_f(second_id, status)
  
      ! lat/lon data save 
       call  h5dcreate_f(file_id, lon_name, H5T_NATIVE_REAL, dataspace_id, &
