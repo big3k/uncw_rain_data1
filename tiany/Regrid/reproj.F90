@@ -3,6 +3,9 @@ program reproj
 !5/4/2024  fix the usage of fov_orc: input flon etc. shall be arrays
 ! Read GPROF retrievals and reproject to 0.1-deg lat/lon grid 
 
+!    Usage:
+!       reproj instrument(ATMS|MHS|AMSR2...) input_h5_file output_hdf5_file
+
       use hdf5 
 
       implicit none
@@ -174,23 +177,23 @@ program reproj
                               ny)
 
       ! naive reprojection
-      do j=1, ny 
-       do i=1, nx 
-         if (rain(i, j) .ge. 0) then 
-             ir = nint ( (lat(i, j) - lat0 )/res ) + 1
-             ic = nint ( (lon(i, j) - lon0 )/res ) + 1
-             !write(*, *) "lon=", lon(i, j), " lat=", lat(i, j), "ic=", ic, " ir=", ir 
-             grid_rain(ic, ir) = rain(i, j) 
-             grid_sti(ic, ir) = sti(i, j) 
-         end if
-        end do 
-      end do 
+      !do j=1, ny 
+      ! do i=1, nx 
+      !   if (rain(i, j) .ge. 0) then 
+      !       ir = nint ( (lat(i, j) - lat0 )/res ) + 1
+      !       ic = nint ( (lon(i, j) - lon0 )/res ) + 1
+      !       !write(*, *) "lon=", lon(i, j), " lat=", lat(i, j), "ic=", ic, " ir=", ir 
+      !       grid_rain(ic, ir) = rain(i, j) 
+      !       grid_sti(ic, ir) = sti(i, j) 
+      !   end if
+      !  end do 
+      !end do 
      
-      write(*, *) "Saving binary format ...", nc, nr
-      open(22, file="test.2gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
-          write(22, rec=1) grid_rain 
-          write(22, rec=2) grid_sti 
-      close(22) 
+      !write(*, *) "Saving binary format ...", nc, nr
+      !open(22, file="test.2gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
+      !    write(22, rec=1) grid_rain 
+      !    write(22, rec=2) grid_sti 
+      !close(22) 
        
       ! sophisticated reprojection: split FOV 
       ! naive reprojection
@@ -261,12 +264,12 @@ program reproj
        end do 
       end do 
 
-      open(24, file="new_test.4gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
-          write(24, rec=1) grid_rain
-          write(24, rec=2) grid_sti 
-          write(24, rec=3) grid_year
-          write(24, rec=4) grid_hour
-      close(24) 
+      !open(24, file="new_test.4gd4r", form="unformatted", access="direct", recl=nc*nr*4) 
+      !    write(24, rec=1) grid_rain
+      !    write(24, rec=2) grid_sti 
+      !    write(24, rec=3) grid_year
+      !    write(24, rec=4) grid_hour
+      !close(24) 
       ! save to HDF5 
       call save_data_to_hdf5(ofile, grid_rain, grid_sti, &
                              grid_year, grid_month, grid_day, &
