@@ -1,5 +1,8 @@
 program reproj
 
+! 6/19/2024: fixed a bug regarding NFOV: it shall not be fixed to 96, but to be 
+!  defined by instrument. 
+
 !5/4/2024  fix the usage of fov_orc: input flon etc. shall be arrays
 ! Read GPROF retrievals and reproject to 0.1-deg lat/lon grid 
 
@@ -16,15 +19,17 @@ program reproj
       character (len=256) :: instrument
       real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
       integer, parameter :: nc=3600, nr=1800  ! lat/lon grid
-      integer, parameter :: NFOV=96 ! ATMS 
       integer, parameter :: NOUTER=0 ! see getgprofg.f90
+      integer :: NFOV, scans_per_orbit  
+      REAL*4            :: rate_thresh
       integer :: ic, ir, iargc, iret
       real (kind=4), allocatable :: rain(:, :), sti(:, :), lon(:, :), lat(:, :) 
       real (kind=4) :: grid_rain(nc, nr), grid_sti(nc, nr)
       real (kind=4) :: grid_year(nc, nr), grid_month(nc, nr), grid_day(nc, nr)   
       real (kind=4) :: grid_hour(nc, nr), grid_minute(nc, nr), grid_second(nc, nr)   
       real (kind=4) :: tmp1(nc, nr), tmp2(nc, nr) 
-      REAL*4    :: gprtemp4c(LTS,LN,4), w(0:NFOV+1), s(0:NFOV+1)
+      REAL*4    :: gprtemp4c(LTS,LN,4)
+      REAL*4, allocatable :: w(:), s(:) 
       REAL*4    :: gprtemp4c_sti(LTS,LN,4)
       ! scanTime fields 
       REAL*4    :: gprtemp4c_year(LTS,LN,4)
@@ -33,7 +38,7 @@ program reproj
       REAL*4    :: gprtemp4c_hour(LTS,LN,4)
       REAL*4    :: gprtemp4c_minute(LTS,LN,4)
       REAL*4    :: gprtemp4c_second(LTS,LN,4)
-      REAL*4    :: flat(0:NFOV+1), flon(0:NFOV+1), xor(0:NFOV+1), yor(0:NFOV+1)
+      REAL*4, allocatable  :: flat(:), flon(:), xor(:), yor(:)
       Real*4    :: xflat, xflon, xxor, xyor, fp, fa, fw, fs
       INTEGER*1   :: influc (LN, LTS)
       INTEGER*1   :: influc_sti (LN, LTS)
@@ -73,6 +78,82 @@ program reproj
      call getarg(1, instrument)
      call getarg(2, filename)
      call getarg(3, ofile)
+
+! Copied from: L2AGPROF2021_nngrid.f90
+! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        IF ( TRIM(instrument) .EQ. 'AMSR2' ) THEN
+           NFOV = 486
+           scans_per_orbit = 2970
+!!         scans_per_orbit = 3960
+           rate_thresh = 0.03
+!!         rate_thresh = 0.05
+        ELSE IF ( TRIM(instrument) .EQ. 'AMSRE' ) THEN
+           NFOV = 392
+           scans_per_orbit = 2970
+!!         scans_per_orbit = 3960
+           rate_thresh = 0.03
+!!         rate_thresh = 0.05
+        ELSE IF ( TRIM(instrument) .EQ. 'AMSUB' ) THEN
+           NFOV = 90
+           scans_per_orbit = 1725
+!!         scans_per_orbit = 2300
+           rate_thresh = 0.03
+!!         rate_thresh = 0.12
+        ELSE IF ( TRIM(instrument) .EQ. 'ATMS' ) THEN
+           NFOV = 96
+           scans_per_orbit = 1716
+!!         scans_per_orbit = 2289
+           rate_thresh = 0.03
+!!         rate_thresh = 0.12
+        ELSE IF ( TRIM(instrument) .EQ. 'GMI' ) THEN
+           NFOV = 221
+           scans_per_orbit = 2224
+!!         scans_per_orbit = 2966
+!!      rate_thresh = 0.00
+           rate_thresh = 0.03
+!!      ELSE IF ( TRIM(instrument) .EQ. 'MADRAS' ) THEN
+!!         NFOV = 960
+!!         scans_per_orbit = 1850
+!!         scans_per_orbit = 2467
+!!         rate_thresh = 0.
+        ELSE IF ( TRIM(instrument) .EQ. 'MHS' ) THEN
+           NFOV = 90
+           scans_per_orbit = 1725
+!!         scans_per_orbit = 2300
+           rate_thresh = 0.03
+!!         rate_thresh = 0.12
+        ELSE IF ( TRIM(instrument) .EQ. 'SAPHIR' ) THEN
+           NFOV = 182
+           scans_per_orbit = 2803
+!!         scans_per_orbit = 3738
+           rate_thresh = 0.03
+!!         rate_thresh = 0.12
+        ELSE IF ( TRIM(instrument) .EQ. 'SSMI' ) THEN
+! High-frequency (85 GHz) value:
+           NFOV = 128
+           scans_per_orbit = 2420
+!!         scans_per_orbit = 3226
+           rate_thresh = 0.03
+!!         rate_thresh = 0.06
+        ELSE IF ( TRIM(instrument) .EQ. 'SSMIS' ) THEN
+           NFOV = 180
+           scans_per_orbit = 2420
+!!         scans_per_orbit = 3226
+           rate_thresh = 0.03
+!!         rate_thresh = 0.06
+        ELSE IF ( TRIM(instrument) .EQ. 'TMI' ) THEN
+           NFOV = 208
+           scans_per_orbit = 2192
+!!         scans_per_orbit = 2924
+           rate_thresh = 0.03
+        END IF
+! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      allocate(w(0:NFOV+1))
+      allocate(s(0:NFOV+1))
+      allocate(flat(0:NFOV+1))
+      allocate(flon(0:NFOV+1))
+      allocate(xor(0:NFOV+1))
+      allocate(yor(0:NFOV+1)) 
       
      w=0.0
      s=0.0
