@@ -6,8 +6,9 @@ exe=/data1/tiany/Regrid/reproj
 in_dir=/data2/satellites
 out_dir=/data1/tiany/grid_satellites
 
+# done npp-gprof \
+
 for sat in \
-npp-gprof \
 amsr2-gprof \
 f16-gprof \
 f17-gprof \
@@ -37,9 +38,9 @@ do
      $exe $sensor $hdf5 $out_dir/$sat/$yyyymm/$outf 
    done
 
-  done
+  done > log.$sat.txt
 
-done
+done 
 
 
 
