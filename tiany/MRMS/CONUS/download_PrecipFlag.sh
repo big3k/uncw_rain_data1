@@ -1,4 +1,7 @@
 #! /usr/bin/bash
+# 8/1/2024: 
+#  -- let user enter start_date and end_date (yyyymmdd). If not given, use the current month.  
+
 # 3/10/2024: 
 #  Download 2-min MRMS from 
 # https://noaa-mrms-pds.s3.amazonaws.com/index.html#CONUS/PrecipRate_00.00/20201017/
@@ -9,15 +12,26 @@
 base_dir=/data1/tiany/MRMS/CONUS
 var_name="PrecipFlag_00.00"
 #--------------------------------------
-start_day=20201014 
-end_day=20240229
+
+if [ $# -eq 2 ]; then
+ start_day=$1
+ end_day=$2
+else 
+ start_day=$(date -d "last month" +%Y%m01)
+ end_day=$(date -d "`date +%Y%m01` -1 day" +%Y%m%d)
+fi
+
+echo $start_day
+echo $end_day
+
 #--------------------------------------
 
 ssec=`date -d "$start_day" +%s`
-esec=`date -d "$end_day" +%s`
+esec=`date -d "$end_day 23:59:59" +%s`
 
-nday=`awk "BEGIN{ print ($esec-$ssec)/(24*60*60) }"`
+nday=`awk "BEGIN{ print int(($esec-$ssec)/(24*60*60)+0.5) }"`
 
+echo $nday
 
 # download every day
 for day in `seq 0 $nday`; do 
