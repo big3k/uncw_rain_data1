@@ -12,7 +12,7 @@
 # Script to download GFS data in the date range. Untar each tar and delete files not needed. 
 # ------------------ config params
 wait_sec=30  # in seconds. Intervals to check if files are staged. 
-
+tar_dir=/data1/tiany/GFS_auto_download/raw_tars # dir to save the downloaded tar files. 
 # ------------------ end config params
 
 if [ $# -eq 2 ]; then
@@ -79,11 +79,11 @@ echo "Trying URL: $orderURL"
 # checking the URL to see if: it is there, and the number of files matches the number of days 
 sleep $wait_sec
 while : ; do  # wait for orderURL to be ready 
-  wget -O index.html $orderURL
+  wget -O ${orderN}_${req_id}.html $orderURL
   if [ $? -eq 0 ]; then 
     #parse out file names  
-    grep "\.tar" index.html |grep -Po '\.tar">\K.*?(?=</a>)' > files_$orderN.txt
-    nfiles=`cat files_$orderN.txt |wc -l`
+    grep "\.tar" ${orderN}_${req_id}.html |grep -Po '\.tar">\K.*?(?=</a>)' > files_$orderN.txt
+    nfiles=`cat files_${orderN}.txt |wc -l`
     if [ $nfiles -eq $nday ]; then 
        echo "All files are ready. Go download them ..." 
        break
@@ -91,15 +91,17 @@ while : ; do  # wait for orderURL to be ready
     echo "Files not ready. Waiting ..." 
     sleep $wait_sec # wait for all files to stage
   fi
-  echo "URL not ready. Waiting ..." 
+  echo "URL or Files not ready. Waiting ..." 
   sleep $wait_sec  # wait for order URL 
 done 
 
 # Now download each file  
+# wait a little extra, to be safe
+sleep $wait_sec  
 
-cat files_$orderN.txt  |while read filename; do 
+cat files_${orderN}.txt  |while read filename; do 
   echo Downloading $orderURL/$filename
-  wget -O $filename $orderURL/$filename
+  wget -nv -O $tar_dir/$filename $orderURL/$filename
   # unpack and delete files not needed. 
 done
 
