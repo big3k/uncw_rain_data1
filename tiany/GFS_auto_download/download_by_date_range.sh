@@ -4,40 +4,50 @@
 # $0 [start_yyyymmdd end_yyyymmdd]
 # User enter start_date and end_date (yyyymmdd). If not given, use the week before till yesterday. 
 
+# What it does: 
+# Download dailly GFS fx at 00, 06, 12, 18Z tar files (four per day). 
+#  Unpack each tar file and only keep *_000.grb2 and *_003.grb2 files.  
+
 # Note: 
 #  -- There is a data volume limit of 250 Gigabytes per request. 
-#  -- Each daily file can be ~12G in size. So try not to request more than 15 days each time. 
-
+#  -- Each daily file can be ~12G in size, for each of the 00, 06, 12, and 18Z fx time. So each day the total 
+#     size can be up to ~50G. So the given date range is cut into 5-day chunks, with each chunk as a separate order. 
 
 # Script to download GFS data in the date range. Untar each tar and delete files not needed. 
 # ------------------ config params
 wait_sec=30  # in seconds. Intervals to check if files are staged. 
 tar_dir=/data1/tiany/GFS_auto_download/raw_tars # dir to save the downloaded tar files. 
+unpack_dir=/data1/tiany/GFS_auto_download/GFS_00-03 # dir to contain unpacked/weeded files 
+html=/data1/tiany/GFS_auto_download/html  #dir to store the responses from the web server
 # ------------------ end config params
 
 if [ $# -eq 2 ]; then
- start_day=$1
- end_day=$2
+ start_day0=$1
+ end_day0=$2
 else
- end_day=$(date -d "yesterday" +%Y%m%d)
- start_day=$(date -d "$end_day -6 day" +%Y%m%d)
+ end_day0=$(date -d "yesterday" +%Y%m%d)
+ start_day0=$(date -d "$end_day0 -6 day" +%Y%m%d)
 fi
 
-echo $start_day
-echo $end_day
+echo $start_day0
+echo $end_day0
 #--------------------------------------
 
-ssec=`date -d "$start_day" +%s`
-esec=`date -d "$end_day 23:59:59" +%s`
+# cut day range into 5-day chunks, and put an order for each chunk
+start_day=$start_day0
 
-nday=`awk "BEGIN{ print int(($esec-$ssec)/(24*60*60)+0.5) }"`
+#===================== Grand Loop of 5-Day Chunks ============================
+while [ $start_day -le $end_day0 ]; do 
+  end_day=$(date -d "$start_day +4 day" +%Y%m%d)  # 5-day chunk
+  if [ $end_day -gt $end_day0 ]; then  # yyyymmdd can be compared numerically 
+    end_day=$end_day0
+  fi
 
-echo $nday
-
-if [ $nday -gt 15 ]; then 
-  echo "The request range can not be larger than 15 days. Quit ..." 
-  exit -1
-fi
+  ssec=`date -d "$start_day" +%s`
+  esec=`date -d "$end_day 23:59:59" +%s`
+  nday=`awk "BEGIN{ print int(($esec-$ssec)/(24*60*60)+0.5) }"`
+  let nfiles=nday*4 # total files expected. 
+  echo "$start_day  ==> $end_day, total days: $nday, total files expected: $nfiles" 
 
 # reformat date ranges
 begyear=`date -d "$start_day" +%Y`
@@ -59,8 +69,11 @@ req_id=$$
 
 curl -X POST \
    -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" \
-   -d "satdisptype=N%2FA&stations=00&station_lst=&typeofdata=MODEL&dtypelist=&begdatestring=&enddatestring=&begyear=$begyear&begmonth=$begmonth&begday=$begday&beghour=&begmin=&endyear=$endyear&endmonth=$endmonth&endday=$endday&endhour=&endmin=&outmed=FTP&outpath=&pri=500&datasetname=GFS3&directsub=Y&emailadd=jianxiac%40gmail.com&outdest=FILE&applname=&subqueryby=STATION&tmeth=Awaiting-Data-Transfer" \
-  https://www.ncei.noaa.gov/has/HAS.FileSelect  > response_${req_id}.txt
+   -d "satdisptype=N%2FA&stations=00&stations=06&stations=12&stations=18&station_lst=&typeofdata=MODEL&dtypelist=&begdatestring=&enddatestring=&begyear=$begyear&begmonth=$begmonth&begday=$begday&beghour=&begmin=&endyear=$endyear&endmonth=$endmonth&endday=$endday&endhour=&endmin=&outmed=FTP&outpath=&pri=500&datasetname=GFS3&directsub=Y&emailadd=jianxiac%40gmail.com&outdest=FILE&applname=&subqueryby=STATION&tmeth=Awaiting-Data-Transfer" \
+  https://www.ncei.noaa.gov/has/HAS.FileSelect  > $html/response_${req_id}.txt
+
+# Request for all the 4 fx times: 00, 06, 12, and 18: 
+#satdisptype=N%2FA&stations=00&stations=06&stations=12&stations=18&station_lst=&typeofdata=MODEL&dtypelist=&begdatestring=&enddatestring=&begyear=2005&begmonth=08&begday=02&beghour=&begmin=&endyear=2005&endmonth=08&endday=03&endhour=&endmin=&outmed=FTP&outpath=&pri=500&datasetname=GFS3&directsub=Y&emailadd=jianxiac%40gmail.com&outdest=FILE&applname=&subqueryby=STATION&tmeth=Awaiting-Data-Transfer
 
 
 # The response will contain the "Order Number" field: 
@@ -69,7 +82,7 @@ curl -X POST \
 # And when the data are ready, they will be located at as daily tar files: 
 # https://www.ncei.noaa.gov/pub/has/model/HAS012540678/
 
-orderN=`grep "Order Number" response_${req_id}.txt | grep -Po 'hasreqid=\K.*?(?=&emailadd=)'`
+orderN=`grep "Order Number" $html/response_${req_id}.txt | grep -Po 'hasreqid=\K.*?(?=&emailadd=)'`
 
 orderURL="https://www.ncei.noaa.gov/pub/has/model/$orderN/" 
 echo 
@@ -79,12 +92,12 @@ echo "Trying URL: $orderURL"
 # checking the URL to see if: it is there, and the number of files matches the number of days 
 sleep $wait_sec
 while : ; do  # wait for orderURL to be ready 
-  wget -O ${orderN}_${req_id}.html $orderURL
+  wget -O $html/${orderN}_${req_id}.html $orderURL
   if [ $? -eq 0 ]; then 
     #parse out file names  
-    grep "\.tar" ${orderN}_${req_id}.html |grep -Po '\.tar">\K.*?(?=</a>)' > files_$orderN.txt
-    nfiles=`cat files_${orderN}.txt |wc -l`
-    if [ $nfiles -eq $nday ]; then 
+    grep "\.tar" $html/${orderN}_${req_id}.html |grep -Po '\.tar">\K.*?(?=</a>)' > $html/files_$orderN.txt
+    nsee=`cat $html/files_${orderN}.txt |wc -l`
+    if [ $nsee -eq $nfiles ]; then 
        echo "All files are ready. Go download them ..." 
        break
     fi
@@ -99,16 +112,20 @@ done
 # wait a little extra, to be safe
 sleep $wait_sec  
 
-cat files_${orderN}.txt  |while read filename; do 
+cat $html/files_${orderN}.txt  |while read filename; do 
   echo Downloading $orderURL/$filename
   wget -nv -O $tar_dir/$filename $orderURL/$filename
+  fdate=`basename $tar_dir/$filename |cut -d'_' -f3 |cut -c-8` # parse out yyyymmdd
+  mkdir -p $unpack_dir/$fdate # may already exist 
   # unpack and delete files not needed. 
+  tar -xf $tar_dir/$filename -C $unpack_dir/$fdate/ --wildcards --no-anchored '*_00[03].grb2'
+  rm $tar_dir/$filename # delete raw tar file afterward
+  
 done
 
-
-
-
-
-
-
-
+  # move ahead to next chunk 
+  start_day=$(date -d "$end_day +1 day" +%Y%m%d)
+done
+#===================== End of Grand Loop of 5-Day Chunks ============================
+echo "Done" 
+exit
