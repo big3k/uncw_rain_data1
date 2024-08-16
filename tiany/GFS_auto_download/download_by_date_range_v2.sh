@@ -96,9 +96,9 @@ echo "Trying URL: $orderURL"
 # check if files are staged
 # checking the URL to see if: it is there, and the number of files matches the number of days 
 sleep $wait_sec
+total_wait=0
 while : ; do  # wait for orderURL to be ready 
   /usr/bin/wget -O $html/${orderN}_${req_id}.html $orderURL
-  total_wait=0
   if [ $? -eq 0 ]; then 
     #parse out file names  
     grep "\.tar" $html/${orderN}_${req_id}.html |grep -Po '\.tar">\K.*?(?=</a>)' > $html/files_$orderN.txt
@@ -108,7 +108,7 @@ while : ; do  # wait for orderURL to be ready
        break
     fi
     echo "Files not ready. Waiting ..." 
-    let total_wait=total_wait+wait_sec
+    let total_wait=total_wait+wait_sec+wait_sec
     sleep $wait_sec # wait for all files to stage
   fi
   echo "URL or Files not ready. Waiting ..." 
