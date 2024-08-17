@@ -77,12 +77,48 @@ mn=round(mn/2)*2 % round to nearest 2-min
 % construct MRMS file name
 mrmsf=sprintf("/data1/tiany/MRMS/CONUS/PrecipRate_00.00/%4d%2.2d%2.2d/MRMS_PrecipRate_00.00_%4d%2.2d%2.2d-%2.2d%2.2d00.grib2.gz", yyyy, mm, dd, yyyy, mm, dd, hr, mn)
 
-%if exist(mrmsf, 'file')  == 0
-   
+% if current filing is missing, look back (if mn is in 2nd half of the hour)
+%  or forward (if in first half of the hour) 2 more minutes. 
+good=0 % assumging file missing or bad unless proven 
+if exist(mrmsf, 'file')  == 2  % file exist 
+   finfo=dir(mrmsf);
+   fsize=finfo.bytes;
+   if fsize > 10000
+      good=1
+   end 
+end 
+
+if good == 0 
+   fprintf("MRMS file missing or bad: %s\n", mrmsf) 
+   if mn >= 30  % look back to avoid complex date/time computation 
+     mn=mn-2 
+   else 
+     mn=mn+2 
+   end 
+   % new file to try 
+   mrmsf=sprintf("/data1/tiany/MRMS/CONUS/PrecipRate_00.00/%4d%2.2d%2.2d/MRMS_PrecipRate_00.00_%4d%2.2d%2.2d-%2.2d%2.2d00.grib2.gz", yyyy, mm, dd, yyyy, mm, dd, hr, mn)
+   if exist(mrmsf, 'file')  == 2 % backup file exists 
+        finfo=dir(mrmsf);
+        fsize=finfo.bytes;
+        if fsize > 10000
+          good=1
+        end
+   end
+end
+
+if good == 0 % still missing or bad, give up
+     fprintf("Can't find alternative MRMS file: %s. Skip the case\n", mrmsf) 
+     return 
+else
+     fprintf("Using good MRMS file: %s. \n", mrmsf) 
+ 
+end
+
+% file exists and big enough.
 
 % temp unzip and de-grib'd filename
-gribf=sprintf("%4d%2.2d%2.2d-%2.2d%2.2d00.grib2", yyyy, mm, dd, hr, mn)
-binf=sprintf("%4d%2.2d%2.2d-%2.2d%2.2d00.bin", yyyy, mm, dd, hr, mn)
+gribf=sprintf("tmp/%4d%2.2d%2.2d-%2.2d%2.2d00.grib2", yyyy, mm, dd, hr, mn)
+binf=sprintf("tmp/%4d%2.2d%2.2d-%2.2d%2.2d00.bin", yyyy, mm, dd, hr, mn)
 system("gunzip -c " + mrmsf + " > " + gribf); 
 system("wgrib2 " +  gribf + " -no_header -bin " + binf)
 
@@ -137,7 +173,7 @@ fprintf("nx1=%d, nx2=%d, ny1=%d, ny2=%d\n", nx1, nx2, ny1, ny2);
 MRMS_PrecipRate=global_mrms(nx1:nx2, ny1:ny2); 
 
 % verification, debugging and plotting
-fp=fopen("sub_" + binf, 'wb');
+fp=fopen(binf + "_sub", 'wb');
 fwrite(fp, MRMS_PrecipRate, 'float32');  %  rain rate
 %fwrite(fp, nvalid(nx1:nx2, ny1:ny2),'float32');  % pixel count
 fclose(fp);

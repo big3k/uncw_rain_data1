@@ -10,10 +10,8 @@ data_loc='/data1/youy/grid_satellites/noaa20-gprof-events-imager-propogated-fina
 %MRMS: 2020/11 to current
 %Satellite: 2017/11 to 2023/05
 
-%Nian=2021:2023;
-%Yue=1:12;
-Nian=2021:2021;
-Yue=5:5; 
+Nian=2021:2023;
+Yue=1:12;
 %****************************************************
 for ijk1=1:length(Nian)
     for ijk2=1:length(Yue)
