@@ -39,6 +39,7 @@ for ijk1=1:length(Nian)
                     %/data1/youy/grid_satellites/noaa20-gprof-events-imager-propogated-final-land/202104/case_0418/
                     %/data1/youy/grid_satellites/noaa20-gprof-events-imager-propogated-final-land/202104/case_0418/sate_select_case_229.mat
                     % check if there is overlap, and save matched data 
+                    fprintf("Processing case: %s\n", casef); 
                     upscale_subset(data_loc2, casef); 
 
                 end
