@@ -3,7 +3,7 @@
 ! Reading file list from given directory  
 ! Usage: 
 !
-! $0 daily_dir_gatmo daily_dir_tatms 
+! $0 daily_dir_gatmo daily_dir_tatms output_dir
 ! 
 ! where each directory contains the ~2700 matching files, such as: 
 !
@@ -16,30 +16,34 @@
 ! respectively. 
 !
 ! Example: 
-! $0 /data1/youy/cdr-atms-combine/gatmo/20120302 /data1/youy/cdr-atms-combine/tatms/20120302
+! $0 /data1/youy/cdr-atms-combine/gatmo/20120302 /data1/youy/cdr-atms-combine/tatms/20120302 /myfile/20120302
 
       program test_rd
 
       implicit none
       INCLUDE "parms.h"
 
-      integer :: ndir, nf, jf, ibin, iargc, iret
+      integer :: ndir, nf, jf, ibin, iargc, iret, nf_in_bin
       character(len=1064) :: gatmo_files(MAX_FILES_PER_DAY)       
       character(len=1064) :: tatms_files(MAX_FILES_PER_DAY)       
+      character(len=1064) :: gatmo_files_in_bin(MAX_FILES_PER_DAY)       
+      character(len=1064) :: tatms_files_in_bin(MAX_FILES_PER_DAY)       
       character(len=1064) :: tatms_matched_gatmo_file 
       character(len=1064) :: gatmo_dir 
       character(len=1064) :: tatms_dir
+      character(len=1064) :: output_dir
       character(len=6) :: stime  ! start time of each file as string 
       integer :: nstime  ! start time of each file as integer 
 
       ndir =  iargc()
-      If (ndir.ne.2) Then   ! wrong cmd line args, print usage
+      If (ndir.ne.3) Then   ! wrong cmd line args, print usage
          write(*, *)"Usage:"
-         write(*, *)"get_daiy_files daily_dir_gatmo daily_dir_tatms" 
+         write(*, *)"get_daiy_files daily_dir_gatmo daily_dir_tatms output_dir" 
          stop
       End If
       call getarg(1, gatmo_dir) 
       call getarg(2, tatms_dir) 
+      call getarg(3, output_dir) 
 
       ! get the files
       call system("ls "//trim(gatmo_dir)// " | sort -n > /tmp/gatmofiles.txt")
@@ -71,10 +75,14 @@
       close(33) 
       call system("rm /tmp/tatmsfiles.txt")
 
-      ! go over each time bin 
-!      Do ibin=1, 14
+! go over each time bin 
+!==================================================================
+      Do ibin=1, DAILY_BINS  !  
        !write(*, *) time_bins(ibin) 
-       ! find all the files in the bin 
+
+       ! find all the files in the time bin 
+       !------------------------------------------------
+       nf_in_bin=0
        Do jf=1, nf-1 
          ! for each given gatmo file, find the matching tatms file 
          call match_gatmo_tatms_file(tatms_matched_gatmo_file, &
@@ -83,22 +91,33 @@
                 ! found matching pairs file 
          stime=gatmo_files(jf)(22:27)
          read(stime, *) nstime
-         write(*, *) nstime, stime, "  ", trim(gatmo_files(jf))
-         write(*, *) nstime, stime, "  ", trim(tatms_matched_gatmo_file)
-         write(*, *) "-------------------------------------------------"
+          if (nstime .ge.  time_bins(ibin) .and. nstime .lt.  &
+               time_bins(ibin+1) ) then  
+            nf_in_bin=nf_in_bin+1 
+            gatmo_files_in_bin(nf_in_bin)=gatmo_files(jf)
+            tatms_files_in_bin(nf_in_bin)=tatms_matched_gatmo_file
+          end if 
+         !write(*, *) nstime, stime, "  ", trim(gatmo_files(jf))
+         !write(*, *) nstime, stime, "  ", trim(tatms_matched_gatmo_file)
+         !write(*, *) "-------------------------------------------------"
         else 
-         write(*, *) nstime, stime, "  ", trim(gatmo_files(jf))
-         write(*, *) nstime, stime, "  "
-         write(*, *) "---------No Matching tatms file found------------"
+         !write(*, *) nstime, stime, "  ", trim(gatmo_files(jf))
+         !write(*, *) nstime, stime, "  "
+         !write(*, *) "---------No Matching tatms file found------------"
         end if 
         
        End Do 
+       !------------------------------------------------
+       write(*, *) "for time bin=", ibin, " there are files: ", nf_in_bin
+       ! Combine files for each bin 
+       call combine_files(gatmo_files_in_bin, tatms_files_in_bin, &
+            nf_in_bin, gatmo_dir, tatms_dir, output_dir) 
 
-!      End Do  
+      End Do  
+!==================================================================
 
       end 
 
-       
 
 
 
