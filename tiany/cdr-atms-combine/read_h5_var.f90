@@ -20,7 +20,7 @@
  
       dims=1 
 
-      write(*, *) "reading ", trim(h5_file), " var=", trim(var_name) 
+      ! write(*, *) "reading ", trim(h5_file), " var=", trim(var_name) 
       !======= open the interface
       call h5open_f(status)
       if (status .ne. 0) write(*, *) "Failed to open HDF interface"
@@ -55,7 +55,10 @@
       End Do
       End Do
 
+      call h5dclose_f(data_id, status)
       call h5fclose_f(file_id, status)
+      if (status .ne. 0) write(*, *) "Failed to close file. status=", &
+                status
       call h5close_f(status)
  
       deallocate(var_data) 

@@ -22,8 +22,8 @@
 
       !var_name="/All_Data/ATMS-SDR-GEO_All/Longitude" 
       ! in TATMS 
-      !var_name="/All_Data/ATMS-TDR_All/AntennaTemperature"
-      var_name="/All_Data/ATMS-TDR_All/AntennaTemperatureFactors"
+      var_name="/All_Data/ATMS-TDR_All/AntennaTemperature"
+      !var_name="/All_Data/ATMS-TDR_All/AntennaTemperatureFactors"
       call read_h5_var(h5_file, var_name, h5_data, nx, ny, nz)
 
       write(*, *) "nx=", nx, " ny=", ny, " nz=", nz
