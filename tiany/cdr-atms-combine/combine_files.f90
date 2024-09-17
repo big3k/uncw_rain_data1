@@ -20,11 +20,24 @@
  
       stime=gatmo_files_in_bin(1)(21:28) 
       etime=gatmo_files_in_bin(nf_in_bin)(30:37) 
+      ! construct output file name
+      ! e.g., COMBO_npp_d20120302_t2034286_e2217243_b01794_c20191106092131140068_ADu_dev.nc
       outf=gatmo_files_in_bin(1)
       outf(30:37)=gatmo_files_in_bin(nf_in_bin)(30:37)
       outf(1:5)="COMBO"
       outf(76:77)="nc"
       write(*, *) trim(outf) 
+      ! read every file in bin
+      Do jf=1, nf_in_bin
+       call read_h5_var(trim(gatmo_dir)//"/"//trim(gatmo_files_in_bin(jf)), &
+                   "/All_Data/ATMS-SDR-GEO_All/Longitude")  
+       call read_h5_var(trim(tatms_dir)//"/"//trim(tatms_files_in_bin(jf)), &
+                   "/All_Data/ATMS-SDR-GEO_All/Longitude")  
+      
+       ! stuff to big arrary
+        
+      End Do
+       
       return 
 
       end 
