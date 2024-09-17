@@ -1,5 +1,6 @@
 
 ! Read a variable from given h5 file 
+! Max rank of the variable is assumed to be 3
 
       subroutine read_h5_var(h5_file, var_name, h5_data, nx, ny, nz) 
 

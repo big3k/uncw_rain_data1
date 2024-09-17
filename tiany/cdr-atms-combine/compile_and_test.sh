@@ -1,4 +1,8 @@
 
+h5fc -cpp -O2 -fdec-math -fdec-structure -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o test_read_h5_att test_read_h5_att.f90 read_h5_att.f90
+
+exit
+
 h5fc -cpp -O2 -fdec-math -fdec-structure -DLANGUAGE_FORTRAN  -DWRITEPIAINFO -o test_read_h5_var test_read_h5_var.f90 read_h5_var.f90
 
 exit 
