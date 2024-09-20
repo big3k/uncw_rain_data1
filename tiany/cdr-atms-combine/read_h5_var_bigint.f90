@@ -42,8 +42,7 @@
       nz=dims(3) 
       allocate(var_data(nx, ny, nz)) 
 
-      !call h5dread_f(data_id, H5T_IEEE_F32LE, h5_data, dims, status)
-      call h5dread_f(data_id, H5T_STD_I64LE, h5_data, dims, status)
+      call h5dread_f(data_id, H5T_STD_I64LE, var_data, dims, status)
       if (status .ne. 0) write(*, *) "Failed to read data"
  
       Do iz=1, nz

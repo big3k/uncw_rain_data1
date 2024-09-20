@@ -18,7 +18,7 @@
  
       dims=1 
 
-      write(*, *) "reading ", trim(h5_file), " att=", trim(att_name) 
+      !write(*, *) "reading ", trim(h5_file), " att=", trim(att_name) 
       !======= open the interface
       call h5open_f(status)
       if (status .ne. 0) write(*, *) "Failed to open HDF interface"
@@ -32,6 +32,7 @@
       call h5aread_f(att_id, H5T_STD_U8LE, att_data, dims, status) 
       if (status .ne. 0) write(*, *) "Failed to get attribute: "
        
+      call h5aclose_f(att_id, status)
       call h5fclose_f(file_id, status)
       call h5close_f(status)
        
