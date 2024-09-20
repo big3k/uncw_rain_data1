@@ -18,11 +18,16 @@
       character(len=1064) :: output_dir
       character(len=1064) :: outf 
       real*4 :: data_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
+      integer (kind=4)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)
+      integer (kind=4)   :: adflag_buff(MAX_NX, MAX_NY, MAX_NZ*200)
+
       real*4, allocatable :: d3data(:, :, :), d2data(:, :) 
+      integer*4, allocatable :: id2data(:, :) 
       integer :: ncid, status
       integer :: d2dims(2), d3dims(3) 
       INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
+      INTEGER(KIND=4) :: bt_varid, adi_varid
 
       character(len=9) :: dtime  ! d20120302
       character(len=8) :: stime  ! start time string of combined file, t2034286 
@@ -61,13 +66,14 @@
              NF90_FLOAT, d2dims, lat_varid, deflate_level=6)
       status=nf90_def_var(ncid, "SatelliteZenithAngle", &
              NF90_FLOAT, d2dims, sza_varid, deflate_level=6)
+      status=nf90_def_var(ncid, "BeamTime", &
+             NF90_INT, d2dims, bt_varid, deflate_level=6)
+      status=nf90_def_var(ncid, "Ascending_Descending_Indicator", &
+             NF90_INT, d2dims, adi_varid, deflate_level=6)
       status=nf90_enddef(ncid)
 
       allocate(d3data(nx, ny, nz)) 
       d3data = data_buff(1:nx, 1:ny, 1:nz) 
-      !status=nf90_def_var(ncid, "/All_Data/ATMS-TDR_All/AntennaTemperature", &
-
-      !status=nf90_enddef(ncid)
       status=nf90_put_var(ncid, at_varid, d3data)
       deallocate(d3data) 
 
@@ -78,7 +84,6 @@
 
       allocate(d2data(nx, ny))
       d2data = data_buff(1:nx, 1:ny, 1)
-
       status=nf90_put_var(ncid, lon_varid, d2data)
       deallocate(d2data)
 
@@ -89,8 +94,6 @@
 
       allocate(d2data(nx, ny))
       d2data = data_buff(1:nx, 1:ny, 1)
-
-      !status=nf90_enddef(ncid)
       status=nf90_put_var(ncid, lat_varid, d2data)
       deallocate(d2data)
 
@@ -101,10 +104,18 @@
 
       allocate(d2data(nx, ny))
       d2data = data_buff(1:nx, 1:ny, 1)
-
       status=nf90_put_var(ncid, sza_varid, d2data)
       deallocate(d2data)
-100   continue
+
+      ! special handliing of BeamTime and A/Descending Indicator 
+      call merge_beamtime_adflag_data(tatms_dir, tatms_files_in_bin, &
+                        nf_in_bin, time_buff, adflag_buff, nx, ny, nz)
+      allocate(id2data(nx, ny))
+      id2data = time_buff(1:nx, 1:ny, 1)
+      status=nf90_put_var(ncid, bt_varid, id2data)
+      id2data = adflag_buff(1:nx, 1:ny, 1)
+      status=nf90_put_var(ncid, adi_varid, id2data)
+      deallocate(id2data)
  
       ! Get "/All_Data/ATMS-TDR_All/BeamTime" from TATMS files
       ! However, it has "H5T_STD_I64LE" type, which won't fit in netcdf
