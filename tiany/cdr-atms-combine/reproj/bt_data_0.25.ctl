@@ -1,0 +1,12 @@
+DSET ^outf.bin
+options template
+TITLE Gird output
+UNDEF -9999.0
+XDEF  1440 LINEAR  -179.875 0.25 
+YDEF  720 LINEAR  -89.875 0.25
+ZDEF 1    LINEAR 1 1
+TDEF 14    LINEAR 0Z01jan1991 30mn
+VARS 1
+bt              1 99  **
+ENDVARS
+
