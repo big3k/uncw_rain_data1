@@ -1,11 +1,7 @@
 
 ! Similar to merge_data(), but special treatment for
 ! "/All_Data/ATMS-TDR_All/BeamTime" and "Ascending/Descending_Indicator" 
-! as the integer*8 former needs to be offsetted to fit into netcdf's
-! NF90_INT. The new value in netcdf is seconds from 2020/1/1, while in
-! the input hdf5 it is microseconds from 1958/1/1. 
-! The latter needs to be read as an attribute, and inflate into a 2D
-! array of the same dimension as beamtime.  
+! as they are integer*8 and integer*4 formats. 
 
       subroutine  merge_beamtime_adflag_data(h5_dir, h5_files_in_bin, & 
                         nf_in_bin, time_buff, adflag_buff, nx, ny, nz) 
@@ -19,14 +15,17 @@
       character(len=*)    :: h5_dir 
       character(len=1064) :: h5_files_in_bin(MAX_FILES_PER_DAY)
       character(len=1064)    :: var_name, group_name, att_name
-      integer (kind=4)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
+      integer (kind=8)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
       integer (kind=4)   :: adflag_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
       integer (kind=8)   :: h5_data(MAX_NX, MAX_NY, MAX_NZ)
       integer (kind=4)   :: h5_att(MAX_NX, MAX_NY, MAX_NZ), att_data
-      real (kind=8), parameter   :: microsec = 1000000.0! microsec in sec 
-      integer (kind=4), parameter   :: time_offset = 1325376000 !sec 
                ! when in 3D: (22, 96, 12) -> nchannel, nfov, nscan
                ! when in 2D: (96, 12) -> nfov, nscan
+
+! No longer needed. 
+!      real (kind=8), parameter   :: microsec = 1000000.0! microsec in sec 
+!      integer (kind=4), parameter   :: time_offset = 1325376000 !sec 
+
   
       h5_att=0 ! space to hold attributes in 2D
       var_name="/All_Data/ATMS-TDR_All/BeamTime"
@@ -63,8 +62,11 @@
            Do iy=1, ny
             niy=niy+1 
             Do ix=1, nx 
-             time_buff(ix, niy, 1) = nint(h5_data(ix, iy, 1)/microsec) & 
-                                     -time_offset  
+             ! 10/4/2024: do not offset the time as we figured out to
+             ! save big int into netcdf
+             !time_buff(ix, niy, 1) = nint(h5_data(ix, iy, 1)/microsec) & 
+             !                        -time_offset  
+             time_buff(ix, niy, 1) = h5_data(ix, iy, 1)
              adflag_buff(ix, niy, 1) = att_data ! attribute filled to 2D 
             End Do
            End Do 

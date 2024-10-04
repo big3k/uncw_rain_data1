@@ -10,7 +10,7 @@
       INCLUDE "parms.h"
  
       integer :: ndir, nf, jf, ibin, nf_in_bin, nx, ny, nz
-      integer :: ix, iy, iz 
+      integer :: ix, iy, iz , oldmode
       character(len=1064) :: gatmo_files_in_bin(MAX_FILES_PER_DAY)
       character(len=1064) :: tatms_files_in_bin(MAX_FILES_PER_DAY)
       character(len=1064) :: gatmo_dir
@@ -18,11 +18,12 @@
       character(len=1064) :: output_dir
       character(len=1064) :: outf 
       real*4 :: data_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
-      integer (kind=4)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)
+      integer (kind=8)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)
       integer (kind=4)   :: adflag_buff(MAX_NX, MAX_NY, MAX_NZ*200)
 
       real*4, allocatable :: d3data(:, :, :), d2data(:, :) 
       integer*4, allocatable :: id2data(:, :) 
+      integer*8, allocatable :: id2data64(:, :) 
       integer :: ncid, status
       integer :: d2dims(2), d3dims(3) 
       INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
@@ -43,7 +44,11 @@
       write(*, *) trim(outf) 
       
       !open netcdf for saving variables 
-      status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_CLOBBER, ncid)
+      ! 10/4/2024: critcal: open it as NF90_NETCDF4, so we can use
+      ! NF90_INT64 data types. 
+      !status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_CLOBBER, ncid)
+      status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_NETCDF4, ncid)
+      !call check(nf90_set_fill(ncid, nf90_nofill, oldmode))
      
       !get 3D data first, so we can define the dimensions 
       call merge_data("/All_Data/ATMS-TDR_All/AntennaTemperature", tatms_dir, & 
@@ -66,8 +71,9 @@
              NF90_FLOAT, d2dims, lat_varid, deflate_level=6)
       status=nf90_def_var(ncid, "SatelliteZenithAngle", &
              NF90_FLOAT, d2dims, sza_varid, deflate_level=6)
-      status=nf90_def_var(ncid, "BeamTime", &
-             NF90_INT, d2dims, bt_varid, deflate_level=6)
+      call check(nf90_def_var(ncid, "BeamTime", &
+             NF90_INT64, d2dims, bt_varid, deflate_level=6))
+             !NF90_INT, d2dims, bt_varid, deflate_level=6)
       status=nf90_def_var(ncid, "Ascending_Descending_Indicator", &
              NF90_INT, d2dims, adi_varid, deflate_level=6)
       status=nf90_enddef(ncid)
@@ -110,21 +116,14 @@
       ! special handliing of BeamTime and A/Descending Indicator 
       call merge_beamtime_adflag_data(tatms_dir, tatms_files_in_bin, &
                         nf_in_bin, time_buff, adflag_buff, nx, ny, nz)
+      allocate(id2data64(nx, ny))
+      id2data64 = time_buff(1:nx, 1:ny, 1)
+      status=nf90_put_var(ncid, bt_varid, id2data64)
+      deallocate(id2data64)
       allocate(id2data(nx, ny))
-      id2data = time_buff(1:nx, 1:ny, 1)
-      status=nf90_put_var(ncid, bt_varid, id2data)
       id2data = adflag_buff(1:nx, 1:ny, 1)
       status=nf90_put_var(ncid, adi_varid, id2data)
       deallocate(id2data)
- 
-      ! Get "/All_Data/ATMS-TDR_All/BeamTime" from TATMS files
-      ! However, it has "H5T_STD_I64LE" type, which won't fit in netcdf
-      !          DATASET "BeamTime" {
-      !      DATATYPE  H5T_STD_I64LE
-      !      DATASPACE  SIMPLE { ( 12, 96 ) / ( H5S_UNLIMITED, H5S_UNLIMITED ) }
-
-      !Note that there are no netCDF types corresponding to 64-bit integers or 
-      ! to characters wider than 8 bits in the current version of the netCDF library.
        
       status=nf90_close(ncid)
       return 
