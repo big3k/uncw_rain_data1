@@ -47,7 +47,7 @@
       ! 10/4/2024: critcal: open it as NF90_NETCDF4, so we can use
       ! NF90_INT64 data types. 
       !status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_CLOBBER, ncid)
-      status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_NETCDF4, ncid)
+      call check(nf90_create(trim(output_dir)//"/"//trim(outf), NF90_NETCDF4, ncid))
       !call check(nf90_set_fill(ncid, nf90_nofill, oldmode))
      
       !get 3D data first, so we can define the dimensions 
@@ -56,15 +56,15 @@
       ! scale to be added
       
       !Define the dimensions.
-      status=nf90_def_dim(ncid, "nchannel", nx, x_dimid)
-      status=nf90_def_dim(ncid, "nfovs", ny, y_dimid)
-      status=nf90_def_dim(ncid, "nscans", nz, z_dimid)
+      call check(nf90_def_dim(ncid, "nchannel", nx, x_dimid))
+      call check(nf90_def_dim(ncid, "nfovs", ny, y_dimid))
+      call check(nf90_def_dim(ncid, "nscans", nz, z_dimid))
       d3dims=(/ x_dimid, y_dimid, z_dimid /)
       d2dims=(/ y_dimid, z_dimid /)
 
       ! Define all the variables 
-      status=nf90_def_var(ncid, "AntennaTemperature", &
-             NF90_FLOAT, d3dims, at_varid, deflate_level=6)
+      call check(nf90_def_var(ncid, "AntennaTemperature", &
+             NF90_FLOAT, d3dims, at_varid, deflate_level=6))
       status=nf90_def_var(ncid, "Longitude", &
              NF90_FLOAT, d2dims, lon_varid, deflate_level=6)
       status=nf90_def_var(ncid, "Latitude", &
@@ -74,9 +74,9 @@
       call check(nf90_def_var(ncid, "BeamTime", &
              NF90_INT64, d2dims, bt_varid, deflate_level=6))
              !NF90_INT, d2dims, bt_varid, deflate_level=6)
-      status=nf90_def_var(ncid, "Ascending_Descending_Indicator", &
-             NF90_INT, d2dims, adi_varid, deflate_level=6)
-      status=nf90_enddef(ncid)
+      call check(nf90_def_var(ncid, "Ascending_Descending_Indicator", &
+             NF90_INT, d2dims, adi_varid, deflate_level=6))
+      call check(nf90_enddef(ncid))
 
       allocate(d3data(nx, ny, nz)) 
       d3data = data_buff(1:nx, 1:ny, 1:nz) 
