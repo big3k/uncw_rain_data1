@@ -1,6 +1,7 @@
 
 
 
+rm outf.bin 
 i=1
 cat input_files |while read file; do 
 ./reproj_data $file $i

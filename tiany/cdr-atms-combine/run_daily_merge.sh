@@ -6,8 +6,8 @@
 # /tmp/2021/20210103/
 
 #data location above yyyy/yyyymmdd/
-daily_gatmo_dir="/data1/youy/cdr-atms-combine/gatmo/" 
-daily_tatms_dir="/data1/youy/cdr-atms-combine/tatms/" 
+daily_gatmo_dir="/data1/tiany/cdr-atms-combine/test_input/gatmo"
+daily_tatms_dir="/data1/tiany/cdr-atms-combine/test_input/tatms"
 daily_output_dir="/tmp/"   # make sure user has write permission 
 
 # ===  User Configuration === 
@@ -20,10 +20,10 @@ iday=$sday
 while [ $iday -le $eday ]; do 
 
 echo  Processing $iday 
-year=$(date -u -d "$iday" +%Y)
+iyear=$(date -u -d "$iday" +%Y)
 
-mkdir -p $daily_output_dir/$year/$iday
-./merge_npp_atms_daily $daily_gatmo_dir/$iday $daily_tatms_dir/$iday $daily_output_dir/$year/$iday 
+mkdir -p $daily_output_dir/$iyear/$iday
+./merge_npp_atms_daily $daily_gatmo_dir/$iyear/$iday $daily_tatms_dir/$iyear/$iday $daily_output_dir/$iyear/$iday 
 
 iday=$(date -u -d "$iday + 1 day" +%Y%m%d) 
 

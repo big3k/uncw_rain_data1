@@ -9,7 +9,7 @@
       implicit none
       INCLUDE "parms.h"
  
-      integer :: ndir, nf, jf, ibin, nf_in_bin, nx, ny, nz
+      integer :: ndir, nf, jf, ibin, nf_in_bin, nx, ny, nz, ng
       integer :: ix, iy, iz , oldmode
       character(len=1064) :: gatmo_files_in_bin(MAX_FILES_PER_DAY)
       character(len=1064) :: tatms_files_in_bin(MAX_FILES_PER_DAY)
@@ -25,9 +25,11 @@
       integer*4, allocatable :: id2data(:, :) 
       integer*8, allocatable :: id2data64(:, :) 
       integer :: ncid, status
-      integer :: d2dims(2), d3dims(3) 
-      INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
+      integer :: d2dims(2), d3dims(3), d3dims_bm(3) 
+      INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid, g_dimid  
+                         ! g_dimid is group for BeamLatitude/BeamLongitude
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
+      INTEGER(KIND=4) :: sol_varid, bmlat_varid, bmlon_varid  
       INTEGER(KIND=4) :: bt_varid, adi_varid
 
       character(len=9) :: dtime  ! d20120302
@@ -56,11 +58,14 @@
       ! scale to be added
       
       !Define the dimensions.
+      ng=5 ! hardcoded for BeamLatitude/BeamLongitude. 
       call check(nf90_def_dim(ncid, "nchannel", nx, x_dimid))
       call check(nf90_def_dim(ncid, "nfovs", ny, y_dimid))
       call check(nf90_def_dim(ncid, "nscans", nz, z_dimid))
+      call check(nf90_def_dim(ncid, "ngroups", ng, g_dimid))
       d3dims=(/ x_dimid, y_dimid, z_dimid /)
       d2dims=(/ y_dimid, z_dimid /)
+      d3dims_bm=(/ g_dimid, y_dimid, z_dimid /) ! for BeamLatitude/BeamLongitude.
 
       ! Define all the variables 
       call check(nf90_def_var(ncid, "AntennaTemperature", &
@@ -71,6 +76,12 @@
              NF90_FLOAT, d2dims, lat_varid, deflate_level=6)
       status=nf90_def_var(ncid, "SatelliteZenithAngle", &
              NF90_FLOAT, d2dims, sza_varid, deflate_level=6)
+      call check(nf90_def_var(ncid, "SolarZenithAngle", &
+             NF90_FLOAT, d2dims, sol_varid, deflate_level=6))
+      call check(nf90_def_var(ncid, "BeamLatitude", &
+             NF90_FLOAT, d3dims_bm, bmlat_varid, deflate_level=6))
+      call check(nf90_def_var(ncid, "BeamLongitude", &
+             NF90_FLOAT, d3dims_bm, bmlon_varid, deflate_level=6))
       call check(nf90_def_var(ncid, "BeamTime", &
              NF90_INT64, d2dims, bt_varid, deflate_level=6))
              !NF90_INT, d2dims, bt_varid, deflate_level=6)
@@ -106,12 +117,46 @@
      !get 2D data
       call merge_data("/All_Data/ATMS-SDR-GEO_All/SatelliteZenithAngle", gatmo_dir, &
             gatmo_files_in_bin, nf_in_bin, data_buff, nx, ny, nz)
-      ! scale to be added
 
       allocate(d2data(nx, ny))
       d2data = data_buff(1:nx, 1:ny, 1)
       status=nf90_put_var(ncid, sza_varid, d2data)
       deallocate(d2data)
+
+     !get 2D data
+      call merge_data("/All_Data/ATMS-SDR-GEO_All/SolarZenithAngle", gatmo_dir, &
+            gatmo_files_in_bin, nf_in_bin, data_buff, nx, ny, nz)
+
+      allocate(d2data(nx, ny))
+      d2data = data_buff(1:nx, 1:ny, 1)
+      status=nf90_put_var(ncid, sol_varid, d2data)
+      deallocate(d2data)
+
+      !get 3D data 
+      call merge_data("/All_Data/ATMS-SDR-GEO_All/BeamLatitude", gatmo_dir, & 
+            gatmo_files_in_bin, nf_in_bin, data_buff, ng, ny, nz)  
+      !double check ng=5
+      if ( ng .ne. 5) then 
+         write(*, *)"ng!=5 ... something is wrong" 
+         stop
+      end if
+      allocate(d3data(ng, ny, nz)) 
+      d3data = data_buff(1:ng, 1:ny, 1:nz) 
+      status=nf90_put_var(ncid, bmlat_varid, d3data)
+      deallocate(d3data) 
+
+      !get 3D data
+      call merge_data("/All_Data/ATMS-SDR-GEO_All/BeamLongitude", gatmo_dir, &
+            gatmo_files_in_bin, nf_in_bin, data_buff, ng, ny, nz)
+      !double check ng=5
+      if ( ng .ne. 5) then
+         write(*, *)"ng!=5 ... something is wrong"
+         stop
+      end if
+      allocate(d3data(ng, ny, nz))
+      d3data = data_buff(1:ng, 1:ny, 1:nz)
+      status=nf90_put_var(ncid, bmlon_varid, d3data)
+      deallocate(d3data)
 
       ! special handliing of BeamTime and A/Descending Indicator 
       call merge_beamtime_adflag_data(tatms_dir, tatms_files_in_bin, &
