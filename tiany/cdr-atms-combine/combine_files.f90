@@ -1,8 +1,8 @@
 
-! Combine a list of h5 files and save to netcdf 
+! Combine a list of h5 files and save to netcdf as outf 
 
       subroutine  combine_files(gatmo_files_in_bin, tatms_files_in_bin, &
-            nf_in_bin, gatmo_dir, tatms_dir, output_dir)
+            nf_in_bin, gatmo_dir, tatms_dir, outf)
 
       use netcdf 
 
@@ -15,7 +15,6 @@
       character(len=1064) :: tatms_files_in_bin(MAX_FILES_PER_DAY)
       character(len=1064) :: gatmo_dir
       character(len=1064) :: tatms_dir
-      character(len=1064) :: output_dir
       character(len=1064) :: outf 
       real*4 :: data_buff(MAX_NX, MAX_NY, MAX_NZ*200)    
       integer (kind=8)   :: time_buff(MAX_NX, MAX_NY, MAX_NZ*200)
@@ -31,25 +30,12 @@
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
       INTEGER(KIND=4) :: sol_varid, bmlat_varid, bmlon_varid  
       INTEGER(KIND=4) :: bt_varid, adi_varid
-
-      character(len=9) :: dtime  ! d20120302
-      character(len=8) :: stime  ! start time string of combined file, t2034286 
-      character(len=8) :: etime  ! end time string of combined file , e2217243
- 
-      dtime=gatmo_files_in_bin(1)(11:19) 
-      stime=gatmo_files_in_bin(1)(21:28) 
-      etime=gatmo_files_in_bin(nf_in_bin)(30:37) 
-      ! construct output file name
-      ! e.g., COMBO_npp_d20120302_t2034286_e2217243_b01794_c20191106092131140068_ADu_dev.nc
-      ! NPP_ATMS_d20120302_t1708393_e1851323.nc
-      outf="NPP_ATMS_"//dtime//"_"//stime//"_"//etime//".nc" 
-      write(*, *) trim(outf) 
       
       !open netcdf for saving variables 
       ! 10/4/2024: critcal: open it as NF90_NETCDF4, so we can use
       ! NF90_INT64 data types. 
       !status=nf90_create(trim(output_dir)//"/"//trim(outf), NF90_CLOBBER, ncid)
-      call check(nf90_create(trim(output_dir)//"/"//trim(outf), NF90_NETCDF4, ncid))
+      call check(nf90_create(trim(outf), NF90_NETCDF4, ncid))
       !call check(nf90_set_fill(ncid, nf90_nofill, oldmode))
      
       !get 3D data first, so we can define the dimensions 

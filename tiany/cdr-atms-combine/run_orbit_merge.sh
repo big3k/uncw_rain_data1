@@ -22,7 +22,7 @@
 #data location above yyyy/yyyymmdd/
 daily_gatmo_dir="/data1/tiany/cdr-atms-combine/test_input/gatmo"
 daily_tatms_dir="/data1/tiany/cdr-atms-combine/test_input/tatms"
-daily_output_dir="/tmp/"   # make sure user has write permission 
+daily_output_dir="/tmp"   # make sure user has write permission 
 
 sday=20120302  # start day
 eday=20120303  # end day 
@@ -76,26 +76,31 @@ while [ $s_orbit_num -le $e_orbit_num ]; do
    orbit_date=`head -1 $tmpdir/gatmo_${orbit_in}.txt |xargs basename |cut -c12-19` #20120303
    orbit_year=`date -u -d "$orbit_date" +%Y`  # 2012
  fi
+ orbit_edate=`tail -1 $tmpdir/gatmo_${orbit_in}.txt |xargs basename |cut -c12-19` #20120303
 
+ let s_orbit_num=s_orbit_num+1  # ready to move on to next orbit
+
+ # check to make sure files are not empty 
+ test -s $tmpdir/gatmo_${orbit_in}.txt || \
+ { echo orbit files for ${orbit_in} are empty. skip; continue; }
  # check to make sure the two files have matching data
  cat $tmpdir/gatmo_${orbit_in}.txt |xargs -n1 basename |cut -c11-45 > $tmpdir/time_gatmo_${orbit_in}.txt
  cat $tmpdir/tatms_${orbit_in}.txt |xargs -n1 basename |cut -c11-45 > $tmpdir/time_tatms_${orbit_in}.txt
  cmp -s $tmpdir/time_gatmo_${orbit_in}.txt $tmpdir/time_tatms_${orbit_in}.txt || \
- { echo orbit files for ${orbit_in} do not match; continue; }
+ { echo orbit files for ${orbit_in} do not match. skip; continue; }
 
  nfiles=`cat $tmpdir/gatmo_${orbit_in}.txt |wc -l` 
  # Each orbit's date is marked by the date of the first h5 file 
- echo $orbit_in, $orbit_date, $orbit_year, $tmpdir/gatmo_${orbit_in}.txt, \
-      $tmpdir/tatms_${orbit_in}.txt, nfiles=$nfiles
+ echo orbit=$orbit_in, $orbit_date-$orbit_edate, nfiles=$nfiles
  
  stime=`head -1 $tmpdir/time_gatmo_${orbit_in}.txt |cut -c12-18`
  etime=`tail -1 $tmpdir/time_gatmo_${orbit_in}.txt |cut -c21-27`
  #now run merge
  mkdir -p $daily_output_dir/$orbit_year/$orbit_date/ 
  outfile=$daily_output_dir/$orbit_year/$orbit_date/NPP_ATMS_d${orbit_date}_t${stime}_e${etime}_${orbit_out}.nc
- # ./merge_npp_atms_daily $tmpdir/gatmo_${orbit_in}.txt $tmpdir/tatms_${orbit_in}.txt $outfile
+ echo "    Output file: $outfile" 
+ ./merge_npp_atms_daily $tmpdir/gatmo_${orbit_in}.txt $tmpdir/tatms_${orbit_in}.txt $outfile
   
- let s_orbit_num=s_orbit_num+1  # move on to next orbit
 
 done  # all the orbits are done 
 
