@@ -1,0 +1,63 @@
+# 
+# This is the only file that needs user's customization 
+# 
+# Algorithm outline: there are four types of data: 
+# raw:      downloaded GFS grib2 files. Satellite .SV files in big-endian before swapped. 
+# input:    .bin files extracted from GFS grib. Satellite .SV files swappped. 
+# params:   static data, e.g., calibration paparameters, meta data, etc. 
+# output:   .nc files containing calibrated data. 
+
+# Convention: 
+# 1. only raw data locations are specified by the user
+# 2. input, and output data locations are under "input/" and "output/" of 
+#    the $top_dir 
+
+#============== Start of User Configuration ===========================
+#---------------------------------------------------------------------
+# Where everything except raw data is located under: 
+top_dir=/data1/tiany/cdr-icdr-tian-version/
+
+#---------------------------------------------------------------------
+# Time range. yyyymmdd
+start_day=20240801
+end_day=20240831
+
+#---------------------------------------------------------------------
+# GFS raw data location
+# GFS raw file example: 
+# /data2/cdr/cdr-example-data/gfs/20240830/gfs_3_20240830_1200_000.grb2
+
+gfs_raw_dir=/data2/cdr/cdr-example-data/gfs/
+
+#---------------------------------------------------------------------
+# GFS input data location
+# GFS input file example: 
+# ./input/proc_avn/20240830/avn_ts2m30.bin
+
+#---------------------------------------------------------------------
+# Top level dir of satallite raw data: 
+# Example file: 
+# /data2/cdr/unswapped/amsua/aug2024/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
+# /data2/cdr/unswapped/mhs/aug2024/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
+
+sat_raw_dir=/data2/cdr/unswapped/
+
+#---------------------------------------------------------------------
+# Top level dir of swapped satallite data:
+# Example file:
+# ./input/swapped/amsua/aug2024/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
+# ./input/swapped/mhs/aug2024/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
+
+#---------------------------------------------------------------------
+# Where wgrib2 is located
+
+grib_dir=/usr/bin/
+
+#============== End of User Configuration ============================
+export PATH=$PATH:$grib_dir
+
+
+
+
+
+
