@@ -1,0 +1,11 @@
+
+if [[ $AMSUA_MOA -gt 0 ]] ; then
+  cd $newcomer
+  /disk2/pub/mspps/1b/dds/newcomer/swap_endian_1b.pl -s Structure_AMSUA_1b -f file_list_AMSUA_MOA -d .
+fi
+
+if [[ $MHS_MOA -gt 0 ]] ; then
+  cd $newcomer
+  /disk2/pub/mspps/1b/dds/newcomer/swap_endian_1b.pl -s Structure_MHS_1b -f file_list_MHS_MOA -d .
+fi
+
