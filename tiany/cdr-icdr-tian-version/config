@@ -1,4 +1,4 @@
-# 
+# V1.0, 20241102
 # This is the only file that needs user's customization 
 # 
 # Algorithm outline: there are four types of data: 
@@ -20,7 +20,7 @@ top_dir=/data1/tiany/cdr-icdr-tian-version/
 #---------------------------------------------------------------------
 # Time range. yyyymmdd
 start_day=20240801
-end_day=20240831
+end_day=20240802
 
 #---------------------------------------------------------------------
 # GFS raw data location
@@ -32,21 +32,23 @@ gfs_raw_dir=/data2/cdr/cdr-example-data/gfs/
 #---------------------------------------------------------------------
 # GFS input data location
 # GFS input file example: 
-# ./input/proc_avn/20240830/avn_ts2m30.bin
+# ./input/proc_avn/20240830/avn_ts2m15.bin
 
 #---------------------------------------------------------------------
 # Top level dir of satallite raw data: 
 # Example file: 
 # /data2/cdr/unswapped/amsua/aug2024/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
 # /data2/cdr/unswapped/mhs/aug2024/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
+# Better to use the following format, for future revsion: 
+# /data2/cdr/unswapped/mhs/noaa-18/20240830/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
 
 sat_raw_dir=/data2/cdr/unswapped/
 
 #---------------------------------------------------------------------
-# Top level dir of swapped satallite data:
+# Swapped 1b data location: 
+# $top_dir/input/swapped/$sensor/$sat/$yyyymmdd/
 # Example file:
-# ./input/swapped/amsua/aug2024/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
-# ./input/swapped/mhs/aug2024/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
+# ./input/swapped/amsua/noaa-18/20240830/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
 
 #---------------------------------------------------------------------
 # Where wgrib2 is located
@@ -55,9 +57,21 @@ grib_dir=/usr/bin/
 
 #============== End of User Configuration ============================
 export PATH=$PATH:$grib_dir
+tmpdir=$top_dir/tmp/
+
+declare -A sat_fname 
+declare -A sensor_fname 
+declare -A struct_fname # for swap code
 
 
 
+sat_fname["metop-a"]="NK"   # need to check 
+sat_fname["noaa-18"]="NN"
+sat_fname["noaa-19"]="NP"
 
+sensor_fname["amsua"]="AMAX"
+sensor_fname["mhs"]="MHSX"
 
+struct_fname["amsua"]=$top_dir/code/swap_endian/Structure_AMSUA_1b
+struct_fname["mhs"]=$top_dir/code/swap_endian/Structure_MHS_1b
 
