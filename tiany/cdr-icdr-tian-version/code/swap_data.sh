@@ -36,7 +36,7 @@ while [ $iday -le $end_day ]; do
  # swap one day at a time, to keep input and output directories in sync
  flist_f=$flist_dir/swap_flist_${iday}.txt
  ls $sat_raw_dir/$sensor/$mmmyyyy/NSS.${fsensor}.${fsat}.${Dyyddd}.* > $flist_f 
- out_dir=$top_dir/input/swapped/$sensor/$mmmyyyy/
+ out_dir=$top_dir/input/swapped/$sensor/$sat/$yyyymmdd/ 
  mkdir -p $out_dir
  $top_dir/code/swap_endian/swap_endian_1b.pl -s $struct_f -f $flist_f -d $out_dir 
 
