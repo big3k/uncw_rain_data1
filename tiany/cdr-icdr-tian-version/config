@@ -20,7 +20,14 @@ top_dir=/data1/tiany/cdr-icdr-tian-version/
 #---------------------------------------------------------------------
 # Time range. yyyymmdd
 start_day=20240801
-end_day=20240802
+end_day=20240831
+
+#---------------------------------------------------------------------
+# Satellites to process: separated by spaces. allowed values are: 
+# noaa-18, noaa-19, metop-a. 
+# Example: 
+# sats="noaa-18, noaa-19, metop-a" # metop-a has not been tested
+sats="noaa-18 noaa-19" 
 
 #---------------------------------------------------------------------
 # GFS raw data location
@@ -29,9 +36,7 @@ end_day=20240802
 
 gfs_raw_dir=/data2/cdr/cdr-example-data/gfs/
 
-#---------------------------------------------------------------------
-# GFS input data location
-# GFS input file example: 
+# Processed GFS data will be located at ./input/proc_avn/, for example:  
 # ./input/proc_avn/20240830/avn_ts2m15.bin
 
 #---------------------------------------------------------------------
@@ -39,8 +44,6 @@ gfs_raw_dir=/data2/cdr/cdr-example-data/gfs/
 # Example file: 
 # /data2/cdr/unswapped/amsua/aug2024/NSS.AMAX.NN.D24232.S1718.E1909.B9922425.SV
 # /data2/cdr/unswapped/mhs/aug2024/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
-# Better to use the following format, for future revsion: 
-# /data2/cdr/unswapped/mhs/noaa-18/20240830/NSS.MHSX.NP.D24244.S0200.E0352.B8022122.SV
 
 sat_raw_dir=/data2/cdr/unswapped/
 
@@ -56,14 +59,13 @@ sat_raw_dir=/data2/cdr/unswapped/
 grib_dir=/usr/bin/
 
 #============== End of User Configuration ============================
+
 export PATH=$PATH:$grib_dir
 tmpdir=$top_dir/tmp/
 
 declare -A sat_fname 
 declare -A sensor_fname 
 declare -A struct_fname # for swap code
-
-
 
 sat_fname["metop-a"]="NK"   # need to check 
 sat_fname["noaa-18"]="NN"

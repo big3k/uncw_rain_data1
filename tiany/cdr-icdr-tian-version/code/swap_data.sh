@@ -4,7 +4,7 @@
 # Example: $0 amsua noaa-18
 [ $# -eq 2 ] || { echo "Usage: $0 sensor_name sat_name"; exit -1; } 
 
-. ../config
+. ./config
 
 sensor=$1
 sat=$2

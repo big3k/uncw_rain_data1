@@ -1,10 +1,10 @@
 #! /bin/bash
 # Function: Extract AVN fields from GFS file for the given day range. 
-# Note: need to process one extra day to the end, b/c eveyday's 24Z needs to be 
-#  present which is next day's 00Z 
+# Note: need to process one extra day to the end, b/c eveyday's 24-45Z need to be 
+#  present which is next day's 00-21Z 
 # Usage:  $0 
 
-. ../config
+. ./config
 
 # input files example: 
 # $gfs_raw_dir/20240830/gfs_3_20240830_0000_000.grb2
