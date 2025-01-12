@@ -6,6 +6,7 @@ function do_step3(data_loc1, data_loc2, save_loc)
 %data_loc2='/data1/tiany/m2m-merge-version3-20241206/data/for-franklin-no-combine/step2-propogated-to-this-moment/'; 
 
 %save_loc='/data1/tiany/m2m-merge-version3-20241206/data/for-franklin-no-combine/step3-merged-at-this-moment/'; 
+mkdir(save_loc); 
 fig_loc=[save_loc, '/figures/']; 
 mkdir(fig_loc); 
 
@@ -20,10 +21,16 @@ filelist2=dir([data_loc2,'*.mat']);
 
 for ijk=1:length(filelist1)
 
-    ijk
+    disp(['Doing file #', num2str(ijk), ' of ', num2str(length(filelist1))]); 
 
     file_name1=filelist1(ijk).name;
+    disp(['loading segmented file: ', data_loc1, file_name1]); 
     load([data_loc1,file_name1]);
+
+    event=hur_case; % case file content (not "event" anymore).
+    clear hur_case;
+    event.pr=event.rain;
+
     A1=event.pr;
     lon=event.lon;
     lat=event.lat;
@@ -49,15 +56,15 @@ for ijk=1:length(filelist1)
 
         for i=1:length(K1)
 
+            disp(['loading propagated file: ', data_loc2, filelist2(K1(i)).name]); 
             load([data_loc2,filelist2(K1(i)).name]);
 
             %YDT figure
-            figure('visible', 'off');
-            h1=pcolor(lon,lat,moved_event.rate);
-            colormap jet;
-            caxis([0,15]);
-            set(h1,'LineStyle','none');
-
+            %figure('visible', 'off');
+            %h1=pcolor(lon,lat,moved_event.rate);
+            %colormap jet;
+            %caxis([0,15]);
+            %set(h1,'LineStyle','none');
 
             rate=moved_event.rate;
             tmp=moved_event.time_diff.*ones(size(rate));
@@ -128,6 +135,7 @@ for ijk=1:length(filelist1)
         %YDT stop
         %save out the merged PMW data
         close all;
+        disp(['saving merged file: ', save_loc, file_name1, '-merged.mat']); 
         save([save_loc,file_name1,'-merged.mat'],'merged');
 
         clearvars -except data_loc1 data_loc2 save_loc fig_loc filelist1 filelist2 ijk;
@@ -135,3 +143,6 @@ for ijk=1:length(filelist1)
     end
 
 end
+
+end % function 
+

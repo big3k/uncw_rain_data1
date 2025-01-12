@@ -13,6 +13,7 @@ function do_step2(data_loc, save_loc)
 
 %data_loc='/data1/tiany/m2m-merge-version2/daily-20230828-segment-franklin-no-combine/'; 
 %save_loc='/data1/tiany/m2m-merge-version3-20241206/data/for-franklin-no-combine/step2-propogated-to-this-moment/'; 
+mkdir(save_loc); 
 fig_loc=[save_loc, '/figures/']; 
 mkdir(fig_loc); 
 
@@ -491,6 +492,8 @@ for ijk=1:length(filelist)
     clear K4 time1 event1;
 end
 
+
+end %function 
 
 
 

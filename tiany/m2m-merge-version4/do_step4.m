@@ -1,6 +1,6 @@
 %step4, segment merged image
 %*******************************************************
-function do_step3(data_loc1, save_loc)
+function do_step4(data_loc1, save_loc)
 
 % e.g. 
 %data_loc1='/data1/tiany/m2m-merge-version3-20241206/data/for-franklin-no-combine/step3-merged-at-this-moment/'; 
@@ -15,6 +15,15 @@ filelist=dir([data_loc1,'*.mat']);
 %get rid of the filename with TROPICS
 ix1=(contains({filelist.name},{'TROPICS'}));
 filelist(ix1)=[];
+
+% Compute the mean lat/lon for plotting in a 20x20 box
+[lat0, lon0] = find_latlon_from_filelist(filelist);
+clat=round(mean(lat0)); 
+clon=round(mean(lon0)); 
+lat1=clat-5;   % [-90, 90] limit to be implemented 
+lat2=clat+5; 
+lon1=clon-5;   % [0, 360] wrap-around to be implemented 
+lon2=clon+5;    
 
 %*****************************
 %get time from file name
@@ -37,24 +46,43 @@ time=datenum(time,'yyyymmdd-HHMM');
 %no propogation file
 sen_name=zeros(size(time));
 
+%YDT: parse values from filename. 
+% v2 deals with format: 
+%  event.20230828-2310.lon-n070.lat-p28.F17.SSMIS.swath.086775.mat-merged.mat
+% this version needs to deal with format: 
+%  event.20230828-2310.lon-n071.lat-p29-F17.mat-merged.mat 
+
 for i=1:length(filelist)
     tp1=filelist(i).name;
     K2=strfind(tp1,'.');
 
+    disp(['step4: processing ', tp1]); 
     TF1=contains(tp1,'TROPICS');
 
     if TF1
-        tp2=tp1(K2(4)+1:K2(5)-3);
+        tp2=tp1(K2(4)+1:K2(5)-3);  % no TROPICS for now
     else
-        tp2=tp1(K2(5)+1:K2(6)-1);
+        %tp2=tp1(K2(5)+1:K2(6)-1);
+        % tp1='event.20230828-2310.lon-n071.lat-p29-F17.mat-merged.mat'
+        parts=split(tp1, '-');   % parts{5}: 'F17.mat' 
+        sensor=split(parts{5}, '.'); 
+        tp2=sensor{1};  % 'F17'
     end
 
-    tf1=strcmp(tp2,'GMI');
-    tf2=strcmp(tp2,'AMSR2');
-    tf3=strcmp(tp2,'SSMIS');
-    tf4=strcmp(tp2,'MHS');
-    tf5=strcmp(tp2,'ATMS');
-    tf6=strcmp(tp2,'TROPICS');
+    %tf1=strcmp(tp2,'GMI');
+    %tf2=strcmp(tp2,'AMSR2');
+    %tf3=strcmp(tp2,'SSMIS');
+    %tf4=strcmp(tp2,'MHS');
+    %tf5=strcmp(tp2,'ATMS');
+    %tf6=strcmp(tp2,'TROPICS');
+
+    % new code
+    tf1=strcmp(tp2,'GPM');  % GMI
+    tf2=strcmp(tp2,'GCOMW1');  % AMSR2 
+    tf3=strcmp(tp2,'F16') | strcmp(tp2,'F17') | strcmp(tp2,'F18') ; % SSMIS
+    tf4=strcmp(tp2,'NOAA19') | strcmp(tp2,'METOPB') | strcmp(tp2,'METOPC');  % MHS
+    tf5=strcmp(tp2,'NOAA20') | strcmp(tp2,'NOAA21') | strcmp(tp2,'NPP');   % ATMS
+    tf6=strcmp(tp2,'TROPICS'); % not dealt with for now
 
 
     if tf1==1 %GMI
@@ -98,9 +126,9 @@ time_end=datenum(datestr( (max(time)+time_interval), 'yyyy-mm-dd HH:00:00'));
 time_loop=time_start:time_interval:time_end;
 
 for kk1=1:length(time_loop)-1
-    kk1
 
-    disp(datestr(time_loop(kk1),'yyyymmdd-HHMM'));
+    disp(['Processing ', num2str(kk1), ' of ', num2str(length(time_loop)-1), ...
+            ' time steps. Time: ' datestr(time_loop(kk1),'yyyymmdd-HHMM')]);
     time_center=(time_loop(kk1)+time_loop(kk1+1))/2;
 
     ix1=time>time_loop(kk1)&time<=time_loop(kk1+1);
@@ -124,6 +152,7 @@ for kk1=1:length(time_loop)-1
         %only one image in this hour
 
         %YDT figure(1)
+        clf; 
         figure('visible', 'off');
         %YDT axes('position',POS(kk1,:));
         file_name=filelist(ix1).name;
@@ -149,11 +178,11 @@ for kk1=1:length(time_loop)-1
 
         axis equal tight;
 
-        set(gca,'xtick',-74:2:-64);
-        set(gca,'xtickLabel',-74:2:-64,'FontSize',4)
+        set(gca,'xtick',lon1:2:lon2);
+        set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8)
 
-        set(gca,'ytick',22:2:34);
-        set(gca,'ytickLabel',22:2:34,'FontSize',4)
+        set(gca,'ytick',lat1:2:lat2);
+        set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
         xlim([-74,-64]);
         ylim([22,32])
@@ -163,7 +192,7 @@ for kk1=1:length(time_loop)-1
         %****************
         h1=colorbar;
         %YDT set(h1,'position',Cbar_POS(kk1,:));
-        set(h1,'FontSize',4);
+        set(h1,'FontSize',8);
         caxis([0,15]);
         set(h1,'ytick',0:3:15);
         %******************
@@ -183,21 +212,27 @@ for kk1=1:length(time_loop)-1
             %creat the title
             title_name=[time_str2,'-',sate_name];
         else
-            K2=findstr(tp,'.');
-            time_str2=tp(K2(1)+1:K2(2)-1);
-            sate_name=tp(K2(4)+1:K2(5)-1);
+            %K2=findstr(tp,'.');
+            %time_str2=tp(K2(1)+1:K2(2)-1);
+            %sate_name=tp(K2(4)+1:K2(5)-1);
+            %YDT: new filename format: 
+            % event.20230826-1346.lon-n067.lat-p23-METOPB.mat-merged.mat
+            parts=split(tp, '-');   % parts{5}: 'F17.mat' 
+            sensor=split(parts{5}, '.'); 
+            sate_name=sensor{1};  % 'F17'
 
             %creat the title
             title_name=[time_str2,'-',sate_name];
         end
-        %title(title_name,'FontSize',3.5)
+
+        title(title_name,'FontSize',8)
 
         % %if it is TROPICS, make the title red
         TF2=contains(title_name,'TROPICS');
         if TF2
-            title(title_name,'FontSize',3.5,'Color','red')
+            title(title_name,'FontSize',8,'Color','red')
         else
-            title(title_name,'FontSize',3.5)
+            title(title_name,'FontSize',8)
         end
 
         fig_name=[datestr(time_loop(kk1),'yyyymmdd-HHMM'), '.png']; 
@@ -242,6 +277,7 @@ for kk1=1:length(time_loop)-1
 
             load([data_loc1,file_name]);
 
+            clf; 
             figure('visible', 'off');
             %pr=event.pr;
             %pr(pr<=0.1)=NaN;
@@ -262,11 +298,11 @@ for kk1=1:length(time_loop)-1
 
             axis equal tight;
 
-            set(gca,'xtick',-74:2:-64);
-            set(gca,'xtickLabel',-74:2:-64,'FontSize',4)
+            set(gca,'xtick',lon1:2:lon2);
+            set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8)
 
-            set(gca,'ytick',22:2:34);
-            set(gca,'ytickLabel',22:2:34,'FontSize',4)
+            set(gca,'ytick',lat1:2:lat2);
+            set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
             xlim([-74,-64]);
             ylim([22,32])
@@ -276,7 +312,7 @@ for kk1=1:length(time_loop)-1
             %****************
             h1=colorbar;
             %YDT set(h1,'position',Cbar_POS(kk1,:));
-            set(h1,'FontSize',4);
+            set(h1,'FontSize',8);
             caxis([0,15]);
             set(h1,'ytick',0:3:15);
             %******************
@@ -303,14 +339,14 @@ for kk1=1:length(time_loop)-1
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
             end
-            %title(title_name,'FontSize',3.5)
+            %title(title_name,'FontSize',8)
 
             % %if it is TROPICS, make the title red
             TF2=contains(title_name,'TROPICS');
             if TF2
-                title(title_name,'FontSize',3.5,'Color','red')
+                title(title_name,'FontSize',8,'Color','red')
             else
-                title(title_name,'FontSize',3.5)
+                title(title_name,'FontSize',8)
             end
 
            fig_name=[datestr(time_loop(kk1),'yyyymmdd-HHMM'), '.png']; 
@@ -339,6 +375,7 @@ for kk1=1:length(time_loop)-1
             disp(['---- file selected: ', file_name]); 
             load([data_loc1,file_name]);
 
+            clf; 
             figure('visible', 'off');
             %pr=event.pr;
             %pr(pr<=0.1)=NaN;
@@ -359,11 +396,11 @@ for kk1=1:length(time_loop)-1
 
             axis equal tight;
 
-            set(gca,'xtick',-74:2:-64);
-            set(gca,'xtickLabel',-74:2:-64,'FontSize',4)
+            set(gca,'xtick',lon1:2:lon2);
+            set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8)
 
-            set(gca,'ytick',22:2:34);
-            set(gca,'ytickLabel',22:2:34,'FontSize',4)
+            set(gca,'ytick',lat1:2:lat2);
+            set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
             xlim([-74,-64]);
             ylim([22,32])
@@ -373,7 +410,7 @@ for kk1=1:length(time_loop)-1
             %****************
             h1=colorbar;
             %YDT set(h1,'position',Cbar_POS(kk1,:));
-            set(h1,'FontSize',4);
+            set(h1,'FontSize',8);
             caxis([0,15]);
             set(h1,'ytick',0:3:15);
             %******************
@@ -400,14 +437,14 @@ for kk1=1:length(time_loop)-1
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
             end
-            %title(title_name,'FontSize',3.5)
+            %title(title_name,'FontSize',8)
 
             % %if it is TROPICS, make the title red
             TF2=contains(title_name,'TROPICS');
             if TF2
-                title(title_name,'FontSize',3.5,'Color','red')
+                title(title_name,'FontSize',8,'Color','red')
             else
-                title(title_name,'FontSize',3.5)
+                title(title_name,'FontSize',8)
             end
             
             fig_name=[datestr(time_loop(kk1),'yyyymmdd-HHMM'), '.png']; 
@@ -436,6 +473,7 @@ for kk1=1:length(time_loop)-1
             disp(['---- file selected: ', file_name]); 
             load([data_loc1,file_name]);
 
+            clf; 
             figure('visible', 'off');
             %pr=event.pr;
             %pr(pr<=0.1)=NaN;
@@ -456,11 +494,11 @@ for kk1=1:length(time_loop)-1
 
             axis equal tight;
 
-            set(gca,'xtick',-74:2:-64);
-            set(gca,'xtickLabel',-74:2:-64,'FontSize',4)
+            set(gca,'xtick',lon1:2:lon2);
+            set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8)
 
-            set(gca,'ytick',22:2:34);
-            set(gca,'ytickLabel',22:2:34,'FontSize',4)
+            set(gca,'ytick',lat1:2:lat2);
+            set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
             xlim([-74,-64]);
             ylim([22,32])
@@ -470,7 +508,7 @@ for kk1=1:length(time_loop)-1
             %****************
             h1=colorbar;
             %YDT set(h1,'position',Cbar_POS(kk1,:));
-            set(h1,'FontSize',4);
+            set(h1,'FontSize',8);
             caxis([0,15]);
             set(h1,'ytick',0:3:15);
             %******************
@@ -497,14 +535,14 @@ for kk1=1:length(time_loop)-1
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
             end
-            %title(title_name,'FontSize',3.5)
+            %title(title_name,'FontSize',8)
 
             % %if it is TROPICS, make the title red
             TF2=contains(title_name,'TROPICS');
             if TF2
-                title(title_name,'FontSize',3.5,'Color','red')
+                title(title_name,'FontSize',8,'Color','red')
             else
-                title(title_name,'FontSize',3.5)
+                title(title_name,'FontSize',8)
             end
 
             fig_name=[datestr(time_loop(kk1),'yyyymmdd-HHMM'), '.png']; 
@@ -522,6 +560,7 @@ for kk1=1:length(time_loop)-1
         filelist1=filelist(1);
 
         %YDT figure(1)
+        clf; 
         figure('visible', 'off');
         %YDT axes('position',POS(kk1,:));
         file_name=filelist(1).name;
@@ -549,11 +588,11 @@ for kk1=1:length(time_loop)-1
 
         axis equal tight;
 
-        set(gca,'xtick',-74:2:-64);
-        set(gca,'xtickLabel',-74:2:-64,'FontSize',4)
+        set(gca,'xtick',lon1:2:lon2);
+        set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8)
 
-        set(gca,'ytick',22:2:34);
-        set(gca,'ytickLabel',22:2:34,'FontSize',4)
+        set(gca,'ytick',lat1:2:lat2);
+        set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
         xlim([-74,-64]);
         ylim([22,32])
@@ -563,14 +602,14 @@ for kk1=1:length(time_loop)-1
         %****************
         h1=colorbar;
         %YDT set(h1,'position',Cbar_POS(kk1,:));
-        set(h1,'FontSize',4);
+        set(h1,'FontSize',8);
         caxis([0,15]);
         set(h1,'ytick',0:3:15);
         %******************
         set(h1,'LineWidth',0.1);
 
         %********************************
-        title([title_name, '-NoData'],'FontSize',3.5)
+        title([title_name, '-NoData'],'FontSize',8)
 
         disp(['saving ', title_name, '-NoData.png']); 
         exportgraphics(gcf, [fig_loc, title_name, '-NoData.png'],'Resolution',120);
@@ -579,6 +618,7 @@ for kk1=1:length(time_loop)-1
 end
 
 
+end % end function 
 
 
 
