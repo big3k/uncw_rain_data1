@@ -184,8 +184,8 @@ for kk1=1:length(time_loop)-1
         set(gca,'ytick',lat1:2:lat2);
         set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
-        xlim([-74,-64]);
-        ylim([22,32])
+        xlim([lon1,lon2]);
+        ylim([lat1,lat2])
 
         xtickangle(0);
         set(gca,'LineWidth',0.2);
@@ -203,6 +203,7 @@ for kk1=1:length(time_loop)-1
         %add title
         %parse time and satellite name from the file name
         tp=file_name;
+        disp(['do_step4, line 205, tp: ', tp]); 
         if contains(tp,'TROPICS')
 
             K2=findstr(tp,'.');
@@ -212,8 +213,8 @@ for kk1=1:length(time_loop)-1
             %creat the title
             title_name=[time_str2,'-',sate_name];
         else
-            %K2=findstr(tp,'.');
-            %time_str2=tp(K2(1)+1:K2(2)-1);
+            K2=findstr(tp,'.');
+            time_str2=tp(K2(1)+1:K2(2)-1);
             %sate_name=tp(K2(4)+1:K2(5)-1);
             %YDT: new filename format: 
             % event.20230826-1346.lon-n067.lat-p23-METOPB.mat-merged.mat
@@ -304,8 +305,8 @@ for kk1=1:length(time_loop)-1
             set(gca,'ytick',lat1:2:lat2);
             set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
-            xlim([-74,-64]);
-            ylim([22,32])
+            xlim([lon1,lon2]);
+            ylim([lat1,lat2])
 
             xtickangle(0);
             set(gca,'LineWidth',0.2);
@@ -323,6 +324,7 @@ for kk1=1:length(time_loop)-1
             %add title
             %parse time and satellite name from the file name
             tp=file_name;
+            disp(['do_step4, line 326, tp: ', tp]); 
             if contains(tp,'TROPICS')
 
                 K2=findstr(tp,'.');
@@ -334,7 +336,12 @@ for kk1=1:length(time_loop)-1
             else
                 K2=findstr(tp,'.');
                 time_str2=tp(K2(1)+1:K2(2)-1);
-                sate_name=tp(K2(4)+1:K2(5)-1);
+                %sate_name=tp(K2(4)+1:K2(5)-1);
+                %YDT: new filename format: 
+                % event.20230826-1346.lon-n067.lat-p23-METOPB.mat-merged.mat
+                parts=split(tp, '-');   % parts{5}: 'F17.mat' 
+                sensor=split(parts{5}, '.'); 
+                sate_name=sensor{1};  % 'F17'
 
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
@@ -402,8 +409,8 @@ for kk1=1:length(time_loop)-1
             set(gca,'ytick',lat1:2:lat2);
             set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
-            xlim([-74,-64]);
-            ylim([22,32])
+            xlim([lon1,lon2]);
+            ylim([lat1,lat2])
 
             xtickangle(0);
             set(gca,'LineWidth',0.2);
@@ -421,6 +428,7 @@ for kk1=1:length(time_loop)-1
             %add title
             %parse time and satellite name from the file name
             tp=file_name;
+            disp(['do_step4, line 425, tp: ', tp]); 
             if contains(tp,'TROPICS')
 
                 K2=findstr(tp,'.');
@@ -432,7 +440,12 @@ for kk1=1:length(time_loop)-1
             else
                 K2=findstr(tp,'.');
                 time_str2=tp(K2(1)+1:K2(2)-1);
-                sate_name=tp(K2(4)+1:K2(5)-1);
+                %sate_name=tp(K2(4)+1:K2(5)-1);
+                %YDT: new filename format: 
+                % event.20230826-1346.lon-n067.lat-p23-METOPB.mat-merged.mat
+                parts=split(tp, '-');   % parts{5}: 'F17.mat' 
+                sensor=split(parts{5}, '.'); 
+                sate_name=sensor{1};  % 'F17'
 
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
@@ -500,8 +513,8 @@ for kk1=1:length(time_loop)-1
             set(gca,'ytick',lat1:2:lat2);
             set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
-            xlim([-74,-64]);
-            ylim([22,32])
+            xlim([lon1,lon2]);
+            ylim([lat1,lat2])
 
             xtickangle(0);
             set(gca,'LineWidth',0.2);
@@ -519,6 +532,7 @@ for kk1=1:length(time_loop)-1
             %add title
             %parse time and satellite name from the file name
             tp=file_name;
+            disp(['do_step4, line 524, tp: ', tp]); 
             if contains(tp,'TROPICS')
 
                 K2=findstr(tp,'.');
@@ -530,7 +544,12 @@ for kk1=1:length(time_loop)-1
             else
                 K2=findstr(tp,'.');
                 time_str2=tp(K2(1)+1:K2(2)-1);
-                sate_name=tp(K2(4)+1:K2(5)-1);
+                %sate_name=tp(K2(4)+1:K2(5)-1);
+                %YDT: new filename format: 
+                % event.20230826-1346.lon-n067.lat-p23-METOPB.mat-merged.mat
+                parts=split(tp, '-');   % parts{5}: 'F17.mat' 
+                sensor=split(parts{5}, '.'); 
+                sate_name=sensor{1};  % 'F17'
 
                 %creat the title
                 title_name=[time_str2,'-',sate_name];
@@ -594,8 +613,8 @@ for kk1=1:length(time_loop)-1
         set(gca,'ytick',lat1:2:lat2);
         set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8)
 
-        xlim([-74,-64]);
-        ylim([22,32])
+        xlim([lon1,lon2]);
+        ylim([lat1,lat2])
 
         xtickangle(0);
         set(gca,'LineWidth',0.2);
