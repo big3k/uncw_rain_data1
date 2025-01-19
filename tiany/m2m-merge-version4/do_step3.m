@@ -21,7 +21,7 @@ filelist2=dir([data_loc2,'*.mat']);
 
 for ijk=1:length(filelist1)
 
-    disp(['Doing file #', num2str(ijk), ' of ', num2str(length(filelist1))]); 
+    disp([mfilename, ': Doing file #', num2str(ijk), ' of ', num2str(length(filelist1))]); 
 
     file_name1=filelist1(ijk).name;
     disp(['loading segmented file: ', data_loc1, file_name1]); 

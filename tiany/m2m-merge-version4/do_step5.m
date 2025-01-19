@@ -12,6 +12,13 @@ mkdir(fig_loc);
 
 filelist_all=dir([data_loc,'*.mat']);
 
+% Some cases do not have any propagated/merged files
+if  length(filelist_all) < 1
+    disp([mfilename, ': no propagated/merged files in ', data_loc]);
+    return
+end
+
+
 % Compute the mean lat/lon for plotting in a 10x10 box
 [lat0, lon0] = find_latlon_from_filelist(filelist_all);
 clat=round(mean(lat0));
@@ -112,11 +119,11 @@ for kk1=1:length(time_loop)-1  % start with 1 will crash, as no file earlier tha
 
         axis equal tight;
 
-        set(gca,'xtick',-74:2:-64);
-        set(gca,'xtickLabel',-74:2:-64,'FontSize',12)
+        set(gca,'xtick',lon1:2:lon2);
+        set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8); 
 
-        set(gca,'ytick',22:2:34);
-        set(gca,'ytickLabel',22:2:34,'FontSize',12)
+        set(gca,'ytick',lat1:2:lat2);
+        set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8); 
 
         xlim([lon1,lon2]);
         ylim([lat1,lat2])
@@ -153,11 +160,11 @@ for kk1=1:length(time_loop)-1  % start with 1 will crash, as no file earlier tha
 
         axis equal tight;
 
-        set(gca,'xtick',-74:2:-64);
-        set(gca,'xtickLabel',-74:2:-64,'FontSize',12)
+        set(gca,'xtick',lon1:2:lon2);
+        set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8); 
 
-        set(gca,'ytick',22:2:34);
-        set(gca,'ytickLabel',22:2:34,'FontSize',12)
+        set(gca,'ytick',lat1:2:lat2);
+        set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8); 
 
         xlim([lon1,lon2]);
         ylim([lat1,lat2])
@@ -182,7 +189,6 @@ for kk1=1:length(time_loop)-1  % start with 1 will crash, as no file earlier tha
 
             moved_image=end_image;
         end
-
 
 
         %*************************************************
@@ -479,17 +485,25 @@ for kk1=1:length(time_loop)-1  % start with 1 will crash, as no file earlier tha
 
                 axis equal tight;
 
-                set(gca,'xtick',-74:2:-64);
-                set(gca,'xtickLabel',-74:2:-64,'FontSize',12)
+                set(gca,'xtick',lon1:2:lon2);
+                set(gca,'xtickLabel',lon1:2:lon2,'FontSize',8); 
 
-                set(gca,'ytick',22:2:34);
-                set(gca,'ytickLabel',22:2:34,'FontSize',12)
+                set(gca,'ytick',lat1:2:lat2);
+                set(gca,'ytickLabel',lat1:2:lat2,'FontSize',8); 
 
                 xlim([lon1,lon2]);
                 ylim([lat1,lat2])
 
                 xtickangle(0);
                 set(gca,'LineWidth',0.2);
+
+                h1=colorbar;
+                %YDT set(h1,'position',Cbar_POS(kk1,:));
+                set(h1,'FontSize',8);
+                caxis([0,15]);
+                set(h1,'ytick',0:3:15);
+                %******************
+                set(h1,'LineWidth',0.1);
 
                 clear merged filelist_select;
 
@@ -511,6 +525,7 @@ for kk1=1:length(time_loop)-1  % start with 1 will crash, as no file earlier tha
                 moved.lon=merged.lon; 
                 moved.lat=merged.lat;
 
+                title(time_file_name,'FontSize',8); 
                 disp(['Saving ', save_loc,name_final ]); 
                 save([save_loc,name_final],'moved');
                 exportgraphics(gcf, [fig_loc,name_final,'.png'],'Resolution',120); 

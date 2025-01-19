@@ -10,7 +10,12 @@
 
 function [lat, lon] = find_latlon_from_filelist(infile_list) 
 
+for i=1:length(infile_list)
+    disp([mfilename, ': computing lat/lon box for plotting ', infile_list(i).name]);
+end
+
 location=extractfield(infile_list,'name');
+
 tp=location{1}; %just get the first name, assuming all files have same format
 K2=strfind(tp,'lon');
 K3=strfind(tp,'lat');

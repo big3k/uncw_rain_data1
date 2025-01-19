@@ -473,7 +473,7 @@ for ijk=1:length(filelist)
                     moved_event.time_diff=abs(time1-time(K4(ijk1)))*24*60; %minutes
                     moved_event.max_corr=corr(a1,b1);
                     
-                    display(['--- saving file: ', s1,'-',num2str(ijk1),'.mat']) %show file saved
+                    display([mfilename, ': --- saving file: ', s1,'-',num2str(ijk1),'.mat']) %show file saved
                     save([save_loc,s1,'-',num2str(ijk1),'.mat'],'moved_event');
                  
                     %YDT stop

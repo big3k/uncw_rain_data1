@@ -16,6 +16,12 @@ filelist=dir([data_loc1,'*.mat']);
 ix1=(contains({filelist.name},{'TROPICS'}));
 filelist(ix1)=[];
 
+% Some cases do not have any propagated/merged files
+if  length(filelist) < 1
+    disp([mfilename, ': no propagated/merged files in ', data_loc1]); 
+    return
+end
+
 % Compute the mean lat/lon for plotting in a 20x20 box
 [lat0, lon0] = find_latlon_from_filelist(filelist);
 clat=round(mean(lat0)); 
