@@ -21,11 +21,11 @@ nxd = 128
 chelseaimage = chelsea()
 true_object_np = 100.0*resize(chelseaimage[10:299, 110:399, 2], (nxd, nxd), anti_aliasing=False)
 
-#fig1, axs1 = plt.subplots(2, 3, figsize=(20, 12)) # will crash x11 
-fig1, axs1 = plt.subplots(2, 3) 
+fig1, axs1 = plt.subplots(2, 3, figsize=(20, 12)) # will crash x11 
+#fig1, axs1 = plt.subplots(2, 3) 
 #fig1, axs1 = plt.subplots() 
 plt.tight_layout()
-#fig1.canvas.manager.window.move(0,0) # optional 
+fig1.canvas.manager.window.move(0,0) # optional 
 
 axs1[0, 2].imshow(true_object_np, cmap='Greys_r')
 axs1[0, 2].set_axis_off() 
@@ -57,7 +57,7 @@ class CNN(nn.Module):
             nn.Conv2d(num_channels, num_channels, 3, padding=1), nn.PReLU(), 
             nn.Conv2d(num_channels, 1,            3, padding=1), nn.PReLU() 
         )
-    def foward(self, x): return torch.squeeze(self.CNN(x.unsqueeze(0).unsqueeze(0)))
+    def forward(self, x): return torch.squeeze(self.CNN(x.unsqueeze(0).unsqueeze(0)))
 
 # ==== Now set up a CNN class =============
 
@@ -106,7 +106,7 @@ nrmse_list = list();
 best_nrmse = 10e9 
 
 for ep in range(1000000 +1): 
-    optimizer.zero_grad()
+    optimiser.zero_grad()
     output_image = cnn(input_image) 
 
     # against the noisy, gappy data
@@ -139,11 +139,7 @@ for ep in range(1000000 +1):
         axs1[0, 0].legend(['Error wrt Data', 'Error wrt TRUE']) 
         cv2.waitKey(1)
 
-
-
-
-        axs1[1, 1].set_title('Recon %d, NRMSE=%.2f%%' % (ep, nrmse)) 
-        axs1[1, 1].set_axis_off() 
+ 
 
 
 
