@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Optimization of Microwave Retrievals on 2D</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.2.0/css/dataTables.dateTime.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchbuilder/1.4.0/css/searchBuilder.bootstrap.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/datetime/1.2.0/js/dataTables.dateTime.min.js"></script>
+  <script src="https://cdn.datatables.net/searchbuilder/1.4.0/js/dataTables.searchBuilder.min.js"></script>
+
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+      background-color: #424242;
+    }
+  
+    .nav > li > a { 
+     color: #5bc0de; 
+    }
+
+   .text-left {
+      text-align: left !important;
+    }
+
+    .panel-primary > .panel-heading { 
+     X-color: #000; 
+     X-background-color: #999; 
+    }
+    
+    /* customize the jumbotron's default margins */ 
+     .jumbotron {
+      background-image: url("images/cloud.jpg");
+      background-size: cover;
+      padding: 10px; 
+      padding-left: 10px; 
+      margin-top: 0;
+      margin-bottom: 10;
+    }
+
+    .btn-primary { 
+          background-color: #999; 
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #f2f2f2;
+      padding: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h2> M2M Merging PMW Retrievals</h2>
+ <p> Earth and Ocean Sciences</p>
+ <p> University of North Carolina Wilmington</p>
+</div>
+
+ <div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="btn-group-vertical btn-group-lg" id="top_btns">
+       <button type="button" class="btn btn-primary text-left active" value="2023">All 2023 Cases</button>
+       <button type="button" class="btn btn-primary text-left" value="2022">All 2022 Cases</button>
+       <button type="button" class="btn btn-primary text-left" value="2021">All 2021 Cases</button>
+       <button type="button" class="btn btn-primary text-left" value="2020">All 2020 Cases</button>
+  <!-- 
+       <button type="button" class="btn btn-primary text-left" value="SSMIS">SSMIS</button>
+       <button type="button" class="btn btn-primary text-left" value="AMSR2">AMSR2</button>
+       <button type="button" class="btn btn-primary text-left" value="GMI">GMI</button>
+       <button type="button" class="btn btn-primary text-left" value="n18">N18 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n19">N19 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n20">N20 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="f16">F16 Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="metopa">Metop-A Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="metopb">Metop-B Ocean</button>
+       <button type="button" class="btn btn-primary text-left" value="n19">N19</button>
+       <button type="button" class="btn btn-primary text-left" value="teaching">Teaching and homework</button>
+       <button type="button" class="btn btn-primary text-left" value="projects">Projects and other work</button>
+      -->
+      </div>
+    </div> <!-- col-sm-3 -->
+    <div class="col-sm-9" id="main_text">
+     Background: 
+    </div> <!-- col-sm-9 -->
+  </div> <!-- row -->
+ </div> <!-- container -->
+
+ <script> 
+   var update="2023-11-11";  //Update time, used both to show at bottom and defeat client caching. 
+
+   $.ajaxSetup ({
+    // Disable caching of AJAX responses
+     cache: false
+   });
+
+   $("#top_btns > button").click(
+      function() { 
+        var year=$(this).val();  
+        $("#main_text").load(year + ".html"); 
+        location.hash = this.id + year;
+        //deactivate other buttons
+        $("#top_btns > button").removeClass("active"); 
+        // activate this button
+        $(this).addClass("active"); 
+      }
+  ); 
+ </script>  
+
+<script>
+$( document ).ready(function() {
+   if(window.location.hash) {
+      var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+      $("#main_text").load(hash + ".html");
+      $("#top_btns > button").removeClass("active"); 
+      $("#top_btns > button").filter(function(){return this.value==hash}).addClass("active"); 
+      //alert(hash);
+  } else {
+    //load content for home button when page first loaded 
+    $("#main_text").load("2023.html");
+  }
+    //document.getElementById("update").innerHTML = update;
+});
+</script>  
+
+<!--
+<footer class="container-fluid text-center">
+  <p>Updated: <span id="update"></p>
+</footer>
+-->
+
+
+</body>
+</html>
+
+ 
+
+

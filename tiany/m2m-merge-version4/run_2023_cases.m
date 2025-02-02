@@ -10,14 +10,34 @@ d = dir([CASE_DIR, CASE_YEAR, '/']);
 dfolders = d([d(:).isdir]); 
 % remove '.' and '..' 
 dfolders = dfolders(~ismember({dfolders(:).name},{'.','..'})); 
-% done cases to re-run   
-%dfolders = dfolders(ismember({dfolders(:).name},{ ...
-%        'BEATRIZ', 'BIPARJOY', 'BOLAVEN', 'CALVIN', 'CHENESO'})); 
+% done cases to skip  
+dfolders = dfolders(~ismember({dfolders(:).name},{'FRANKLIN', 'tmp', 'ADRIAN', ...
+        'BEATRIZ', 'BIPARJOY', 'BOLAVEN', 'CALVIN', 'CHENESO'})); 
 % cases to skip b/c they crashed
 dfolders = dfolders(~ismember({dfolders(:).name},{'DAMREY'})); 
 
-%for i=1:length(dfolders) 
-for i=1:10 % rerun 1st 10 cases 
+% Do cases left
+dfolders = dfolders(ismember({dfolders(:).name},{ ...
+'DAMREY',
+'KEVIN',
+'KHANUN',
+'KOINU',
+'LAN',
+'LEE',
+'LIDIA',
+'LOLA',
+'MARGOT',
+'MAWAR',
+'MOCHA',
+'NIGEL',
+'NORMA',
+'OTIS',
+'SAOLA',
+'TALIM',
+'TAMMY',
+'TEJ'})); 
+
+for i=1:length(dfolders) 
    disp(['Doing case: ', dfolders(i).name]);  
    CASE_NAME=dfolders(i).name; 
    do_case(CASE_YEAR, CASE_NAME) 

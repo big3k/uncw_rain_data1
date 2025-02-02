@@ -3,7 +3,7 @@ out_dir=/data1/tiany/m2m-merge-version4/output
 # create index for each case 
 #for case_year in 2023; do 
 #for case_year in 2022; do 
-for case_year in 2020; do 
+for case_year in 2023; do 
    for case_dir in $out_dir/$case_year/*; do 
      echo $case_dir  
      case_name=`basename $case_dir` 
@@ -20,24 +20,23 @@ for case_year in 2020; do
       cd $case_dir/time_interpolated/figures/; ls 
       ) | cut -c1-13 |sort -n |uniq |while read hourly; do 
         echo $case_name $hourly 
-        ts_png=`cd $case_dir/time_sliced/figures/; ls ${hourly}*.png`  
-        ti_png=`cd $case_dir/time_interpolated/figures/; ls ${hourly}*.png`  
+        ts_png=`cd $case_dir/; ls time_sliced/new_figures/${hourly}*.png`  
+        if [ "x$ts_png" == "x" ]; then 
+          ts_png=`cd $case_dir/; ls time_interpolated/new_figures/${hourly}*.png`  
+        fi
       if [ $ncol -eq 1 ]; then 
-        echo "<tr><td><br><br><br><br>Time Sliced<br><br> vs. <br><br>Time Interpolated</td>" >> $case_dir/index.html
+        echo "<tr>" >> $case_dir/index.html
       fi
         cat >> $case_dir/index.html <<EOF
             <td>
               <b>$hourly<b><br>
-              <a href="time_sliced/figures/$ts_png">
-              <img src="time_sliced/figures/$ts_png" width=95%></a> 
-              <br> 
-              <a href="time_interpolated/figures/$ti_png">
-              <img src="time_interpolated/figures/$ti_png" width=95%></a> 
+              <a href="$ts_png">
+              <img src="$ts_png" width=95%></a> 
               <br> &nbsp; 
             </td> 
 EOF
       let ncol=ncol+1
-      if [ $ncol -eq 7 ]; then 
+      if [ $ncol -eq 6 ]; then 
         echo "</tr>" >> $case_dir/index.html
         ncol=1
       fi
