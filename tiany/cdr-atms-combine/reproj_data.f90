@@ -16,11 +16,11 @@
 
       integer  :: nchannel,  nfovs, nscans 
       ! 0.1-deg
-      !real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
-      !integer, parameter :: nc=3600, nr=1800  ! lat/lon grid
+      real, parameter :: lat0=-89.95, lon0=-179.95, res=0.1
+      integer, parameter :: nc=3600, nr=1800  ! lat/lon grid
       ! 0.25-deg
-      real, parameter :: lat0=-89.875, lon0=-179.875, res=0.25
-      integer, parameter :: nc=1440, nr=720  ! lat/lon grid
+      !real, parameter :: lat0=-89.875, lon0=-179.875, res=0.25
+      !integer, parameter :: nc=1440, nr=720  ! lat/lon grid
 
       integer :: ndir, nf, jf, ibin, nf_in_bin, nx, ny, nz, iargc
       integer :: ic, ir, iz , i, j, k
@@ -32,7 +32,7 @@
 
       real*4, allocatable :: bt_data(:, :, :), lon(:, :), lat(:, :) 
       integer*4, allocatable :: id2data(:, :) 
-      integer :: ncid, status
+      integer :: ncid, status, nrec
       integer :: d2dims(2), d3dims(3) 
       INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
@@ -86,11 +86,25 @@
       end do
       write(*, *) "Saving binary format ...", nc, nr
       open(22, file=outf, form="unformatted", access="direct", recl=nc*nr*4)
-      !do k=1, nchannel
-      do k=1, 1 ! only one channel to test
+      do k=1, nchannel
+      !do k=1, 1 ! only one channel to test
         write(22, rec=k) grid_bt(:, :, k) 
       end do 
       close(22)
+
+      ! dumping out raw file. can not catnate 
+      open(24, file=trim(outf)//".raw", form="unformatted", access="direct", &
+           recl=4)
+      nrec=1
+      do k=1, nchannel
+        do j=1, nfovs 
+          do i=1, nscans 
+           write(24, rec=nrec) bt_data(k, j, i) 
+           nrec=nrec+1
+         end do 
+        end do 
+      end do 
+      close(24)
       
       return 
 
