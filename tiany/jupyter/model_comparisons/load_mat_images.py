@@ -1,3 +1,6 @@
+# 4/25/2025: 
+#  Split data into 80/20 here. Test data picked from every 5th row
+ 
 # Keep input data as np.arrary (don't convert to images), and don't scale to 0-1
 
 import os
@@ -90,17 +93,27 @@ def load_dataset(batch_size=16, fullset=True, height=101, width=101):
    print("gmi shape: ", gmi.shape, " ssmis shape: ", ssmis.shape)
    print("max scaled gmi value: ", np.amax(gmi), " max scaled ssmis value: ", np.amax(ssmis))
 
-   train_target = gmi[..., tf.newaxis]
-   train_data = ssmis[..., tf.newaxis]
+   # split train and test data 80/20 here: test data are every 5th row; train data are what left. 
+   train_gmi = np.delete(gmi, np.arange(0, gmi.shape[0], 5), axis=0) 
+   test_gmi = gmi[::5]
+   train_ssmis = np.delete(ssmis, np.arange(0, ssmis.shape[0], 5), axis=0) 
+   test_ssmis = ssmis[::5]
+
+   train_target = train_gmi[..., tf.newaxis]
+   train_data = train_ssmis[..., tf.newaxis]
+
+   test_target = test_gmi[..., tf.newaxis]
+   test_data = test_ssmis[..., tf.newaxis]
  
    print("train_target.shape: ", train_target.shape,  "train_data.shape: ", train_data.shape)
-   print("train_target.dtype: ", train_target.dtype,  "train_data.dtype: ", train_data.dtype)  
+   print("test_target.shape: ", test_target.shape,  "test_data.shape: ", test_data.shape)
    print("max train_target: ", str(np.amax(train_target)), "max train_data: ", str(np.amax(train_data)))
    print("min train_target: ", str(np.amin(train_target)), "min train_data: ", str(np.amin(train_data)))
 
    # Convert to TensorFlow dataset
    batch_size = batch_size 
-   dataset = tf.data.Dataset.from_tensor_slices((train_data, train_target)).batch(batch_size) 
+   train_dataset = tf.data.Dataset.from_tensor_slices((train_data, train_target)).batch(batch_size) 
+   test_dataset = tf.data.Dataset.from_tensor_slices((test_data, test_target)).batch(batch_size) 
 
-   return dataset, scale
+   return train_dataset, test_dataset, scale
 
