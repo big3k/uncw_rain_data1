@@ -100,8 +100,8 @@ print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[
 m_name="model_3bx" 
 old_metrics, new_metrics = my_models.model_3( train_ds, val_ds, scale, epochs=epochs, 
                            loss_f=loss_f, act_f=act_f, m_name=m_name) 
-print(f"==>{m_name}, ssim_loss, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
-print(f"==>{m_name}, ssim_loss, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
+print(f"==>{m_name}, {loss_f}, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
+print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
 # ---------------------------------------
 
 #== cx ======================
@@ -128,8 +128,8 @@ print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[
 m_name="model_3cx" 
 old_metrics, new_metrics = my_models.model_3( train_ds, val_ds, scale, epochs=epochs, 
                            loss_f=loss_f, act_f=act_f, m_name=m_name) 
-print(f"==>{m_name}, ssim_loss, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
-print(f"==>{m_name}, ssim_loss, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
+print(f"==>{m_name}, {loss_f}, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
+print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
 # ---------------------------------------
 
 
@@ -187,8 +187,8 @@ print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[
 m_name="model_3by" 
 old_metrics, new_metrics = my_models.model_3( train_ds, val_ds, scale, epochs=epochs, 
                            loss_f=loss_f, act_f=act_f, m_name=m_name) 
-print(f"==>{m_name}, ssim_loss, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
-print(f"==>{m_name}, ssim_loss, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
+print(f"==>{m_name}, {loss_f}, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
+print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
 # ---------------------------------------
 
 #== cy ======================
@@ -215,8 +215,8 @@ print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[
 m_name="model_3cy" 
 old_metrics, new_metrics = my_models.model_3( train_ds, val_ds, scale, epochs=epochs, 
                            loss_f=loss_f, act_f=act_f, m_name=m_name) 
-print(f"==>{m_name}, ssim_loss, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
-print(f"==>{m_name}, ssim_loss, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
+print(f"==>{m_name}, {loss_f}, {act_f}, pre, {old_metrics[0]:.3f},{old_metrics[1]:.3f}, {old_metrics[2]:.3f}")
+print(f"==>{m_name}, {loss_f}, {act_f}, post,{new_metrics[0]:.3f}, {new_metrics[1]:.3f}, {new_metrics[2]:.3f}") 
 # ---------------------------------------
 
 
