@@ -4,9 +4,11 @@ module constants
 
   integer, parameter :: REC_LENGTH_A = 3679
   integer, parameter :: NUMCHAN_A = 4
-  integer, parameter :: NUMSPOT_A = 30
+  !YDT integer, parameter :: NUMSPOT_A = 30
+  integer, parameter :: NUMSPOT_A = 96   ! ATMS -- to be verified
   integer, parameter :: NCHAR = 20
-  integer, parameter :: MAXSCANLINE_A = 1600
+  !YDT integer, parameter :: MAXSCANLINE_A = 1600
+  integer, parameter :: MAXSCANLINE_A = 3600  ! ATMS -- to be verified 
   integer, parameter :: MAXPCENT = 33
   integer, parameter :: MINSCANLINE_A = 100
   integer, parameter :: PARAMA = 0

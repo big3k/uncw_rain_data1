@@ -12,7 +12,7 @@
 gfortran  -fno-range-check -I/usr/lib64/gfortran/modules -I/usr/include -L/usr/lib64 \
   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 -lnetcdff -Wl,-z,relro -Wl,-z,now \
   -fPIC -Wl,-z,now -Wl,--as-needed -lsz -lz -ldl -lm -Wl,-rpath -Wl,/usr/lib64 \
-  -o main_test main_test.f90 set_sw.f90 constants.f90 geo_time.f90 sys_time.f90 in_params.f90 eswath_mod.f90
+  -o atms_to_fcdr atms_to_fcdr.f90 set_sw.f90 constants.f90 geo_time.f90 sys_time.f90 in_params.f90 eswath_mod.f90
 
 exit
 

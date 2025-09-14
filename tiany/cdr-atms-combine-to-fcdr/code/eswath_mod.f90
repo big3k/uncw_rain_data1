@@ -47,7 +47,8 @@ module eswath_mod
   integer(int8)           :: mask     (MAP_ROWS, MAP_COLS)
   integer(int8)           :: qc_flag  (MAXSCANLINE_A)
   integer(int8)           :: orb_mode (MAXSCANLINE_A)
-  integer(int32)          :: qa_prod  (MAXSCANLINE_A, NUMCHAN_A)  ! was unsigned char
+  !YDT integer(int32)          :: qa_prod  (MAXSCANLINE_A, NUMCHAN_A)  ! was unsigned char
+  integer(int32)          :: qa_prod  (NUMCHAN_A, MAXSCANLINE_A)  ! was unsigned char
   integer(int16)          :: scanneed (MAXSCANLINE_A)
 
   real(real32)            :: lza      (MAXSCANLINE_A, NUMSPOT_A)

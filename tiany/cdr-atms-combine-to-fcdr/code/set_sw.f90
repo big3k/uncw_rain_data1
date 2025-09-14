@@ -5,7 +5,7 @@ module set_sw_mod
   use eswath_mod
   implicit none
   private
-  public :: set_sw
+  public :: set_sw, check
 
 contains
 
@@ -82,7 +82,8 @@ contains
     character(len= NCHAR), dimension(:), allocatable :: scans  ! convenience alias
 
     ! buffers
-    real                    :: data_out(MAXSCANLINE_A, NUMSPOT_A)
+    !YDT real                    :: data_out(MAXSCANLINE_A, NUMSPOT_A)
+    real                    :: data_out(NUMSPOT_A, MAXSCANLINE_A) 
     real                    :: at_tmp
     character(len=1), allocatable :: scan_time_buf(:,:) ! (nscan, NCHAR)
 
@@ -126,7 +127,8 @@ contains
     do_deflate   = 1
     deflate_level= 1
     chsize       = MAXSCANLINE_A/5
-    chunks       = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    !YDT chunks       = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    chunks       = (/  max(1, NUMSPOT_A/5), MAXSCANLINE_A/5 /)
     lat_lim      = (/ -90.0,  90.0 /)
     lon_lim      = (/ -180.0, 180.0 /)
     flag_orb     = (/ 0_1, 1_1 /)
@@ -174,7 +176,11 @@ contains
 
     ! convenience alias
     !YDT scans => str_scantime
-    scans = str_scantime
+    allocate(scans(numscan)) 
+    do i = 1, numscan
+        scans(i) = str_scantime(i)
+    end do 
+      
 
     !------------------------------------------------------------------
     ! Create NetCDF-4 file
@@ -187,10 +193,15 @@ contains
     status = nf90_def_dim(ncid, 'nchar', NCHAR, c_dimid);     call check(status, 'def_dim nchar')
     status = nf90_def_dim(ncid, 'nchan', NUMCHAN_A, ch_dimid);call check(status, 'def_dim nchan')
 
-    dimids      = (/ x_dimid, y_dimid /)
-    cdimids     = (/ x_dimid, c_dimid /)     ! scan_time dims (nscan, nchar) as in C
-    chandimids  = (/ x_dimid, ch_dimid /)
+    ! -- seems need to swap the order 
+    !dimids      = (/ x_dimid, y_dimid /)
+    !cdimids     = (/ x_dimid, c_dimid /)     ! scan_time dims (nscan, nchar) as in C
+    !chandimids  = (/ x_dimid, ch_dimid /)
+    dimids      = (/ y_dimid, x_dimid /)
+    cdimids     = (/ c_dimid, x_dimid /)     ! scan_time dims (nscan, nchar) as in C
+    chandimids  = (/ ch_dimid, x_dimid /)
 
+    write(*, *) "cdimids 0: ", cdimids
     !------------------------------------------------------------------
     ! Global attributes (mirror C)
     !------------------------------------------------------------------
@@ -222,6 +233,7 @@ contains
     call check(nf90_put_att(ncid, NF90_GLOBAL, 'institution',           institution))
     call check(nf90_put_att(ncid, NF90_GLOBAL, 'processing_level',      'NOAA level 2')) 
 
+    write(*, *) "cdimids 0.1: ", cdimids
     ! Geo coverage from a1_1 (as in C)
     latmm = minmax2(lat_a1_1, numscan)
     lonmm = minmax2(lon_a1_1, numscan)
@@ -255,17 +267,19 @@ contains
     call check(nf90_put_att(grpid_geo, varid, '_FillValue', '0')) 
 
     if (numscan > chsize) then
-      call check(nf90_def_var_chunking(grpid_geo, varid, NF90_CHUNKED, chunks)) 
-      call check(nf90_def_var_deflate (grpid_geo, varid, do_shuffle, do_deflate, deflate_level)) 
+     !YDT call check(nf90_def_var_chunking(grpid_geo, varid, NF90_CHUNKED, chunks), 'chuncking here') 
+     !YDT call check(nf90_def_var_deflate (grpid_geo, varid, do_shuffle, do_deflate, deflate_level), 'deflate here') 
     end if
 
+    write(*, *) "cdimids 1: ", cdimids
     ! Build a 2-D char buffer [nscan, nchar] from string array
-    allocate(scan_time_buf(numscan, NCHAR))
+    allocate(scan_time_buf(NCHAR, numscan))
     do i = 1, numscan
       do j = 1, NCHAR
-        scan_time_buf(i,j) = scans(i)(j:j)
+        scan_time_buf(j, i) = scans(i)(j:j)
       end do
     end do
+    
     call check(nf90_put_var(grpid_geo, varid, scan_time_buf), 'put_var scan_time')
     deallocate(scan_time_buf)
 
@@ -274,7 +288,7 @@ contains
     call check(nf90_put_att(grpid_geo, varid, 'standard_name', 'time')) 
     call check(nf90_put_att(grpid_geo, varid, 'long_name', &
         'Scan start time (UTC) in a referenced or elapsed time format')) 
-    call check(nf90_put_att(grpid_geo, varid, '_FillValue', fv_zero)) 
+    call check(nf90_put_att(grpid_geo, varid, '_FillValue', fv_zero), 'fill vz_zero') 
     call check(nf90_put_att(grpid_geo, varid, 'units', & 
          'seconds since 1998-01-01T00:00:00')) 
     if (numscan > chsize) then
@@ -282,6 +296,8 @@ contains
       call check(nf90_def_var_deflate (grpid_geo, varid, do_shuffle, do_deflate, deflate_level)) 
     end if
     call check(nf90_put_var(grpid_geo, varid, time_tai93(1:numscan))) 
+
+    write(*, *) "here 1: "
 
     ! Latitude/Longitude fields (a1_1, a1_2, a2)
     call def_put_geo(grpid_geo, 'latitude_a1_1',  NF90_FLOAT, dimids, lat_lim, units_lat, lat_a1_1, numscan)
@@ -292,6 +308,7 @@ contains
     call def_put_geo(grpid_geo, 'longitude_a1_2', NF90_FLOAT, dimids, lon_lim, units_lon, lon_a1_2, numscan)
     call def_put_geo(grpid_geo, 'longitude_a2',   NF90_FLOAT, dimids, lon_lim, units_lon, lon_a2,   numscan)
 
+    write(*, *) "here 1.2: "
     !------------------------------------------------------------------
     ! Group: Data_Fields
     !------------------------------------------------------------------
@@ -302,11 +319,14 @@ contains
     call check(nf90_put_att(grpid_data, varid, 'long_name', 'satellite direction')) 
     call check(nf90_put_att(grpid_data, varid, 'flag_values', flag_orb)) 
     call check(nf90_put_att(grpid_data, varid, 'flag_meanings', str_orb)) 
-    call check(nf90_put_att(grpid_data, varid, '_FillValue', fv_ubyte)) 
+    !YDT  no idea how to make f90 produce UBYTE data
+    !call check(nf90_put_att(grpid_data, varid, '_FillValue', fv_ubyte), 'fill fv_ubyte') 
     if (numscan > chsize) then
-      call check(nf90_def_var_chunking(grpid_data, varid, NF90_CHUNKED, chunks(1:1))) 
+      !YDT call check(nf90_def_var_chunking(grpid_data, varid, NF90_CHUNKED, chunks(1:1))) 
+      call check(nf90_def_var_chunking(grpid_data, varid, NF90_CHUNKED, chunks(2:2))) 
       call check(nf90_def_var_deflate (grpid_data, varid, do_shuffle, do_deflate, deflate_level)) 
     end if
+    write(*, *) "here 1.5: "
     ! NOTE: In C orb_mode[] was char. Ensure you provide integer(1) values 0/1
     !       in some module variable if you need this. If not available, comment next line.
     ! call check(nf90_put_var(grpid_data, varid, orb_mode(1:numscan)), 'put_var orbital_mode')
@@ -319,6 +339,7 @@ contains
     call def_put_stype(grpid_data, 'surface_type_a2',   dimids, stype_a2,   numscan, & 
           'surface type for AMSU unit A2, including 23.8 GHz and 31.4 GHz', flag_stype, str_stype)
 
+    write(*, *) "here 1.6: "
     ! Earth incidence and solar zenith angles
     call def_put_angle(grpid_data, 'earth_angle_of_incidence_a1_1', & 
           dimids, lza_a1_1, numscan, COORD(4))
@@ -329,14 +350,16 @@ contains
     call def_put_angle(grpid_data, 'solar_zenith_angle',            & 
           dimids, sza,      numscan, '')
 
+    write(*, *) "here 2: "
     ! Brightness temperature (apply asym correction, round to 0.01 K)
     do k = 1, NUMCHAN_A
+      
       call check(nf90_def_var(grpid_data, BT_Vname(k), NF90_FLOAT, dimids, varid)) 
       call check(nf90_put_att(grpid_data, varid, 'standard_name', 'brightness_temperature')) 
       call check(nf90_put_att(grpid_data, varid, 'long_name', BT_Lname(k)), 'att BT long_name')
       call check(nf90_put_att(grpid_data, varid, 'valid_min', limit_A%Temp_lower(k))) 
       call check(nf90_put_att(grpid_data, varid, 'valid_max', limit_A%Temp_upper(k))) 
-      call check(nf90_put_att(grpid_data, varid, '_FillValue', fv)) 
+      call check(nf90_put_att(grpid_data, varid, '_FillValue', fv), 'fill fv') 
       call check(nf90_put_att(grpid_data, varid, 'units', 'kelvin')) 
       call check(nf90_put_att(grpid_data, varid, 'coordinates', COORD(k))) 
 
@@ -351,16 +374,20 @@ contains
           if (at(i,j,k) /= MISSING) then
             at_tmp = at(i,j,k) * (1.0 + asym_a1(j,k)) + asym_a0(j,k)
             at_tmp = at_tmp + asym_a2(j,k) * at(i,j,k) * at(i,j,k)
-            data_out(i,j) = nint(at_tmp*100.0)/100.0
+            !YDT data_out(i,j) = nint(at_tmp*100.0)/100.0
+            data_out(j,i) = nint(at_tmp*100.0)/100.0
           else
-            data_out(i,j) = fv
+            !YDT data_out(i,j) = fv
+            data_out(j, i) = fv
             ! set bit 7 in qa_prod(i,k)
-            qa_prod(i,k) = int( ibset(int(qa_prod(i,k),kind=4), 7), kind=1 )
+            !YDT qa_prod(i,k) = int( ibset(int(qa_prod(i,k),kind=4), 7), kind=1 )
+            qa_prod(k, i) = int( ibset(int(qa_prod(k, i),kind=4), 7), kind=1 )
           end if
         end do
       end do
 
-      call check(nf90_put_var(grpid_data, varid, data_out(1:numscan, 1:NUMSPOT_A))) 
+      call check(nf90_put_var(grpid_data, varid, data_out(1:NUMSPOT_A, 1:numscan))) 
+      write(*, *) "channel k=", k, " done"
     end do
 
     ! Product Quality Flag (UBYTE) [nscan,nchan]
@@ -385,7 +412,8 @@ contains
     call check(nf90_put_att(grpid_data, varid, 'flag_masks', flag_orb)) 
     call check(nf90_put_att(grpid_data, varid, 'flag_meanings', 'good problematic')) 
 
-    call check(nf90_put_var(grpid_data, varid, qa_prod(1:numscan, 1:NUMCHAN_A))) 
+    call check(nf90_put_var(grpid_data, varid, qa_prod(1:NUMCHAN_A, 1:numscan))) 
+    write(*, *) "Here 3:" 
 
     ! Close
     call check(nf90_close(ncid), 'close')
@@ -415,13 +443,14 @@ contains
     integer :: vid, status
     integer :: chunks(2)
 
-    chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    !YDT chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    chunks = (/ max(1, NUMSPOT_A/5), MAXSCANLINE_A/5 /)
 
     call check(nf90_def_var(gid, name, xtype, dims, vid)) 
     call check(nf90_put_att(gid, vid, 'standard_name', trim(adjustl(name(1:8)) ) ) ) ! "latitude"/"longitude" in the names already
     call check(nf90_put_att(gid, vid, 'valid_min', lim(1))) 
     call check(nf90_put_att(gid, vid, 'valid_max', lim(2))) 
-    call check(nf90_put_att(gid, vid, '_FillValue', MISSING)) 
+    call check(nf90_put_att(gid, vid, '_FillValue', real(MISSING) ), 'inside def_put_geo') 
     call check(nf90_put_att(gid, vid, 'units', units)) 
 
     if (nscan > MAXSCANLINE_A/5) then
@@ -430,21 +459,24 @@ contains
       call check(nf90_def_var_deflate (gid, vid, 1, 1, 1)) 
     end if
 
-    call check(nf90_put_var(gid, vid, arr(1:nscan, 1:NUMSPOT_A))) 
+    !YDT call check(nf90_put_var(gid, vid, arr(1:nscan, 1:NUMSPOT_A))) 
+    call check(nf90_put_var(gid, vid, arr(1:NUMSPOT_A, 1:nscan))) 
   end subroutine def_put_geo
 
   subroutine def_put_angle(gid, name, dims, arr, nscan, coord)
     integer, intent(in) :: gid, dims(2), nscan
     character(*), intent(in) :: name, coord
-    real, intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    !YDT real, intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    real, intent(in) :: arr(NUMSPOT_A, MAXSCANLINE_A)
     integer :: vid, status
     integer :: chunks(2)
 
-    chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    !YDT chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    chunks = (/ max(1, NUMSPOT_A/5), MAXSCANLINE_A/5 /)
 
     call check(nf90_def_var(gid, name, NF90_FLOAT, dims, vid)) 
     call check(nf90_put_att(gid, vid, 'long_name', name//' for AMSU')) 
-    call check(nf90_put_att(gid, vid, '_FillValue', MISSING)) 
+    call check(nf90_put_att(gid, vid, '_FillValue', real(MISSING) )) 
     call check(nf90_put_att(gid, vid, 'units', 'degree')) 
     if (len_trim(coord) > 0) call check(nf90_put_att(gid, vid, 'coordinates', coord) ) 
 
@@ -454,18 +486,21 @@ contains
       call check(nf90_def_var_deflate (gid, vid, 1, 1, 1)) 
     end if
 
-    call check(nf90_put_var(gid, vid, arr(1:nscan,1:NUMSPOT_A))) 
+    !YDT call check(nf90_put_var(gid, vid, arr(1:nscan,1:NUMSPOT_A))) 
+    call check(nf90_put_var(gid, vid, arr(1:NUMSPOT_A, 1:nscan))) 
   end subroutine def_put_angle
 
   subroutine def_put_stype(gid, name, dims, arr, nscan, long_name, flags, meanings)
     integer, intent(in) :: gid, dims(2), nscan
     character(*), intent(in) :: name, long_name, meanings
-    integer(1), intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    !YDT integer(1), intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    integer(1), intent(in) :: arr(NUMSPOT_A, MAXSCANLINE_A)
     integer(1), intent(in) :: flags(:)
     integer :: vid, status
     integer :: chunks(2)
 
-    chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    !YDT chunks = (/ MAXSCANLINE_A/5, max(1, NUMSPOT_A/5) /)
+    chunks = (/ max(1, NUMSPOT_A/5), MAXSCANLINE_A/5 /)
 
     call check(nf90_def_var(gid, name, NF90_BYTE, dims, vid)) 
     call check(nf90_put_att(gid, vid, 'long_name', long_name)) 
@@ -478,7 +513,8 @@ contains
       call check(nf90_def_var_deflate (gid, vid, 1, 1, 1)) 
     end if
 
-    call check(nf90_put_var(gid, vid, arr(1:nscan,1:NUMSPOT_A)) ) 
+    !YDT call check(nf90_put_var(gid, vid, arr(1:nscan,1:NUMSPOT_A)) ) 
+    call check(nf90_put_var(gid, vid, arr(1:NUMSPOT_A, 1:nscan)) ) 
   end subroutine def_put_stype
 
 end module set_sw_mod
