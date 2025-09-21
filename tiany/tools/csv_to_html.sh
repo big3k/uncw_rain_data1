@@ -1,25 +1,36 @@
+# Create html out from input csv file. 
+# Assuming the first line is header
+# e.g., input: 
+#
+#Model, loss_f, act_f, pre/post-training, Bias, RMSE, Corr
+#model_1ax, ssim_loss, relu, pre, -0.162,2.371, 0.765
+#model_1ax, ssim_loss, relu, post,-0.109, 2.223, 0.793
+#model_2ax, ssim_loss, relu, pre, -0.162,2.371, 0.765
+#model_2ax, ssim_loss, relu, post,-0.155, 2.280, 0.781
 
+awk -F',' '
+BEGIN {
+    print "<table border=\"1\" class=\"table table-striped\">"
+}
+NR == 1 {
+    print "  <thead><tr>"
+    for (i = 1; i <= NF; i++) {
+        print "    <th>" $i "</th>"
+    }
+    print "  </tr></thead>"
+    print "  <tbody>"
+    next
+}
+{
+    print "  <tr>"
+    for (i = 1; i <= NF; i++) {
+        print "    <td>" $i "</td>"
+    }
+    print "  </tr>"
+}
+END {
+    print "  </tbody>"
+    print "</table>"
+}
+' $1
 
-cat <<EOF
-<table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Case</th>
-        <th>m2m_cf</th>
-        <th>h2h_cf</th>
-        <th>m2m_bias(%)</th>
-        <th>h2h_bias(%)</th>
-        <th>m2m_rmse</th>
-        <th>h2h_rmse</th>
-      </tr>
-    </thead>
-    <tbody>
-EOF
-
-tail -n+2 summary.csv | awk -F, '
-   { printf "<tr><td><a href=\"N19_PSF/%s/\">%s</a></td><td>%4.2f</td><td>%4.2f</td><td>%4.2f</td><td>%4.2f</td><td>%4.2f</td><td>%4.2f</td></tr>\n", $1, $1, $3, $4, $5*100, $6*100, $7, $8}' 
-
-echo "</tbody></table>"
-
-#case_path,mat_name,m2m_cf,h2h_cf,m2m_bias,h2h_bias,m2m_rmse,h2h_rmse
-#201407/case_0101,sate_select_case_002.mat,0.308102940365495,0.3033590
