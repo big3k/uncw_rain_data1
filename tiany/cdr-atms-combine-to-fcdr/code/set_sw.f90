@@ -1,5 +1,7 @@
 ! set_sw_mod.f90
 module set_sw_mod
+  !YDT does not work until gfortran 15
+  ! use iso_fortran_env, only: uint8
   use netcdf                      ! netCDF-Fortran module
   use constants
   use eswath_mod
@@ -267,21 +269,26 @@ contains
     call check(nf90_put_att(grpid_geo, varid, '_FillValue', '0')) 
 
     if (numscan > chsize) then
-     !YDT call check(nf90_def_var_chunking(grpid_geo, varid, NF90_CHUNKED, chunks), 'chuncking here') 
-     !YDT call check(nf90_def_var_deflate (grpid_geo, varid, do_shuffle, do_deflate, deflate_level), 'deflate here') 
+      call check(nf90_def_var_chunking(grpid_geo, varid, NF90_CHUNKED, chunks), 'chuncking here') 
+      call check(nf90_def_var_deflate (grpid_geo, varid, do_shuffle, do_deflate, deflate_level), 'deflate here') 
     end if
 
-    write(*, *) "cdimids 1: ", cdimids
+    write(*, *) "cdimids for scan_time: ", cdimids
+    !YDT 9/21/2025: the following !-- lines are not needed. 
     ! Build a 2-D char buffer [nscan, nchar] from string array
-    allocate(scan_time_buf(NCHAR, numscan))
-    do i = 1, numscan
-      do j = 1, NCHAR
-        scan_time_buf(j, i) = scans(i)(j:j)
-      end do
-    end do
-    
-    call check(nf90_put_var(grpid_geo, varid, scan_time_buf), 'put_var scan_time')
-    deallocate(scan_time_buf)
+    !YDT allocate(scan_time_buf(NCHAR, numscan))
+    !-- allocate(scan_time_buf(numscan, NCHAR))
+    !-- do i = 1, numscan
+    !--   do j = 1, NCHAR
+    !--     !YDT scan_time_buf(j, i) = scans(i)(j:j)
+    !--     scan_time_buf(i, j) = scans(i)(j:j)
+    !--   end do
+    !-- end do
+    !--  
+    !-- call check(nf90_put_var(grpid_geo, varid, scan_time_buf), 'put_var scan_time')
+
+    call check(nf90_put_var(grpid_geo, varid, scans), 'put_var scan_time')
+    !-- deallocate(scan_time_buf)
 
     ! scan_time_since98 (double seconds since 1998-01-01T00:00:00)
     call check(nf90_def_var(grpid_geo, 'scan_time_since98', NF90_DOUBLE, x_dimid, varid)) 

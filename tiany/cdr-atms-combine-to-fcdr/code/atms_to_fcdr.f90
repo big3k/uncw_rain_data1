@@ -4,7 +4,9 @@
 
       program atmos2fcdr
 
+      use iso_c_binding
       use netcdf 
+      use constants
       use eswath_mod
       use set_sw_mod
 
@@ -26,10 +28,13 @@
       !integer, parameter :: nc=1440, nr=720  ! lat/lon grid
 
       integer :: ndir, nf, jf, ibin, nf_in_bin, nx, ny, nz, iargc
-      integer :: ic, ir, iz , i, j
+      integer :: ic, ir, iz , i, j, ich, ifov, iscan
       character(len=1064) :: nc_atms
       character(len=1064) :: nc_outf 
       character(len=1064) :: nchannel_name, nfovs_name, nscans_name 
+      character(len=25) :: timestamp
+      integer(c_int64_t) :: epoch
+
       ! NC data buffer
       real*4, allocatable :: grid_bt(:, :, :) 
 
@@ -60,7 +65,9 @@
       call check(nf90_inquire_dimension(ncid,2, nfovs_name, nfovs) )
       call check(nf90_inquire_dimension(ncid,3, nscans_name, nscans) )
 
-      write(*, *) "nchannel=", nchannel, " nfovs=", nfovs, " nscans=", nscans 
+      write(*, *) trim(nchannel_name), "=",  nchannel, &
+                  trim(nfovs_name), "=", nfovs,  & 
+                  trim(nscans_name), "=", nscans 
 
       allocate(bt_data(nchannel, nfovs, nscans) )
       allocate(lat(nfovs, nscans) )
@@ -79,6 +86,19 @@
       call check(nf90_close(ncid)) 
 
       write(*, *) "BeamTime(1, 1)=", BeamTime(1, 1) 
+       ! BeamTime is in microsec, and starts from 1958/1/1.
+       ![tiany@rain cdr-atms-combine]$ date -u -d "1958/1/1" +%s
+       !-378691200
+       epoch= BeamTime(1, 1)/1000000-378691200
+       call epoch_to_datetime(epoch, timestamp)
+       write(*, *)trim(timestamp)
+
+      Do iscan=1, nscans
+          epoch= BeamTime(1, iscan)/1000000-378691200
+          call epoch_to_datetime(epoch, timestamp)
+          str_scantime(iscan) = trim(timestamp)  
+          write(*, *) "str_scantime = ", str_scantime(iscan) 
+      End Do 
 
       ! stuff fcdr data structure 
       lat_a1_1(1:nscans, 1:nfovs) = lat
@@ -88,6 +108,44 @@
       lat_a2(1:nscans, 1:nfovs) = lat
       lon_a2(1:nscans, 1:nfovs) = lon
       
+      ! Test: send the first 4 channels of bt_data to at(MAXSCANLINE_A,
+      ! NUMSPOT_A, NUMCHAN_A). Note the reversed order of dimensions
+   
+      ! ATMOS channles: https://www.star.nesdis.noaa.gov/jpss/ATMS.php 
+      !          1	23.8	0.27	1	0.7	6.3	5.2	QV
+      !          2	31.4	0.18	1	0.8	6.3	5.2	QV
+      !          3	50.3	0.18	0.75	0.9	3.3	2.2	QH
+      !          4	51.76	0.4	0.75	0.7	3.3	2.2	QH
+      !          5	52.8	0.4	0.75	0.7	3.3	2.2	QH
+      !          6	53.596±0.115	0.17	0.75	0.7	3.3	2.2	QH
+      !          7	54.4	0.4	0.75	0.7	3.3	2.2	QH
+      !          8	54.94	0.4	0.75	0.7	3.3	2.2	QH
+      !          9	55.5	0.33	0.75	0.7	3.3	2.2	QH
+      !          10	57.290344	0.33	0.75	0.75	3.3	2.2	QH
+      !          11	57.290344±0.217	0.078	0.75	1.2	3.3	2.2	QH
+      !          12	57.290344±0.3222±0.048	0.036	0.75	1.2	3.3	2.2	QH
+      !          13	57.290344±0.3222±0.022	0.016	0.75	1.5	3.3	2.2	QH
+      !          14	57.290344±0.3222±0.010	0.008	0.75	2.4	3.3	2.2	QH
+      !          15	57.290344±0.3222±0.0045	0.003	0.75	3.6	3.3	2.2	QH
+      !          16	88.2	2	1	0.5	3.3	2.2	QV
+      !          17	165.5	3	1	0.6	2.2	1.1	QH
+      !          18	183.31±7	2	1	0.8	2.2	1.1	QH
+      !          19	183.31±4.5	2	1	0.8	2.2	1.1	QH
+      !          20	183.31±3	1	1	0.8	2.2	1.1	QH
+      !          21	183.31±1.8	1	1	0.8	2.2	1.1	QH
+      !          22	183.31±1	0.5	1	0.9	2.2	1.1	QH
+
+
+      !channels 1, 2, 3, 16:  23.8, 31.4, 50.3, 88.2
+        Do ifov=1, NUMSPOT_A 
+          Do iscan=1, nscans
+             at(iscan, ifov, 1) = bt_data(1, ifov, iscan) 
+             at(iscan, ifov, 2) = bt_data(2, ifov, iscan) 
+             at(iscan, ifov, 3) = bt_data(3, ifov, iscan) 
+             at(iscan, ifov, 4) = bt_data(16, ifov, iscan) 
+          End Do 
+        End Do 
+
       call set_sw(nc_outf, nscans) ! testing 
       return 
 
