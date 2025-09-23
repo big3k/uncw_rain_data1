@@ -39,13 +39,14 @@
       real*4, allocatable :: grid_bt(:, :, :) 
 
       real*4, allocatable :: bt_data(:, :, :), lon(:, :), lat(:, :) 
+      integer, allocatable :: AD_Indicator(:, :) 
       integer(kind=8), allocatable :: BeamTime(:,:)
       integer*4, allocatable :: id2data(:, :) 
       integer :: ncid, status, nrec
       integer :: d2dims(2), d3dims(3) 
       INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
-      INTEGER(KIND=4) :: bt_varid, adi_varid, btime_varid
+      INTEGER(KIND=4) :: bt_varid, adi_varid, btime_varid, ad_varid
 
       ndir =  iargc()
       If (ndir.ne.2) Then   ! wrong cmd line args, print usage
@@ -73,6 +74,7 @@
       allocate(lat(nfovs, nscans) )
       allocate(lon(nfovs, nscans) )
       allocate(BeamTime(nfovs, nscans) )
+      allocate(AD_Indicator(nfovs, nscans) )
 
       call check(nf90_inq_varid(ncid, "AntennaTemperature", at_varid) )
       call check(nf90_get_var(ncid,at_varid,bt_data))
@@ -82,6 +84,8 @@
       call check(nf90_get_var(ncid,lat_varid,lat))
       call check(nf90_inq_varid(ncid, "BeamTime", btime_varid) )
       call check(nf90_get_var(ncid,btime_varid,BeamTime))
+      call check(nf90_inq_varid(ncid, "Ascending_Descending_Indicator", ad_varid) )
+      call check(nf90_get_var(ncid,ad_varid,AD_Indicator))
 
       call check(nf90_close(ncid)) 
 
@@ -98,6 +102,10 @@
           call epoch_to_datetime(epoch, timestamp)
           str_scantime(iscan) = trim(timestamp)  
           write(*, *) "str_scantime = ", str_scantime(iscan) 
+          ! convert microsec since 58 to sec since 98: 
+          !  date -u -d "1998/1/1" +%s 
+          !  883612800
+          time_tai93(iscan)=BeamTime(1, iscan)/1000000 - (378691200+883612800) 
       End Do 
 
       ! stuff fcdr data structure 
@@ -145,6 +153,10 @@
              at(iscan, ifov, 4) = bt_data(16, ifov, iscan) 
           End Do 
         End Do 
+
+      Do iscan=1, nscans
+       orb_mode(iscan) = AD_Indicator(1, iscan) 
+      End Do 
 
       call set_sw(nc_outf, nscans) ! testing 
       return 

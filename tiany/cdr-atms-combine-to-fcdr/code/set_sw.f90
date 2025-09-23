@@ -336,7 +336,7 @@ contains
     write(*, *) "here 1.5: "
     ! NOTE: In C orb_mode[] was char. Ensure you provide integer(1) values 0/1
     !       in some module variable if you need this. If not available, comment next line.
-    ! call check(nf90_put_var(grpid_data, varid, orb_mode(1:numscan)), 'put_var orbital_mode')
+    call check(nf90_put_var(grpid_data, varid, orb_mode(1:numscan)), 'put_var orbital_mode')
 
     ! surface_type_*  (BYTE)
     call def_put_stype(grpid_data, 'surface_type_a1_1', dimids, stype_a1_1, numscan, &

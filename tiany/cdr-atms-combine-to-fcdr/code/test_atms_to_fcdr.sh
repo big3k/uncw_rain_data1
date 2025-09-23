@@ -1,7 +1,10 @@
 
 ./compile.sh 
-./atms_to_fcdr /data1/tiany/cdr-atms-combine/output/2012/20120303/NPP_ATMS_d20120303_t0029086_e0210576_b001797.nc test.nc 
 
+./atms_to_fcdr /data1/tiany/cdr-atms-combine/output/2012/20120303/NPP_ATMS_d20120303_t1401193_e1542389_b001805.nc test2.nc
+
+exit
+./atms_to_fcdr /data1/tiany/cdr-atms-combine/output/2012/20120303/NPP_ATMS_d20120303_t0029086_e0210576_b001797.nc test.nc 
 
 exit 
 
