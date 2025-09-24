@@ -39,7 +39,8 @@
       real*4, allocatable :: grid_bt(:, :, :) 
 
       real*4, allocatable :: bt_data(:, :, :), lon(:, :), lat(:, :) 
-      integer, allocatable :: AD_Indicator(:, :) 
+      integer, allocatable :: AD_Indicator(:, :)
+      real*4, allocatable ::  SatelliteZenithAngle(:, :), SolarZenithAngle(:, :) 
       integer(kind=8), allocatable :: BeamTime(:,:)
       integer*4, allocatable :: id2data(:, :) 
       integer :: ncid, status, nrec
@@ -47,6 +48,7 @@
       INTEGER(KIND=4) :: x_dimid, y_dimid, z_dimid
       INTEGER(KIND=4) :: at_varid, lon_varid, lat_varid, sza_varid 
       INTEGER(KIND=4) :: bt_varid, adi_varid, btime_varid, ad_varid
+      INTEGER(KIND=4) :: any_varid
 
       ndir =  iargc()
       If (ndir.ne.2) Then   ! wrong cmd line args, print usage
@@ -56,6 +58,7 @@
       End If
       call getarg(1, nc_atms)
       call getarg(2, nc_outf) 
+      call get_basename(nc_atms, hdf_fname) ! hdf_fname will go to "source" attr in output netcdf
  
       !call set_sw(nc_outf, 1000) ! testing numscan=1000
       !stop
@@ -75,6 +78,8 @@
       allocate(lon(nfovs, nscans) )
       allocate(BeamTime(nfovs, nscans) )
       allocate(AD_Indicator(nfovs, nscans) )
+      allocate(SatelliteZenithAngle(nfovs, nscans) )
+      allocate(SolarZenithAngle(nfovs, nscans) )
 
       call check(nf90_inq_varid(ncid, "AntennaTemperature", at_varid) )
       call check(nf90_get_var(ncid,at_varid,bt_data))
@@ -86,6 +91,10 @@
       call check(nf90_get_var(ncid,btime_varid,BeamTime))
       call check(nf90_inq_varid(ncid, "Ascending_Descending_Indicator", ad_varid) )
       call check(nf90_get_var(ncid,ad_varid,AD_Indicator))
+      call check(nf90_inq_varid(ncid, "SatelliteZenithAngle", any_varid) )
+      call check(nf90_get_var(ncid,any_varid, SatelliteZenithAngle))
+      call check(nf90_inq_varid(ncid, "SolarZenithAngle", any_varid) )
+      call check(nf90_get_var(ncid,any_varid, SolarZenithAngle))
 
       call check(nf90_close(ncid)) 
 
@@ -115,6 +124,8 @@
       lon_a1_2(1:nscans, 1:nfovs) = lon
       lat_a2(1:nscans, 1:nfovs) = lat
       lon_a2(1:nscans, 1:nfovs) = lon
+      lza_a1_1(1:nscans, 1:nfovs) = SatelliteZenithAngle ! goes to earth_angle_of_incidence_a1_1
+      sza(1:nscans, 1:nfovs) = SolarZenithAngle ! goes to solar_zenith_angle
       
       ! Test: send the first 4 channels of bt_data to at(MAXSCANLINE_A,
       ! NUMSPOT_A, NUMCHAN_A). Note the reversed order of dimensions
@@ -163,6 +174,28 @@
 
       end 
        
+
+subroutine get_basename(path, base)
+  implicit none
+  character(len=*), intent(in) :: path
+  character(len=*), intent(out) :: base
+  integer :: i, last_slash
+
+  last_slash = 0
+  do i = len_trim(path), 1, -1
+    if (path(i:i) == "/") then
+      last_slash = i
+      exit
+    end if
+  end do
+
+  if (last_slash > 0) then
+    base = path(last_slash+1:)
+  else
+    base = path
+  end if
+end subroutine get_basename
+
         
       
 
