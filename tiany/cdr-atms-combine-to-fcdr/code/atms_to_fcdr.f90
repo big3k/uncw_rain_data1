@@ -110,7 +110,7 @@
           epoch= BeamTime(1, iscan)/1000000-378691200
           call epoch_to_datetime(epoch, timestamp)
           str_scantime(iscan) = trim(timestamp)  
-          write(*, *) "str_scantime = ", str_scantime(iscan) 
+          !write(*, *) "str_scantime = ", str_scantime(iscan) 
           ! convert microsec since 58 to sec since 98: 
           !  date -u -d "1998/1/1" +%s 
           !  883612800
@@ -118,14 +118,16 @@
       End Do 
 
       ! stuff fcdr data structure 
-      lat_a1_1(1:nscans, 1:nfovs) = lat
-      lon_a1_1(1:nscans, 1:nfovs) = lon
-      lat_a1_2(1:nscans, 1:nfovs) = lat
-      lon_a1_2(1:nscans, 1:nfovs) = lon
-      lat_a2(1:nscans, 1:nfovs) = lat
-      lon_a2(1:nscans, 1:nfovs) = lon
-      lza_a1_1(1:nscans, 1:nfovs) = SatelliteZenithAngle ! goes to earth_angle_of_incidence_a1_1
-      sza(1:nscans, 1:nfovs) = SolarZenithAngle ! goes to solar_zenith_angle
+      !YDT lat_a1_1(1:nfovs, 1:nscans) = lat
+      lat_a1_1(1:nfovs, 1:nscans) = lat
+      lon_a1_1(1:nfovs, 1:nscans) = lon
+      lat_a1_2(1:nfovs, 1:nscans) = lat
+      lon_a1_2(1:nfovs, 1:nscans) = lon
+      lat_a2(1:nfovs, 1:nscans) = lat
+      lon_a2(1:nfovs, 1:nscans) = lon
+      lza_a1_1(1:nfovs, 1:nscans) = SatelliteZenithAngle ! goes to earth_angle_of_incidence_a1_1
+      !YDT sza(1:nfovs, 1:nscans) = SolarZenithAngle ! goes to solar_zenith_angle
+      sza(1:nfovs, 1:nscans) = SolarZenithAngle ! goes to solar_zenith_angle
       
       ! Test: send the first 4 channels of bt_data to at(MAXSCANLINE_A,
       ! NUMSPOT_A, NUMCHAN_A). Note the reversed order of dimensions
@@ -158,10 +160,10 @@
       !channels 1, 2, 3, 16:  23.8, 31.4, 50.3, 88.2
         Do ifov=1, NUMSPOT_A 
           Do iscan=1, nscans
-             at(iscan, ifov, 1) = bt_data(1, ifov, iscan) 
-             at(iscan, ifov, 2) = bt_data(2, ifov, iscan) 
-             at(iscan, ifov, 3) = bt_data(3, ifov, iscan) 
-             at(iscan, ifov, 4) = bt_data(16, ifov, iscan) 
+             at(1, ifov, iscan) = bt_data(1, ifov, iscan) 
+             at(2, ifov, iscan) = bt_data(2, ifov, iscan) 
+             at(3, ifov, iscan) = bt_data(3, ifov, iscan) 
+             at(4, ifov, iscan) = bt_data(16, ifov, iscan) 
           End Do 
         End Do 
 

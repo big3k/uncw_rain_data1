@@ -47,33 +47,35 @@ module eswath_mod
   integer(int8)           :: mask     (MAP_ROWS, MAP_COLS)
   integer(int8)           :: qc_flag  (MAXSCANLINE_A)
   integer(int8)           :: orb_mode (MAXSCANLINE_A)
-  !YDT integer(int32)          :: qa_prod  (MAXSCANLINE_A, NUMCHAN_A)  ! was unsigned char
+  !YDT integer(int32)          :: qa_prod  (NUMCHAN_A, MAXSCANLINE_A)  ! was unsigned char
   integer(int32)          :: qa_prod  (NUMCHAN_A, MAXSCANLINE_A)  ! was unsigned char
   integer(int16)          :: scanneed (MAXSCANLINE_A)
 
-  real(real32)            :: lza      (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: sza      (MAXSCANLINE_A, NUMSPOT_A)
+  real(real32)            :: lza      (NUMSPOT_A, MAXSCANLINE_A)
+  !YDT test real(real32)            :: sza      (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: sza      (NUMSPOT_A, MAXSCANLINE_A) 
 
-  real(real32)            :: lat_a1_1 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lon_a1_1 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lza_a1_1 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: ssa_a1_1 (MAXSCANLINE_A, NUMSPOT_A)
+  !YDT real(real32)            :: lat_a1_1 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lat_a1_1 (NUMSPOT_A, MAXSCANLINE_A) 
+  real(real32)            :: lon_a1_1 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lza_a1_1 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: ssa_a1_1 (NUMSPOT_A, MAXSCANLINE_A)
 
-  real(real32)            :: lat_a1_2 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lon_a1_2 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lza_a1_2 (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: ssa_a1_2 (MAXSCANLINE_A, NUMSPOT_A)
+  real(real32)            :: lat_a1_2 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lon_a1_2 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lza_a1_2 (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: ssa_a1_2 (NUMSPOT_A, MAXSCANLINE_A)
 
-  real(real32)            :: lat_a2   (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lon_a2   (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: lza_a2   (MAXSCANLINE_A, NUMSPOT_A)
-  real(real32)            :: ssa_a2   (MAXSCANLINE_A, NUMSPOT_A)
+  real(real32)            :: lat_a2   (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lon_a2   (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: lza_a2   (NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: ssa_a2   (NUMSPOT_A, MAXSCANLINE_A)
 
   ! C had: char** stype_* ; commented fixed arrays exist in header.
   ! Practical Fortran mapping as 2D array of 1-char codes:
-  integer(1)        :: stype_a1_1 (MAXSCANLINE_A, NUMSPOT_A)
-  integer(1)        :: stype_a1_2 (MAXSCANLINE_A, NUMSPOT_A)
-  integer(1)        :: stype_a2   (MAXSCANLINE_A, NUMSPOT_A)
+  integer(1)        :: stype_a1_1 (NUMSPOT_A, MAXSCANLINE_A)
+  integer(1)        :: stype_a1_2 (NUMSPOT_A, MAXSCANLINE_A)
+  integer(1)        :: stype_a2   (NUMSPOT_A, MAXSCANLINE_A)
 
   real(real32)            :: t_r_central_wave_number (NUMCHAN_A)
   real(real32)            :: rfs_corr (NUMCHAN_A, 3)
@@ -81,7 +83,7 @@ module eswath_mod
   real(real32)            :: mu15     (MAXSCANLINE_A)
   real(real32)            :: t_cold   (NUMCHAN_A)
   real(real32)            :: rad_cold (NUMCHAN_A)
-  real(real32)            :: cc       (MAXSCANLINE_A, NUMCHAN_A)
+  real(real32)            :: cc       (NUMCHAN_A, MAXSCANLINE_A)
 
   real(real32)            :: dcoef_a1 (10, 4)
   real(real32)            :: dcoef_a2 (7,  4)
@@ -94,13 +96,13 @@ module eswath_mod
   real(real32)            :: t_rfs_a2 (MAXSCANLINE_A)
   real(real32)            :: twd_weight (MAXSCANLINE_A, 3)
 
-  real(real32)            :: dtw      (MAXSCANLINE_A, NUMCHAN_A)
-  real(real32)            :: t_warm   (MAXSCANLINE_A, NUMCHAN_A)
-  real(real32)            :: rad_warm (MAXSCANLINE_A, NUMCHAN_A)
-  real(real32)            :: cw       (MAXSCANLINE_A, NUMCHAN_A)
-  real(real32)            :: S        (MAXSCANLINE_A, NUMCHAN_A)
-  real(real32)            :: Z        (MAXSCANLINE_A, NUMSPOT_A, NUMCHAN_A)
-  real(real32)            :: Rl       (MAXSCANLINE_A, NUMSPOT_A, NUMCHAN_A)
+  real(real32)            :: dtw      (NUMCHAN_A, MAXSCANLINE_A)
+  real(real32)            :: t_warm   (NUMCHAN_A, MAXSCANLINE_A)
+  real(real32)            :: rad_warm (NUMCHAN_A, MAXSCANLINE_A)
+  real(real32)            :: cw       (NUMCHAN_A, MAXSCANLINE_A)
+  real(real32)            :: S        (NUMCHAN_A, MAXSCANLINE_A)
+  real(real32)            :: Z        (NUMCHAN_A, NUMSPOT_A, MAXSCANLINE_A)
+  real(real32)            :: Rl       (NUMCHAN_A, NUMSPOT_A, MAXSCANLINE_A)
 
   !========================
   ! Antenna Temperature etc.
@@ -115,7 +117,7 @@ module eswath_mod
   real(real32)            :: calradw  (NUMCHAN_A, 2)
   real(real32)            :: calrade  (NUMCHAN_A, NUMSPOT_A)
 
-  real(real32)            :: at       (MAXSCANLINE_A, NUMSPOT_A, NUMCHAN_A)
+  real(real32)            :: at       (NUMCHAN_A, NUMSPOT_A, MAXSCANLINE_A) 
   real(real32)            :: rat      (NUMSPOT_A)
   real(real32)            :: rad      (NUMSPOT_A)
   real(real32)            :: ssmi_r   (SSMI_LON, SSMI_LAT)
@@ -123,15 +125,15 @@ module eswath_mod
   !========================
   ! Products
   !========================
-  integer(int16)          :: clw      (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: tpw      (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: sice     (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: ts       (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: em1      (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: em2      (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: em3      (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: rr       (MAXSCANLINE_A, NUMSPOT_A)
-  integer(int16)          :: snow     (MAXSCANLINE_A, NUMSPOT_A)
+  integer(int16)          :: clw      (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: tpw      (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: sice     (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: ts       (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: em1      (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: em2      (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: em3      (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: rr       (NUMSPOT_A, MAXSCANLINE_A)
+  integer(int16)          :: snow     (NUMSPOT_A, MAXSCANLINE_A)
 
   !========================
   ! AVN data
@@ -173,9 +175,9 @@ module eswath_mod
   character(len=4)        :: sid
   integer(int16)          :: snum
 
-  real(real32)            :: asym_a2 (NUMSPOT_A, NUMCHAN_A)
-  real(real32)            :: asym_a1 (NUMSPOT_A, NUMCHAN_A)
-  real(real32)            :: asym_a0 (NUMSPOT_A, NUMCHAN_A)
+  real(real32)            :: asym_a2 (NUMCHAN_A, NUMSPOT_A)
+  real(real32)            :: asym_a1 (NUMCHAN_A, NUMSPOT_A)
+  real(real32)            :: asym_a0 (NUMCHAN_A, NUMSPOT_A)
 
   real(real32)            :: mu      (NUMCHAN_A)
   real(real32)            :: dr      (NUMCHAN_A)

@@ -378,9 +378,9 @@ contains
       ! compute & round
       do i = 1, numscan
         do j = 1, NUMSPOT_A
-          if (at(i,j,k) /= MISSING) then
-            at_tmp = at(i,j,k) * (1.0 + asym_a1(j,k)) + asym_a0(j,k)
-            at_tmp = at_tmp + asym_a2(j,k) * at(i,j,k) * at(i,j,k)
+          if (at(k, j, i) /= MISSING) then
+            at_tmp = at(k, j, i) * (1.0 + asym_a1(k, j)) + asym_a0(k, j)
+            at_tmp = at_tmp + asym_a2(k, j) * at(k, j, i) * at(k, j, i)
             !YDT data_out(i,j) = nint(at_tmp*100.0)/100.0
             data_out(j,i) = nint(at_tmp*100.0)/100.0
           else
@@ -446,7 +446,8 @@ contains
     integer, intent(in) :: gid, xtype, dims(2), nscan
     character(*), intent(in) :: name, units
     real, intent(in) :: lim(2)
-    real, intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    !YDT real, intent(in) :: arr(MAXSCANLINE_A, NUMSPOT_A)
+    real, intent(in) :: arr(NUMSPOT_A, MAXSCANLINE_A) 
     integer :: vid, status
     integer :: chunks(2)
 
