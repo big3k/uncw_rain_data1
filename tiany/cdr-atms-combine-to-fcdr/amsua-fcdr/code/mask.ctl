@@ -1,0 +1,12 @@
+DSET ^out_mask.bin
+options template yrev
+TITLE NNG output
+UNDEF -9999.0
+XDEF  5760 LINEAR  -179.9687 0.0625
+YDEF  2880 LINEAR  -89.9687 0.0625
+ZDEF 1    LINEAR 1 1
+TDEF 1    LINEAR 0Z01jan1991 30mn
+VARS 1
+mask     1	 -1,40,1   na
+ENDVARS
+
