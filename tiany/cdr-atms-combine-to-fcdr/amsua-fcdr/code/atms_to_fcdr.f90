@@ -9,7 +9,7 @@
       use constants
       use eswath_mod
       use set_sw_mod
-      use mask_stype
+      use mask_stype_mod
 
       implicit none
       INCLUDE "parms.h"
@@ -98,13 +98,13 @@
 
       call check(nf90_close(ncid)) 
 
-      ! testing read_mask
-      !call read_mask() 
+      call read_mask() 
+      ! verify 
       !open(119, file="out_mask.bin", form="unformatted", access="direct", recl=MAP_ROWS*MAP_COLS*1)
       !   write(119, rec=1) mask
       !close(119)
-      ! testing read_latbox_table 
-      !call read_latbox_table() 
+      call read_latbox_table() 
+      ! verify 
       !Do iscan=1, NUMSPOT_A
       !   write(*, *) iscan, latbox_up(iscan), latbox_down(iscan) 
       !End Do 
@@ -140,6 +140,9 @@
       lza_a1_2(1:nfovs, 1:nscans) = SatelliteZenithAngle ! goes to earth_angle_of_incidence_a1_1
       lza_a2(1:nfovs, 1:nscans) = SatelliteZenithAngle ! goes to earth_angle_of_incidence_a1_1
       sza(1:nfovs, 1:nscans) = SolarZenithAngle ! goes to solar_zenith_angle
+      call mask_stype(nscans, lat_a1_1, lon_a1_1, stype_a1_1) 
+      call mask_stype(nscans, lat_a1_2, lon_a1_2, stype_a1_2) 
+      call mask_stype(nscans, lat_a2, lon_a2, stype_a2) 
       
       ! Test: send the first 4 channels of bt_data to at(MAXSCANLINE_A,
       ! NUMSPOT_A, NUMCHAN_A). Note the reversed order of dimensions

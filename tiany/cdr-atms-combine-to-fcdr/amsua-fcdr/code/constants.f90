@@ -13,7 +13,9 @@ module constants
   integer, parameter :: MINSCANLINE_A = 100
   integer, parameter :: PARAMA = 0
   integer, parameter :: AMA = 1
-  real, parameter :: SCAN_ANG_A = 3.33333333
+  !AMSU-A real, parameter :: SCAN_ANG_A = 3.33333333
+  ! ATMS
+  real, parameter :: SCAN_ANG_A = 1.11111111 
   real, parameter :: PI = 3.14159265
   integer, parameter :: REARTH = 6371
   integer, parameter :: RSAT = 833

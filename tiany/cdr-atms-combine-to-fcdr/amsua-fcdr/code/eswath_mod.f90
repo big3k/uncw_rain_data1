@@ -44,7 +44,8 @@ module eswath_mod
   !========================
   ! Ancillary Data
   !========================
-  integer(int8)           :: mask     (MAP_ROWS, MAP_COLS)
+  !integer(int8)           :: mask     (MAP_ROWS, MAP_COLS)
+  integer(int8)           :: mask     (MAP_COLS, MAP_ROWS)
   integer(int8)           :: qc_flag  (MAXSCANLINE_A)
   integer(int8)           :: orb_mode (MAXSCANLINE_A)
   !YDT integer(int32)          :: qa_prod  (NUMCHAN_A, MAXSCANLINE_A)  ! was unsigned char
