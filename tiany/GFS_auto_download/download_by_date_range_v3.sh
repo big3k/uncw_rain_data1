@@ -55,7 +55,7 @@ echo $end_day0
 # cut day range into 2-day chunks, and put an order for each chunk
 start_day=$start_day0
 
-#===================== Grand Loop of 5-Day Chunks ============================
+#===================== Grand Loop of 2-Day Chunks ============================
 while [ $start_day -le $end_day0 ]; do 
   end_day=$(date -d "$start_day +1 day" +%Y%m%d)  # 2-day chunk
   if [ $end_day -gt $end_day0 ]; then  # yyyymmdd can be compared numerically 
