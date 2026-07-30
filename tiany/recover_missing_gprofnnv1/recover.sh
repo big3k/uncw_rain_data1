@@ -1,4 +1,11 @@
 #! /usr/bin/bash
+# 7/29/2026: 
+# Some of the mat files downloaded/subsetted by students have "CLIM-PA" instead of 
+# "CLIM" in the file name: e.g., 
+# 
+# /data1/youy/satellites/gprof-v08/NPP/202209/2A-CLIM-PA.NPP.ATMS.GPROFNNv1.20220930-S195131-E213300.056614.V08A.nc.mat
+# 
+# So remove '-PA' if there exists before comparing with server file list.  
 # 
 # Check any missing gprof files and re-download them 
 #
@@ -9,7 +16,7 @@
 #
 # 2. Extract useful data and discard the origninal nc files. The extracted 
 #  data are saved in separate directories as .mat files like this: 
-#  /data1/youy/satellites/gprof-v08/NPP/202209/2A-CLIM-PA.NPP.ATMS.GPROFNNv1.20220930-S195131-E213300.056614.V08A.nc.mat
+# /data1/youy/satellites/gprof-v08/NPP/202501/2A-CLIM.NPP.ATMS.GPROFNNv1.20250131-S125246-E143415.068726.V08A.nc.mat
 
 # This script will check the server, get the daily list of files, and 
 # compare the list of existing .mat files. If there are correspo;nding .mat 
@@ -18,9 +25,8 @@
 
 mkdir logs
 #--------------------------------------
-start_day=20250101
-end_day=20250102
-#end_day=20211231
+start_day=19870101
+end_day=20251231
 #--------------------------------------
 
 ssec=`date -d "$start_day" +%s`
@@ -56,7 +62,7 @@ done
 grep 2A-CLIM logs/index.${local_date}.txt |grep -Po 'href="\K(.*?)(?=">)' |sort > logs/files_on_server.${local_date}.txt 
 
 # get .mat file names 
-ls /data1/youy/satellites/gprof-v08/*/$local_ym/*.${local_date}-*.mat |xargs -n1 basename |sed -e 's/.mat$//' |sort > logs/existing_mat_files.${local_date}.txt 
+ls /data1/youy/satellites/gprof-v08/*/$local_ym/*.${local_date}-*.mat |xargs -n1 basename |sed -e 's/.mat$//' -e 's/2A-CLIM-PA/2A-CLIM/' |sort > logs/existing_mat_files.${local_date}.txt 
 
 # find what's missing and download 
 comm -23 logs/files_on_server.${local_date}.txt logs/existing_mat_files.${local_date}.txt |while read hdf5; do
@@ -77,7 +83,6 @@ comm -23 logs/files_on_server.${local_date}.txt logs/existing_mat_files.${local_
 done  # while read hdf5
 
 done  # for day 
-
 
 exit
 
