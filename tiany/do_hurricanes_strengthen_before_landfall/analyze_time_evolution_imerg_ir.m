@@ -44,11 +44,11 @@ for i = 1:nyr
     % ------------------------------------------------------
     file_rr = [data_loc, ...
         'imerg-rainrate-upto500km-', ...
-        num2str(yr),'.dat'];
+        num2str(yr),'-ir.dat'];
 
     file_pt = [data_loc, ...
         'imerg-rainrate-upto500km-', ...
-        num2str(yr),'-pt.dat'];
+        num2str(yr),'-pt-ir.dat'];
       % 
       % file_src = [data_loc, ...
       %   'imerg-rainrate-upto500km-', ...
@@ -195,7 +195,7 @@ set(gca, ...
 
 grid on
 set(gca,'GridAlpha',0.10);
-exportgraphics(gcf,'mswep-mean_rr.png','Resolution',120)
+exportgraphics(gcf,'imerg_ir-mean_rr.png','Resolution',120)
 
 
 %stop
@@ -235,4 +235,4 @@ set(gca, ...
 
 grid on
 set(gca,'GridAlpha',0.10);
-exportgraphics(gcf,'mswep-pixels.png','Resolution',120)
+exportgraphics(gcf,'imerg_ir_pixels.png','Resolution',120)

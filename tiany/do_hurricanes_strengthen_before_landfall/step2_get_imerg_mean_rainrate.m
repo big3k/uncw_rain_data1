@@ -8,14 +8,14 @@ clear
 close all;
 tic
 %*********************************************
-data_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step1-data-3b42/';
-save_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step2-data-3b42/'; 
+data_loc='/data1/youy/project/trend-landfall/data/step1-data-imerg/';
+save_loc='/data1/youy/project/trend-landfall/data/step2-data-imerg/';
 
 %figure name:
 %YYYYMMDD-HH-MM + sensor name
 %*********************************************
 %YR=1998:2025;
-YR=1998:2019; 
+YR=1998;
 
 for ijk1=1:length(YR)
 
@@ -83,10 +83,17 @@ for ijk1=1:length(YR)
           yy=hur_final.imerg_yy(ix5);
           LOC=hur_final.LOC(ix5);
 
+          LOC5=hur_final.LOC(ix5);
+
           fwrite(fid22_xx,xx,'float32');
           fwrite(fid22_yy,yy,'float32');
           fwrite(fid22_loc,LOC,'float32');
 
+          IX_error=PT5==-60&LOC5==1;
+
+           if sum(IX_error)>100
+             stop
+           end
           clear hur_final;
      end
 

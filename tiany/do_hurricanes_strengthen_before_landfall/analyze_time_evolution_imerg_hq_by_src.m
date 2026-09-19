@@ -1,8 +1,47 @@
 %seems & rr_src==7 (corresponds to MHS) has incrse trend
 
-clc
-clear
-close all
+function analyze_time_evolution_imerg_hq_by_src(src_name) 
+
+if nargin == 0
+    src_name = 'ALL';
+end
+
+switch upper(src_name)
+
+    case 'ALL'
+        src_code = [];
+
+    case 'TMI'
+        src_code = 1;
+
+    case 'AMSR2'
+        src_code = 3;
+
+    case 'SSMI'
+        src_code = 4;
+
+    case 'SSMIS'
+        src_code = 5;
+
+    case 'MHS'
+        src_code = 7;
+
+    case 'GMI'
+        src_code = 9;
+
+    case 'SSMIS'
+        src_code = 5;
+
+    case 'ATMS'
+        src_code = 11;
+
+    case 'SAPHIR'
+        src_code = 20;
+
+    otherwise
+        error('Unknown source: %s', src_name) 
+
+ end % switch 
 
 %% =========================================================
 % Settings
@@ -44,21 +83,21 @@ for i = 1:nyr
     % ------------------------------------------------------
     file_rr = [data_loc, ...
         'imerg-rainrate-upto500km-', ...
-        num2str(yr),'.dat'];
+        num2str(yr),'-hq.dat'];
 
     file_pt = [data_loc, ...
         'imerg-rainrate-upto500km-', ...
-        num2str(yr),'-pt.dat'];
-      % 
-      % file_src = [data_loc, ...
-      %   'imerg-rainrate-upto500km-', ...
-      %   num2str(yr),'-hq-src.dat'];
+        num2str(yr),'-pt-hq.dat'];
+       
+    file_src = [data_loc, ...
+         'imerg-rainrate-upto500km-', ...
+         num2str(yr),'-src-hq.dat'];
 
     %% -----------------------------------------------------
     % Skip year if files do not exist
     % ------------------------------------------------------
     if ~exist(file_rr,'file') || ...
-       ~exist(file_pt,'file')
+       ~exist(file_pt,'file') || ~exist(file_src,'file')
 
         fprintf('Missing files for %d\n',yr);
         continue
@@ -78,9 +117,12 @@ for i = 1:nyr
     rr_pt = fread(fid,'float32');
     fclose(fid);
     
-    % fid = fopen(file_src,'r');
-    % rr_src = fread(fid,'float32');
-    % fclose(fid);
+    %% -----------------------------------------------------
+    % Read "MWprecipSource"
+    % ------------------------------------------------------
+    fid = fopen(file_src,'r');
+    rr_src = fread(fid,'float32');
+    fclose(fid);
     
 
     %% -----------------------------------------------------
@@ -94,16 +136,30 @@ for i = 1:nyr
 
     end
 
+     if length(rr) ~= length(rr_src)
+
+        error( ...
+            'rr and rr_src have different lengths in %d.', ...
+            yr);
+
+    end
+
     %% =====================================================
     % Conditional rain-rate criterion
     %
     % Zhong et al.:
     % use raining pixels > 0.1 mm h^-1
     % ======================================================
-    ix_rain = rr > cv;
 
-    rr    = rr(ix_rain);
-    rr_pt = rr_pt(ix_rain);
+    ix_keep = rr > cv;
+
+    if ~isempty(src_code)
+       ix_keep = ix_keep & (rr_src == src_code);
+    end
+
+    rr     = rr(ix_keep);
+    rr_pt  = rr_pt(ix_keep);
+    rr_src = rr_src(ix_keep);
 
     %% =====================================================
     % Calculate statistics at exact 3-hourly times
@@ -195,7 +251,10 @@ set(gca, ...
 
 grid on
 set(gca,'GridAlpha',0.10);
-exportgraphics(gcf,'mswep-mean_rr.png','Resolution',120)
+png1 = sprintf('imerg_hq_mean_rr_%s.png', lower(src_name));
+png2 = sprintf('imerg_hq_pixels_%s.png', lower(src_name));
+
+exportgraphics(gcf,png1,'Resolution',120)
 
 
 %stop
@@ -235,4 +294,6 @@ set(gca, ...
 
 grid on
 set(gca,'GridAlpha',0.10);
-exportgraphics(gcf,'mswep-pixels.png','Resolution',120)
+exportgraphics(gcf,png2,'Resolution',120)
+
+end  % function 

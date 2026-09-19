@@ -1,6 +1,3 @@
-% 8/16/2026: based on Yalei's version of 7/29/2026. Replace IMERG with TRMM (3B42). 
-% keep "imerg" in all variable names. 
-
 %07/29/2026
 %I want to find every case where the hurricane from IMERG
 %remember that IMERG is 30 minute, so I can find all cases for each Hurricane
@@ -27,18 +24,12 @@ LOC=fread(fid,'float32');
 fclose(fid);
 %*********************************************
 
-%YDT data_loc_imerg='/data2/satellites/imerg/';
-data_loc_imerg='/data2/satellites/3b42/';
+data_loc_imerg='/data2/satellites/imerg/';
 
 %read out IMERG lon and lat, which are fixed values
-%YDT tp='/data2/satellites/imerg/2023/3B-HHR.MS.MRG.3IMERG.20230625-S123000-E125959.0750.V07B.HDF5';
-%YDT tp='/data2/satellites/3b42/2016/3B42.20161017.21.7.HDF5'; 
-
-%YDT lon_imerg=h5read(tp,'/Grid/lon');
-%YDT lat_imerg=h5read(tp,'/Grid/lat');
-
-lon_imerg = -179.875:0.25:179.875;  % 1440 points
-lat_imerg = 49.875:-0.25:-49.875;   % 400 points, N->S order needs to be confirmed. 
+tp='/data2/satellites/imerg/2023/3B-HHR.MS.MRG.3IMERG.20230625-S123000-E125959.0750.V07B.HDF5';
+lon_imerg=h5read(tp,'/Grid/lon');
+lat_imerg=h5read(tp,'/Grid/lat');
 lon_imerg=double(lon_imerg);
 lat_imerg=double(lat_imerg);
 [X_imerg,Y_imerg]=meshgrid(lon_imerg,lat_imerg);
@@ -46,10 +37,11 @@ lat_imerg=double(lat_imerg);
 X_imerg=X_imerg(:);
 Y_imerg=Y_imerg(:);
 
-%YDT data_loc='/data1/youy/project/trend-landfall/data/step0/';
-%YDT save_fig_loc='/data1/youy/project/trend-landfall/data/step1-data-imerg/';
-data_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step0/'; 
-save_fig_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step1-data-3b42/';
+%data_loc='/data1/youy/project/trend-landfall/data/step0/';
+%save_fig_loc='/data1/youy/project/trend-landfall/data/step1-data-imerg/';
+data_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step0/';
+save_fig_loc='/data1/tiany/do_hurricanes_strengthen_before_landfall/step1-data-imerg/';
+
 
 %figure name:
 %YYYYMMDD-HH-MM + sensor name
@@ -59,11 +51,10 @@ YR=1998:2019;
 for ijk1=1:length(YR)
 
     filelist_hur=dir([data_loc,num2str(YR(ijk1)),'/','*.mat']);
-    %YDT-test filelist_hur=dir([data_loc,num2str(YR(ijk1)),'/','FAITH-*.mat']);
+    %filelist_hur=dir([data_loc,num2str(YR(ijk1)),'/','FRANKLIN.mat']);
+    %filelist_hur=dir([data_loc,num2str(YR(ijk1)),'/','NORMA.mat']);
 
     for ijk=1:length(filelist_hur)
-  
-        disp(['Loading IBtracks data: ', data_loc,num2str(YR(ijk1)),'/',filelist_hur(ijk).name])
 
         load([data_loc,num2str(YR(ijk1)),'/',filelist_hur(ijk).name]);
 
@@ -82,13 +73,7 @@ for ijk1=1:length(YR)
         scale1=scale(ix1);
         region1=region(:,ix1);
 
-        % Imerg filename example: 
-        % /data2/satellites/imerg/1998/3B-HHR.MS.MRG.3IMERG.19981028-S210000-E212959.1260.V07B.HDF5
-        % 3B42 filename example: 
-        % /data2/satellites/3b42/1998/3B42.19981028.21.7.HDF5'
-
-        %YDT time1_round=round(time1*48)/48;
-        time1_round=round(time1*8)/8;  % 3-hourly instead of 30-min 
+        time1_round=round(time1*48)/48;
         time1_imerg=datestr(time1_round,'yyyymmdd-HHMMSS');
 
         %remember we only care about if it is in the 0-60 prior landfall
@@ -105,20 +90,16 @@ for ijk1=1:length(YR)
                     num2str(ijk),' of ', num2str(length(filelist_hur)),' ', ...
                     filelist_hur(ijk).name, ' ',...
                     num2str(k1),' of ', num2str(length(time1))]);
-
-                %YDT part_imerg_name=[time1_imerg(k1,1:8),'-S',time1_imerg(k1,10:end)];
-                part_imerg_name=[time1_imerg(k1,1:8),'.',time1_imerg(k1,10:11)];  %-> 19981028.21
-                file_imerg=dir([data_loc_imerg,time1_imerg(k1,1:4),'/*',part_imerg_name,'.7.HDF5']);
-                disp(['Looking for: ', data_loc_imerg,time1_imerg(k1,1:4),'/*',part_imerg_name,'.7.HDF5']);
+                part_imerg_name=[time1_imerg(k1,1:8),'-S',time1_imerg(k1,10:end)];
+                file_imerg=dir([data_loc_imerg,time1_imerg(k1,1:4),'/*',part_imerg_name,'-*.HDF5']);
 
                 if ~isempty(file_imerg) & (file_imerg.bytes>1000)
 
                     FN_imerg=[file_imerg.folder,'/',file_imerg.name];
-                    disp(['Found 3B42: ', FN_imerg]);  %YDT
-                    ir_imerg=h5read(FN_imerg,'/Grid/IRprecipitation');
+                    ir_imerg=h5read(FN_imerg,'/Grid/Intermediate/IRprecipitation');
                     ir_imerg(ir_imerg<0)=NaN;
-                    mw_imerg=h5read(FN_imerg,'/Grid/HQprecipitation');
-                    src_imerg=h5read(FN_imerg,'/Grid/satPrecipitationSource');
+                    mw_imerg=h5read(FN_imerg,'/Grid/Intermediate/MWprecipitation');
+                    src_imerg=h5read(FN_imerg,'/Grid/Intermediate/MWprecipSource');
                     rr_imerg=h5read(FN_imerg,'/Grid/precipitation');
 
                     ir_imerg=double(ir_imerg(:));
